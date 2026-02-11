@@ -1,0 +1,17 @@
+# On part d'une image PHP avec Apache inclus
+FROM php:8.2-apache
+
+# On installe les extensions PHP nécessaires pour MySQL (PDO)
+RUN docker-php-ext-install pdo pdo_mysql
+
+# On active le module de réécriture d'Apache (utile pour les jolies URL plus tard)
+RUN a2enmod rewrite
+
+# On définit le répertoire de travail dans le conteneur
+WORKDIR /var/www/html
+
+# On s'assure que les permissions sont correctes
+RUN chown -W www-data:www-data /var/www/html
+
+# Le port 80 est exposé par défaut par l'image apache
+EXPOSE 80
