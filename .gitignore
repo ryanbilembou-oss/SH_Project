@@ -1,0 +1,23 @@
+# md 
+.env
+
+# Go
+/api-go/main
+/api-go/api-go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# dc
+.docker/
+db_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

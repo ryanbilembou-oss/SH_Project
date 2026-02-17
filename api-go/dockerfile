@@ -1,24 +1,17 @@
 FROM golang:1.21-alpine
 
-# On définit le dossier de travail
 WORKDIR /app
 
-# On copie les fichiers de config Go
 COPY go.mod ./
-# Si tu as un fichier go.sum, décommente la ligne suivante :
-# COPY go.sum ./
 
-# On télécharge les dépendances
 RUN go mod download
 
-# On copie tout le reste du code source
 COPY . .
 
-# FORCE la compilation en un fichier nommé "mon-api-go" à la RACINE
-RUN CGO_ENABLED=0 GOOS=linux go build -o /mon-api-go .
 
-# On expose le port
+RUN go build -o main .
+RUN chmod +x main
+
 EXPOSE 8081
 
-# On lance le fichier depuis la RACINE (/)
-CMD ["/mon-api-go"]
+CMD ["./main"]

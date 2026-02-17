@@ -5,133 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Silver Happy - Accueil</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;700;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="icon" href="img/logo-clear.png"  />
-    <style>
-      body { font-family: 'Fira Sans Condensed', sans-serif; }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="img/logo-clear.png" />
   </head>
-  <body class="bg-[#FCF9F1] font-sans text-[#1A2B49]">
+  <body class="font-sans bg-[#FFFFF6]">
     
-    <nav class="bg-white px-6 pt-4 shadow-sm">
+    <nav class="bg-white px-6 pt-4 shadow-sm border-b-2 border-[#FCE297] sticky top-0 z-50">
       <div class="container mx-auto flex flex-col gap-4">
         <div class="flex justify-between items-center w-full">
-          <div class="flex items-center">
-            <img src="img/logo.png" alt="Logo Silver Happy" class="h-12" />
-          </div>
-
-          <div class="flex items-center space-x-6">
-            <a href="#" class="bg-[#F06543] text-white px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm hover:bg-[#d85436] transition-all no-underline">
+          <img src="img/logo.png" alt="Logo Silver Happy" class="h-14" />
+          <div class="flex items-center space-x-6 group">
+            <a href="login.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 group-hover:bg-transparent group-hover:text-[#7CABD3] hover:!bg-[#7CABD3] hover:!text-white">
               Connexion
             </a>
             <span class="h-5 w-[2px] bg-gray-300"></span>
-            <a href="#" class="text-gray-500 font-bold uppercase text-xs hover:text-[#1A2B49] transition-colors no-underline">
+            <a href="#" class="text-[#7CABD3] border-2 border-transparent px-6 py-2 rounded-full font-bold uppercase text-xs transition-all duration-300 hover:bg-[#7CABD3] hover:text-white hover:shadow-md">
               Inscription
             </a>
           </div>
         </div>
-
-        <div class="hidden md:flex justify-center space-x-12 font-bold uppercase text-xs tracking-widest">
-          <a href="#" class="hover:text-[#F06543] pb-2 border-b-4 border-transparent hover:border-[#F06543] transition-all">Qui sommes-nous ?</a>
-          <a href="#" class="hover:text-[#F06543] pb-2 border-b-4 border-transparent hover:border-[#F06543] transition-all">Nos Services</a>
-          <a href="#" class="hover:text-[#F06543] pb-2 border-b-4 border-transparent hover:border-[#F06543] transition-all">Espace Partenaire</a>
+        <div class="hidden md:flex justify-center space-x-12 font-bold uppercase text-xs tracking-widest pb-4">
+          <a href="#" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Qui sommes-nous ?</a>
+          <a href="#services" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Nos Services</a>
+          <a href="#" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Espace Partenaire</a>
         </div>
       </div>
     </nav>
-
-    <section class="py-20 px-6">
-      <div class="container mx-auto text-center max-w-4xl">
-        <h2 class="text-5xl font-black uppercase mb-8 tracking-tighter">
-          Le bonheur de bien vieillir !
-        </h2>
-
-        <p class="text-xl leading-relaxed mb-6 text-gray-700">
-          Silver Happy, c'est une communauté de services et de prestataires
-          engagés pour
-          <span class="font-bold text-[#1A2B49]">favoriser l'autonomie des aîné.e.s</span>
-          et simplifier leur quotidien.
-        </p>
-
-        <p class="text-lg leading-relaxed text-gray-600 mb-12">
-          Que vous soyez un senior en quête de confort ou un prestataire
-          souhaitant proposer ses services, notre plateforme sécurisée
-          facilite chaque étape de votre rencontre.
-        </p>
-
-        <div class="flex justify-center mb-16">
-          <img
-            src="https://www.parisencompagnie.org/wp-content/themes/paris-en-compagnie/assets/img/home/pictos-engagements.png"
-            alt="Illustration"
-            class="h-48 opacity-80 grayscale-[0.2]"
-          />
-        </div>
-
-        <h3 class="text-4xl font-black uppercase mb-10 tracking-tighter">
-          Comment ça marche ?
-        </h3>
-
-        <div class="grid md:grid-cols-3 gap-8">
-          <div class="bg-white p-8 rounded-xl shadow-sm border-b-4 border-[#F06543]">
-            <div class="text-3xl font-black text-blue-200 mb-4">01.</div>
-            <p class="font-bold">Je choisis une prestation dans le catalogue.</p>
+    <section class="pt-24 pb-32 px-6 bg-[#FFFFF6]">
+      <div class="container mx-auto max-w-5xl"> 
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div class="text-left">
+            <h2 class="text-4xl md:text-5xl font-black uppercase mb-6 leading-tight tracking-tighter text-[#1A2B49]">
+              "Libérez vos journées, <br>
+              <span class="text-[#7CABD3]">sublimez vos années."</span>
+            </h2>
+            <div class="w-16 h-1.5 bg-[#FCE297] mb-8"></div>
+            <p class="text-lg leading-relaxed text-gray-600 font-medium max-w-md mb-10">
+              Silver Happy réinvente le service à domicile en alliant confiance humaine et simplicité numérique.
+            </p>
+            <div class="flex gap-4">
+                <a href="#services" class="bg-[#7CABD3] text-white px-8 py-3 rounded-full font-black uppercase text-xs shadow-lg hover:scale-105 transition-all">
+                  Découvrir nos services
+                </a>
+            </div>
           </div>
-          <div class="bg-white p-8 rounded-xl shadow-sm border-b-4 border-[#F06543]">
-            <div class="text-3xl font-black text-blue-200 mb-4">02.</div>
-            <p class="font-bold">Je valide mon devis et je signe mon contrat.</p>
-          </div>
-          <div class="bg-white p-8 rounded-xl shadow-sm border-b-4 border-[#F06543]">
-            <div class="text-3xl font-black text-blue-200 mb-4">03.</div>
-            <p class="font-bold">Je profite de mon service en toute sécurité.</p>
+
+          <div class="relative flex justify-center group">
+            <div class="absolute inset-0 bg-[#FCE297]/40 blur-[100px] rounded-full scale-125 group-hover:bg-[#7CABD3]/30 transition-all duration-1000"></div>
+            <img 
+              src="img/sublime-retraite.jpg" 
+              class="relative h-80 w-80 md:h-[450px] md:w-[400px] object-cover shadow-2xl transition-all duration-700 hover:rotate-2"
+              style="border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;"
+            />
           </div>
         </div>
       </div>
     </section>
 
-    <footer class="bg-[#1A2B49] text-white pt-16 pb-8 px-6 mt-20">
-      <div class="container mx-auto">
-        <div class="grid md:grid-cols-4 gap-12 mb-12">
+    <section id="services" class="pt-24 pb-32 px-6 bg-white">
+      <div class="container mx-auto max-w-6xl">
+        
+        <div class="text-center -mt-10 md:-mt-14 mb-20 relative z-20">
+          <h3 class="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#1A2B49]">
+            Nos services <span class="text-[#7CABD3]">sur-mesure</span>
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           
-          <div class="col-span-1 md:col-span-1">
-            <img src="img/logo.png" alt="Logo Silver Happy" class="h-10 brightness-0 invert mb-6" />
-            <p class="text-gray-400 text-sm leading-relaxed">
-              Silver Happy accompagne les aînés dans leur quête d'autonomie avec des services de confiance et de proximité.
-            </p>
+          <div class="group bg-[#FFFFF6] p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] hover:shadow-xl transition-all duration-500 cursor-pointer">
+            <div class="text-5xl mb-6 group-hover:scale-110 transition-transform">🏠</div>
+            <h4 class="text-xl font-black uppercase mb-3 text-[#1A2B49]">Ménage</h4>
+            <p class="text-gray-600 text-sm leading-relaxed mb-6">Ménage, repassage et grand nettoyage.</p>
+            <span class="text-[#7CABD3] font-black uppercase text-[10px] tracking-widest border-b-2 border-[#7CABD3] pb-1">En savoir plus</span>
           </div>
 
+          <div class="group bg-[#FFFFF6] p-8 rounded-[40px] border-2 border-transparent hover:border-[#FCE297] hover:shadow-xl transition-all duration-500 cursor-pointer">
+            <div class="text-5xl mb-6 group-hover:scale-110 transition-transform">🌳</div>
+            <h4 class="text-xl font-black uppercase mb-3 text-[#1A2B49]">Jardinage</h4>
+            <p class="text-gray-600 text-sm leading-relaxed mb-6">Tonte de pelouse et petits travaux.</p>
+            <span class="text-[#FCE297] font-black uppercase text-[10px] tracking-widest border-b-2 border-[#FCE297] pb-1">En savoir plus</span>
+          </div>
+
+          <div class="group bg-[#FFFFF6] p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] hover:shadow-xl transition-all duration-500 cursor-pointer">
+            <div class="text-5xl mb-6 group-hover:scale-110 transition-transform">💻</div>
+            <h4 class="text-xl font-black uppercase mb-3 text-[#1A2B49]">Informatique</h4>
+            <p class="text-gray-600 text-sm leading-relaxed mb-6">Aide aux démarches et cours particuliers.</p>
+            <span class="text-[#7CABD3] font-black uppercase text-[10px] tracking-widest border-b-2 border-[#7CABD3] pb-1">En savoir plus</span>
+          </div>
+
+          <div class="group bg-[#FFFFF6] p-8 rounded-[40px] border-2 border-transparent hover:border-[#FCE297] hover:shadow-xl transition-all duration-500 cursor-pointer">
+            <div class="text-5xl mb-6 group-hover:scale-110 transition-transform">🤝</div>
+            <h4 class="text-xl font-black uppercase mb-3 text-[#1A2B49]">Compagnie</h4>
+            <p class="text-gray-600 text-sm leading-relaxed mb-6">Promenades et présence bienveillante.</p>
+            <span class="text-[#FCE297] font-black uppercase text-[10px] tracking-widest border-b-2 border-[#FCE297] pb-1">En savoir plus</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-[#1A2B49] text-white pt-20 pb-10 px-6 mt-20">
+      <div class="container mx-auto">
+        <div class="grid md:grid-cols-4 gap-12 mb-16 border-b border-white/10 pb-16">
+          <div class="col-span-1">
+            <img src="img/logo.png" alt="Logo Silver Happy" class="h-10 brightness-0 invert mb-6 opacity-90" />
+            <p class="text-gray-400 text-sm leading-relaxed font-medium">Favoriser l'autonomie des aîné.e.s par le service de proximité.</p>
+          </div>
           <div>
-            <h4 class="font-black uppercase text-sm tracking-widest mb-6 text-[#F06543]">Plateforme</h4>
-            <ul class="space-y-4 text-sm font-bold">
-              <li><a href="#" class="hover:text-[#F06543] transition-colors">Nos Services</a></li>
-              <li><a href="#" class="hover:text-[#F06543] transition-colors">Espace Partenaire</a></li>
-              <li><a href="#" class="hover:text-[#F06543] transition-colors">Boutique</a></li>
+            <h4 class="font-black uppercase text-xs tracking-[0.2em] mb-8 text-[#7CABD3]">Plateforme</h4>
+            <ul class="space-y-4 text-xs font-bold uppercase tracking-widest">
+              <li><a href="#services" class="hover:text-[#FCE297] transition-colors">Nos Services</a></li>
+              <li><a href="#" class="hover:text-[#FCE297] transition-colors">Espace Pro</a></li>
             </ul>
           </div>
-
           <div>
-            <h4 class="font-black uppercase text-sm tracking-widest mb-6 text-[#F06543]">Aide</h4>
-            <ul class="space-y-4 text-sm font-bold">
-              <li><a href="#" class="hover:text-[#F06543] transition-colors">Contactez-nous</a></li>
-              <li><a href="#" class="hover:text-[#F06543] transition-colors">FAQ Seniors</a></li>
+            <h4 class="font-black uppercase text-xs tracking-[0.2em] mb-8 text-[#7CABD3]">Support</h4>
+            <ul class="space-y-4 text-xs font-bold uppercase tracking-widest">
+              <li><a href="#" class="hover:text-[#FCE297] transition-colors">Contact</a></li>
+              <li><a href="#" class="hover:text-[#FCE297] transition-colors">FAQ</a></li>
             </ul>
           </div>
-
           <div>
-            <h4 class="font-black uppercase text-sm tracking-widest mb-6 text-[#F06543]">Légal</h4>
-            <ul class="space-y-4 text-sm font-bold">
-              <li><a href="#" class="hover:text-[#F06543] transition-colors">Mentions Légales</a></li>
-              <li><a href="#" class="hover:text-[#F06543] transition-colors">CGU</a></li>
+            <h4 class="font-black uppercase text-xs tracking-[0.2em] mb-8 text-[#7CABD3]">Légal</h4>
+            <ul class="space-y-4 text-xs font-bold uppercase tracking-widest">
+              <li><a href="#" class="hover:text-[#FCE297] transition-colors">CGU</a></li>
+              <li><a href="#" class="hover:text-[#FCE297] transition-colors">Mentions</a></li>
             </ul>
           </div>
         </div>
-
-        <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p class="text-xs text-gray-500 font-bold uppercase tracking-widest">
-            © 2026 Silver Happy — Fait avec bienveillance
-          </p>
-        </div>
+        <p class="text-[10px] text-center text-gray-500 font-black uppercase tracking-[0.3em]">© 2026 Silver Happy — Projet FS/VO</p>
       </div>
     </footer>
   </body>
