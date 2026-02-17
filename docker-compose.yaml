@@ -1,12 +1,10 @@
 services:
   silver-app:
-    # Cette image contient PHP et Apache
     image: php:8.2-apache
     container_name: silver_happy_apache
     ports:
       - "8080:80"
     volumes:
-      # On relie ton dossier local "app-php" au dossier web du conteneur
       - ./app-php:/var/www/html
     restart: always
     depends_on:
@@ -15,14 +13,12 @@ services:
 
   silver-go:
     build: ./api-go
-    # Supprime platform: linux/amd64 ici
     container_name: silver_happy_go
     env_file:
       - .env
     ports:
       - "8082:8081"
-    # Supprime ou commente le volume pendant que tu corriges le build
-    # - ./api-go:/app
+
     restart: always
     depends_on:
       - silver-db
@@ -40,7 +36,6 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-  # Interface pour gérer la base de données
   silver-pma:
     image: phpmyadmin:latest
     container_name: silver_happy_pma
