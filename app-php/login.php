@@ -59,5 +59,5 @@
   
 
 </body>
-<script src="js/login.js"></script>
+<script src="js/users/login.js"></script>
 </html>

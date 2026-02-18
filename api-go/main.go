@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 	"silver-happy-api/database" 
-	"silver-happy-api/handlers"
+	"silver-happy-api/handlers/admin"
+	"silver-happy-api/handlers/users"
+
 )
 
 func main() {
@@ -16,9 +18,13 @@ func main() {
 	})
 	
 
-	http.HandleFunc("/register", handlers.RegisterUser)
-	http.HandleFunc("/login", handlers.LoginUser)
-	http.HandleFunc("/admin/users", handlers.GetAllUsers)
+	http.HandleFunc("/register", users.RegisterUser)
+	http.HandleFunc("/login", users.LoginUser)
+	http.HandleFunc("/admin/users", admin.GetAllUsers)
+	http.HandleFunc("/admin/users/delete", admin.DeleteUser)
+	http.HandleFunc("/admin/users/create", admin.CreateUser)
+	http.HandleFunc("/admin/users/update", admin.UpdateUser)
+	http.HandleFunc("/admin/users/get", admin.GetUser)
 
 
 	fmt.Println("🚀 API Go lancée et connectée à MySQL sur le port 8081...")

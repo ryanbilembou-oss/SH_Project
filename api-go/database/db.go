@@ -4,8 +4,8 @@ import (
     "database/sql"
     "fmt"
     "log"
-    "os" // Pour lire les variables d'environnement
-
+    "os"
+    
     _ "github.com/go-sql-driver/mysql"
 )
 

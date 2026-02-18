@@ -1,4 +1,4 @@
-package handlers
+package users
 
 import (
   "database/sql"
@@ -42,7 +42,6 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  // On compare le hash de la BDD avec le mot de passe reçu (qui est dans u.Password_hash)
   err = bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(u.Password_hash))
   if err != nil {
     http.Error(w, "Mot de passe incorrect", http.StatusUnauthorized)
