@@ -18,33 +18,34 @@ services:
       - .env
     ports:
       - "8082:8081"
-
     restart: always
     depends_on:
       - silver-db
 
   silver-db:
-    image: mysql:8.0
-    platform: linux/amd64
+    image: postgres:16-alpine
     container_name: silver_happy_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
 
-  silver-pma:
-    image: phpmyadmin:latest
-    container_name: silver_happy_pma
+  silver-pgadmin:
+    image: dpage/pgadmin4
+    container_name: silver_happy_pgadmin
     restart: always
     ports:
       - "8081:80"
     environment:
-      PMA_HOST: silver-db
-      MYSQL_ROOT_PASSWORD: root
+      PGADMIN_DEFAULT_EMAIL: admin@silverhappy.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    depends_on:
+      - silver-db
 
 volumes:
   db_data:

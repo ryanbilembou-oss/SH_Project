@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="img/logo-clear.png" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   </head>
   <body class="font-sans bg-[#FFFFF6]">
     
@@ -15,19 +17,17 @@
         <div class="flex justify-between items-center w-full">
           <img src="img/logo.png" alt="Logo Silver Happy" class="h-14" />
           <div class="flex items-center space-x-6 group">
-            <a href="login.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 group-hover:bg-transparent group-hover:text-[#7CABD3] hover:!bg-[#7CABD3] hover:!text-white">
-              Connexion
-            </a>
-            <span class="h-5 w-[2px] bg-gray-300"></span>
-            <a href="#" class="text-[#7CABD3] border-2 border-transparent px-6 py-2 rounded-full font-bold uppercase text-xs transition-all duration-300 hover:bg-[#7CABD3] hover:text-white hover:shadow-md">
-              Inscription
+            <a href="deconnexion.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 group-hover:bg-transparent group-hover:text-[#7CABD3] hover:!bg-[#7CABD3] hover:!text-white">
+              Deconnexion  <i class="bi bi-box-arrow-right"></i>
             </a>
           </div>
         </div>
         <div class="hidden md:flex justify-center space-x-12 font-bold uppercase text-xs tracking-widest pb-4">
-          <a href="#" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Qui sommes-nous ?</a>
-          <a href="#services" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Nos Services</a>
-          <a href="#" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Espace Partenaire</a>
+          <a href="catalogue.php" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Catalogue <i class="bi bi-grid-3x3-gap"></i></a>
+          <a href="planning_senior.php" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Planning <i class="bi bi-calendar4"></i></a>
+          <a href="gestion_devis_senior.php" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Gestion devis <i class="bi bi-file-earmark-text"></i></a>
+          <a href="conseils_senior.php" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Conseils <i class="bi bi-chat-quote"></i></a>
+          <a href="gestion_paiments_senior.php" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Mes Paiments <i class="bi bi-wallet2"></i></a>
         </div>
       </div>
     </nav>
