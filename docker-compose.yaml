@@ -10,6 +10,8 @@ services:
     depends_on:
       - silver-db
       - silver-go
+    networks:
+      - silver-net
 
   silver-go:
     build: ./api-go
@@ -21,19 +23,24 @@ services:
     restart: always
     depends_on:
       - silver-db
+    networks:
+      - silver-net
 
   silver-db:
     image: postgres:16-alpine
     container_name: silver_happy_db
     restart: always
     environment:
-      POSTGRES_USER: root
+      POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - silver-net
 
   silver-pgadmin:
     image: dpage/pgadmin4
@@ -44,8 +51,17 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@silverhappy.com
       PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       - silver-db
+    networks:
+      - silver-net
+
+networks:
+  silver-net:
+    driver: bridge
 
 volumes:
   db_data:
+  pgadmin_data:
