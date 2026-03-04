@@ -8,6 +8,8 @@ RUN go mod download
 
 COPY . .
 
+# LA LIGNE MAGIQUE AJOUTÉE ICI :
+RUN go mod tidy
 
 RUN go build -o main .
 RUN chmod +x main

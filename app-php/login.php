@@ -29,7 +29,7 @@
             <form id="loginForm" class="space-y-6">
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Identifiant (Email)</label>
-                    <input type="email" id="email" name="email" placeholder="votre@email.com" required
+                    <input type="email" id="email" name="email" placeholder="votre@email.com" required autocomplete="email"
                         class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
                 </div>
 
@@ -38,11 +38,11 @@
                         <label class="text-[10px] font-black uppercase tracking-widest text-gray-400">Mot de passe</label>
                         <a href="#" class="text-[9px] font-bold uppercase text-[#7CABD3] hover:underline">Oublié ?</a>
                     </div>
-                    <input type="password" id="password" name="password" placeholder="••••••••" required
+                    <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password"
                         class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
                 </div>
 
-                <button type="submit" 
+                <button type="submit" id="submitBtn"
                     class="w-full bg-[#1A2B49] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-[#7CABD3] transition-all transform hover:-translate-y-1 mt-4">
                     Se connecter
                 </button>
@@ -56,8 +56,7 @@
             </div>
         </div>
     </div>
-  
 
+    <script src="js/users/login.js"></script>
 </body>
-<script src="js/users/login.js"></script>
 </html>

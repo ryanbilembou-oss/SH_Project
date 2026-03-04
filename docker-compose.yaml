@@ -10,6 +10,8 @@ services:
     depends_on:
       - silver-db
       - silver-go
+    networks:
+      - silver-net
 
   silver-go:
     build: ./api-go
@@ -17,34 +19,51 @@ services:
     env_file:
       - .env
     ports:
-      - "8082:8081"
-
+      - "8081:8081"
     restart: always
     depends_on:
       - silver-db
+    networks:
+      - silver-net
+    volumes:
+      - ./uploads:/app/uploads
 
   silver-db:
-    image: mysql:8.0
-    platform: linux/amd64
+    image: postgres:16-alpine
     container_name: silver_happy_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "3306:3306"
+      - "5433:5432"
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - silver-net
 
-  silver-pma:
-    image: phpmyadmin:latest
-    container_name: silver_happy_pma
+  silver-pgadmin:
+    image: dpage/pgadmin4
+    container_name: silver_happy_pgadmin
     restart: always
     ports:
-      - "8081:80"
+      - "5050:80"
     environment:
-      PMA_HOST: silver-db
-      MYSQL_ROOT_PASSWORD: root
+      PGADMIN_DEFAULT_EMAIL: admin@silverhappy.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - silver-db
+    networks:
+      - silver-net
+
+networks:
+  silver-net:
+    driver: bridge
 
 volumes:
   db_data:
+  pgadmin_data:

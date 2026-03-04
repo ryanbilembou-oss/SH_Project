@@ -1,53 +1,51 @@
 package users
 
 import (
-  "database/sql"
-  "encoding/json"
-  "net/http"
-  "silver-happy-api/database"
-  "silver-happy-api/models"
-  "golang.org/x/crypto/bcrypt"
+	"database/sql"
+	"fmt"
+	"net/http"
+	"silver-happy-api/database"
+	"silver-happy-api/pass_hash"
 )
 
 func LoginUser(w http.ResponseWriter, r *http.Request) {
-  w.Header().Set("Access-Control-Allow-Origin", "*")
-  w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-  w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-  if r.Method == "OPTIONS" {
-    return
-  }
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 
-  if r.Method != http.MethodPost {
-    http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
-    return
-  }
+	email := r.FormValue("email")
+	password := r.FormValue("password")
 
-  var u models.Users
-  err := json.NewDecoder(r.Body).Decode(&u)
-  if err != nil {
-    http.Error(w, "JSON invalide", http.StatusBadRequest)
-    return
-  }
+	var storedHash string
+	var role string
+	var nom string
+	var prenom string
 
-  var storedHash string
-  query := "SELECT password_hash FROM users WHERE email = ?"
-  err = database.DB.QueryRow(query, u.Email).Scan(&storedHash)
-  
-  if err == sql.ErrNoRows {
-    http.Error(w, "Utilisateur non trouvé", http.StatusUnauthorized)
-    return
-  } else if err != nil {
-    http.Error(w, "Erreur base de données", http.StatusInternalServerError)
-    return
-  }
+	query := `SELECT password, role, nom, prenom FROM utilisateurs WHERE email = $1`
+	err := database.DB.QueryRow(query, email).Scan(&storedHash, &role, &nom, &prenom)
+	
+	if err == sql.ErrNoRows {
+		fmt.Printf("DEBUG: L'email [%s] n'existe pas dans la base.\n", email)
+		http.Error(w, "Utilisateur non trouvé", http.StatusUnauthorized)
+		return
+	} else if err != nil {
+		fmt.Printf("DEBUG: Erreur SQL technique: %v\n", err)
+		http.Error(w, "Erreur base de données", http.StatusInternalServerError)
+		return
+	}
 
-  err = bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(u.Password_hash))
-  if err != nil {
-    http.Error(w, "Mot de passe incorrect", http.StatusUnauthorized)
-    return
-  }
+	if !pass_hash.CheckPasswordHash(password, storedHash) {
+		fmt.Printf("DEBUG: Mot de passe incorrect pour %s\n", email)
+		http.Error(w, "Mot de passe incorrect", http.StatusUnauthorized)
+		return
+	}
 
-  w.WriteHeader(http.StatusOK)
-  json.NewEncoder(w).Encode(map[string]string{"message": "Connexion réussie !"})
+	fmt.Printf("DEBUG: Connexion réussie pour %s\n", email)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Bienvenue " + prenom))
 }

@@ -15,11 +15,11 @@
         <div class="flex justify-between items-center w-full">
           <img src="img/logo.png" alt="Logo Silver Happy" class="h-14" />
           <div class="flex items-center space-x-6 group">
-            <a href="login.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 group-hover:bg-transparent group-hover:text-[#7CABD3] hover:!bg-[#7CABD3] hover:!text-white">
+            <a href="login.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 hover:bg-white hover:text-[#7CABD3]">
               Connexion
             </a>
             <span class="h-5 w-[2px] bg-gray-300"></span>
-            <a href="#" class="text-[#7CABD3] border-2 border-transparent px-6 py-2 rounded-full font-bold uppercase text-xs transition-all duration-300 hover:bg-[#7CABD3] hover:text-white hover:shadow-md">
+            <a href="register.php" class="text-[#7CABD3] border-2 border-[#7CABD3] px-6 py-2 rounded-full font-bold uppercase text-xs transition-all duration-300 hover:bg-[#7CABD3] hover:text-white hover:shadow-md">
               Inscription
             </a>
           </div>
@@ -31,6 +31,7 @@
         </div>
       </div>
     </nav>
+
     <section class="pt-24 pb-32 px-6 bg-[#FFFFF6]">
       <div class="container mx-auto max-w-5xl"> 
         <div class="grid md:grid-cols-2 gap-12 items-center">
@@ -46,6 +47,9 @@
             <div class="flex gap-4">
                 <a href="#services" class="bg-[#7CABD3] text-white px-8 py-3 rounded-full font-black uppercase text-xs shadow-lg hover:scale-105 transition-all">
                   Découvrir nos services
+                </a>
+                <a href="register.php" class="border-2 border-[#1A2B49] text-[#1A2B49] px-8 py-3 rounded-full font-black uppercase text-xs hover:bg-[#1A2B49] hover:text-white transition-all">
+                  S'inscrire
                 </a>
             </div>
           </div>
@@ -64,7 +68,6 @@
 
     <section id="services" class="pt-24 pb-32 px-6 bg-white">
       <div class="container mx-auto max-w-6xl">
-        
         <div class="text-center -mt-10 md:-mt-14 mb-20 relative z-20">
           <h3 class="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#1A2B49]">
             Nos services <span class="text-[#7CABD3]">sur-mesure</span>
@@ -72,7 +75,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          
           <div class="group bg-[#FFFFF6] p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] hover:shadow-xl transition-all duration-500 cursor-pointer">
             <div class="text-5xl mb-6 group-hover:scale-110 transition-transform">🏠</div>
             <h4 class="text-xl font-black uppercase mb-3 text-[#1A2B49]">Ménage</h4>
@@ -100,7 +102,6 @@
             <p class="text-gray-600 text-sm leading-relaxed mb-6">Promenades et présence bienveillante.</p>
             <span class="text-[#FCE297] font-black uppercase text-[10px] tracking-widest border-b-2 border-[#FCE297] pb-1">En savoir plus</span>
           </div>
-
         </div>
       </div>
     </section>
@@ -116,7 +117,7 @@
             <h4 class="font-black uppercase text-xs tracking-[0.2em] mb-8 text-[#7CABD3]">Plateforme</h4>
             <ul class="space-y-4 text-xs font-bold uppercase tracking-widest">
               <li><a href="#services" class="hover:text-[#FCE297] transition-colors">Nos Services</a></li>
-              <li><a href="#" class="hover:text-[#FCE297] transition-colors">Espace Pro</a></li>
+              <li><a href="register.php" class="hover:text-[#FCE297] transition-colors">Devenir Partenaire</a></li>
             </ul>
           </div>
           <div>

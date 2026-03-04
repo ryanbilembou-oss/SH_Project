@@ -1,12 +1,12 @@
 package database
 
 import (
-    "database/sql"
-    "fmt"
-    "log"
-    "os"
-    
-    _ "github.com/go-sql-driver/mysql"
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+
+	_ "github.com/lib/pq" // CHANGEMENT : On utilise le driver PostgreSQL
 )
 
 var DB *sql.DB
@@ -19,18 +19,20 @@ func Connect() {
     port := os.Getenv("DB_PORT")
     dbname := os.Getenv("DB_NAME")
 
-    dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true", 
-        user, pass, host, port, dbname)
+    // CHANGEMENT : Le format de connexion (DSN) est différent pour Postgres
+    dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", 
+        host, port, user, pass, dbname)
     
     var err error
-    DB, err = sql.Open("mysql", dsn)
+    // CHANGEMENT : On ouvre en mode "postgres"
+    DB, err = sql.Open("postgres", dsn)
     if err != nil {
         log.Fatal("Erreur Open:", err)
     }
 
     if err = DB.Ping(); err != nil {
-        log.Fatal("Le conteneur MySQL ne répond pas :", err)
+        log.Fatal("Le conteneur PostgreSQL ne répond pas :", err)
     }
 
-    log.Println("✅ Connexion MySQL sécurisée réussie !")
+    log.Println("✅ Connexion PostgreSQL sécurisée réussie !")
 }
