@@ -1,5 +1,5 @@
 <?php
-// Protection de la page
+
 // session_start();
 // if($_SESSION['role'] !== 'admin') { header('Location: login.php'); exit(); }
 
@@ -16,7 +16,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="flex flex-col md:flex-row">
-        <?php include('include/sidebar.php'); ?>
+        <?php include('../include/sidebar.php'); ?>
 
         <div class="flex-1 p-8">
             <div class="flex justify-between items-center mb-8">
@@ -97,7 +97,7 @@
                 return;
             }
 
-            // Appel Fetch vers ton API Go (PATCH ou POST)
+ 
             console.log("Envoi de la validation...", {id: <?php echo $id_pro; ?>, status, tarif, ref});
         }
     </script>

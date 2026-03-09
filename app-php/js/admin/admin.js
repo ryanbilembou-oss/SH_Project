@@ -6,12 +6,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!response.ok) throw new Error("Erreur lors de la récupération");
 
     const users = await response.json();
-    console.log("Données reçues :", users); // Petit check pour voir les noms des champs
+    console.log("Données reçues :", users);
 
     tableBody.innerHTML = "";
 
     users.forEach((user) => {
-      const dateSource = user.date_inscription || user.Date_inscription; // Gère les majuscules/minuscules
+      const dateSource = user.date_inscription || user.Date_inscription;
       const formattedDate = dateSource
         ? new Date(dateSource.replace(" ", "T")).toLocaleDateString("fr-FR")
         : "Date inconnue";

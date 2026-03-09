@@ -15,7 +15,7 @@
         <div class="flex justify-between items-center w-full">
           <img src="img/logo.png" alt="Logo Silver Happy" class="h-14" />
           <div class="flex items-center space-x-6 group">
-            <a href="login.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 group-hover:bg-transparent group-hover:text-[#7CABD3] hover:!bg-[#7CABD3] hover:!text-white">
+            <a href="users/login.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 group-hover:bg-transparent group-hover:text-[#7CABD3] hover:!bg-[#7CABD3] hover:!text-white">
               Connexion
             </a>
             <span class="h-5 w-[2px] bg-gray-300"></span>

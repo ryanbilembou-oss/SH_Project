@@ -20,7 +20,7 @@
     </div>
 
     <div class="flex flex-col md:flex-row">
-        <?php include('include/sidebar.php'); ?>
+        <?php include('../include/sidebar.php'); ?>
 
         <div class="main-content flex-1 bg-gray-100 pb-24">
             
@@ -49,24 +49,20 @@
                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Rôle Système</label>
-                                <select id="edit-role" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Rôle Système (Lecture seule)</label>
+                                <select id="edit-role" disabled class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed outline-none transition">
                                     <option value="senior">Senior</option>
                                     <option value="admin">Administrateur</option>
-                                    <option value="pro">Préstataire</option>
+                                    <option value="pro">Prestataire</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="pt-6 border-t border-gray-100">
-                            <label class="block text-sm font-semibold text-orange-600 mb-2">
-                                <i class="fas fa-key mr-1"></i> Nouveau mot de passe (Optionnel)
+                        <div class="pt-6 border-t border-gray-100 flex items-center">
+                            <input type="checkbox" id="reset-password-checkbox" class="w-5 h-5 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer">
+                            <label for="reset-password-checkbox" class="ml-3 block text-sm font-semibold text-orange-600 cursor-pointer select-none">
+                                <i class="fas fa-random mr-1"></i> Générer un nouveau mot de passe aléatoire
                             </label>
-                            <input type="password" id="edit-password" placeholder="Laissez vide pour conserver l'actuel"
-                                   class="w-full px-4 py-3 rounded-lg border border-orange-100 focus:ring-2 focus:ring-orange-500 outline-none transition placeholder-gray-300">
-                            <p class="text-xs text-gray-400 mt-2 italic">
-                                Ne remplissez ce champ que si l'utilisateur a oublié son mot de passe ou pour des raisons de sécurité.
-                            </p>
                         </div>
 
                         <div class="flex justify-end pt-4">
@@ -80,6 +76,6 @@
         </div>
     </div>
 
-    <script src="js/admin/edit_users.js"></script>
+    <script src="../js/admin/edit_users.js"></script>
 </body>
 </html>

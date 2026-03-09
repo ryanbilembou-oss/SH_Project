@@ -10,11 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const loginData = {
         email: email,
-        password_hash: password, // On utilise "password_hash" pour coller au modèle Go
+        password_hash: password,
       };
 
       try {
-        // On vise bien la route /login
         const response = await fetch("http://localhost:8082/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

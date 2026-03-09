@@ -22,15 +22,14 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var u models.Users // Utilise le modèle unique
+	var u models.Users
 	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
 		http.Error(w, "Données invalides", http.StatusBadRequest)
 		return
 	}
 
-	// On hache u.Password (le mot de passe envoyé par le JS)
-	// On utilise u.Password_hash car c'est le nom dans ton fichier models
+
 	hashedPassword, err := pass_hash.HashPassword(u.Password_hash)
 	if err != nil {
 		http.Error(w, "Erreur de hachage", http.StatusInternalServerError)
