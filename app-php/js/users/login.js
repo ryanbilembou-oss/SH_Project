@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
+<<<<<<< HEAD
       console.log("Données récupérées :", email);
 
       const params = new URLSearchParams();
@@ -16,6 +17,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         const response = await fetch("http://localhost:8081/login", {
+=======
+      const loginData = {
+        email: email,
+        password_hash: password,
+      };
+
+      try {
+        const response = await fetch("http://localhost:8082/login", {
+>>>>>>> origin/zak
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

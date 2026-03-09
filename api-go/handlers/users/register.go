@@ -21,12 +21,28 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+<<<<<<< HEAD
     hashedPassword, _ := pass_hash.HashPassword(r.FormValue("password"))
 
     query := `INSERT INTO utilisateurs (
         role, nom, prenom, genre, telephone, email, 
         password, date_naissance, adresse, siret, bio
     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`
+=======
+	var u models.Users
+	err := json.NewDecoder(r.Body).Decode(&u)
+	if err != nil {
+		http.Error(w, "Données invalides", http.StatusBadRequest)
+		return
+	}
+
+
+	hashedPassword, err := pass_hash.HashPassword(u.Password_hash)
+	if err != nil {
+		http.Error(w, "Erreur de hachage", http.StatusInternalServerError)
+		return
+	}
+>>>>>>> origin/zak
 
     _, err = database.DB.Exec(query, 
         r.FormValue("role"),

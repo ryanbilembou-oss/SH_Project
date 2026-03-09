@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-
         .rotate-180 { transform: rotate(180deg); }
         #users-sub, #services-sub, #events-sub { transition: all 0.3s ease-in-out; }
     </style>
@@ -23,7 +22,7 @@
 
     <div class="flex flex-col md:flex-row">
         
-        <?php include('include/sidebar.php'); ?>
+        <?php include('../include/sidebar.php'); ?>
 
         <div class="main-content flex-1 bg-gray-100 mt-12 md:mt-0 pb-24 md:pb-5">
             
@@ -87,7 +86,7 @@
         </div>
     </div>
     
-    <script src="js/admin/admin.js"></script>
-    <script src="js/admin/delete_users.js"></script>
+    <script src="../js/admin/admin.js"></script>
+    <script src="../js/admin/delete_users.js"></script>
 </body>
 </html>
