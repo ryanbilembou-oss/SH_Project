@@ -1,4 +1,3 @@
-/* Importation de la police d'écriture */
 @import url("https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;700;900&display=swap");
 
 :root {
@@ -14,22 +13,18 @@ body {
   color: var(--primary-dark);
 }
 
-/* Utilitaires personnalisés pour les transitions */
 .transition-custom {
   transition: all 0.3s ease-in-out;
 }
 
-/* Effet spécifique pour tes boutons de navigation */
 .btn-nav-logic {
   transition: all 0.3s ease-in-out;
 }
 
-/* Gestion du scroll fluide pour les ancres (#services) */
 html {
   scroll-behavior: smooth;
 }
 
-/* Style pour les cartes de services au survol */
 .service-card:hover {
   transform: translateY(-5px);
 }

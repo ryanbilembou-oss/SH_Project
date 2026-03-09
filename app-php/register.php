@@ -75,16 +75,16 @@
                         <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Mot de passe</label>
                         <input type="password" id="password" placeholder="••••••••" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
                         <div id="passwordCriteria" class="mt-3 ml-4 space-y-1">
-                            <p id="crit-length" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">❌ 8 caractères</p>
-                            <p id="crit-number" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">❌ Un chiffre</p>
-                            <p id="crit-special" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">❌ Un caractère spécial</p>
+                            <p id="crit-length" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic"> 8 caractères</p>
+                            <p id="crit-number" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic"> Un chiffre</p>
+                            <p id="crit-special" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic"> Un caractère spécial</p>
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Date de naissance</label>
                         <input type="date" id="date_naissance" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium">
-                        <p id="ageError" class="hidden text-[9px] text-red-600 font-bold uppercase mt-2 ml-4 tracking-widest italic">⚠️ Vous n'êtes pas majeur pour acceder à notre plateforme.</p>
+                        <p id="ageError" class="hidden text-[9px] text-red-600 font-bold uppercase mt-2 ml-4 tracking-widest italic">Vous n'êtes pas majeur pour acceder à notre plateforme.</p>
                     </div>
 
                     <div id="seniorFields">
@@ -104,7 +104,7 @@
                     </div>
 
                     <button type="submit" id="btnSubmitSenior" class="w-full bg-[#1A2B49] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-[#16a34a] transition-all transform hover:-translate-y-1 opacity-50 cursor-not-allowed" disabled>S'inscrire</button>
-                    <button type="button" id="btnSuivant" class="hidden w-full bg-[#1A2B49] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-[#7CABD3] transition-all transform hover:-translate-y-1 opacity-50 cursor-not-allowed" disabled>Suivant ➡️</button>
+                    <button type="button" id="btnSuivant" class="hidden w-full bg-[#1A2B49] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-[#7CABD3] transition-all transform hover:-translate-y-1 opacity-50 cursor-not-allowed" disabled>Suivant</button>
                 </div>
 
                 <div id="etape2" class="hidden space-y-6 transition-all duration-300">
@@ -126,7 +126,7 @@
 
                     <div class="flex gap-4">
                         <button type="button" id="btnPrecedent" class="w-1/3 bg-gray-100 text-[#1A2B49] font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl hover:bg-gray-200 transition-all">Retour</button>
-                        <button type="submit" id="btnSubmitPro" class="w-2/3 bg-[#16a34a] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-green-700 transition-all transform hover:-translate-y-1">S'inscrire ✅</button>
+                        <button type="submit" id="btnSubmitPro" class="w-2/3 bg-[#16a34a] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-green-700 transition-all transform hover:-translate-y-1">S'inscrire</button>
                     </div>
                 </div>
 
@@ -186,7 +186,7 @@
         }
 
         function updateCriteria(el, valid, text) {
-            el.innerHTML = (valid ? "✅ " : "❌ ") + text;
+            el.innerHTML = (valid ? "[OK] " : "[X] ") + text;
             el.className = `text-[9px] font-bold uppercase tracking-widest italic ${valid ? 'critere-valid' : 'critere-invalid'}`;
         }
 

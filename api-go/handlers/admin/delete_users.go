@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"silver-happy-api/database" 
+	"silver-happy-api/database"
 )
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +42,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("✅ Utilisateur ID %s supprimé avec succès", id)
+	log.Printf("Utilisateur ID %s supprimé avec succès", id)
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, "Utilisateur supprimé avec succès")
 }

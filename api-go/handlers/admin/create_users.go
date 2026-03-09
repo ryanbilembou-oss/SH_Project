@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"silver-happy-api/database"
 	"silver-happy-api/models"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,14 +31,14 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var u models.Users
 	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
-		log.Printf("❌ Erreur décodage JSON: %v", err)
+		log.Printf("Erreur décodage JSON: %v", err)
 		http.Error(w, "Données invalides", http.StatusBadRequest)
 		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password_hash), bcrypt.DefaultCost)
 	if err != nil {
-		log.Printf("❌ Erreur hachage: %v", err)
+		log.Printf("Erreur hachage: %v", err)
 		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 		return
 	}
@@ -46,12 +47,12 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	_, err = database.DB.Exec(query, u.Email, string(hashedPassword), u.Role)
 	
 	if err != nil {
-		log.Printf("❌ Erreur SQL insertion: %v", err)
+		log.Printf("Erreur SQL insertion: %v", err)
 		http.Error(w, "Impossible de créer l'utilisateur (email peut-être déjà utilisé)", http.StatusConflict)
 		return
 	}
 
-	log.Printf("✅ Utilisateur %s créé par l'administrateur", u.Email)
+	log.Printf("Utilisateur %s créé par l'administrateur", u.Email)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{
 		"message": "Utilisateur créé avec succès",
