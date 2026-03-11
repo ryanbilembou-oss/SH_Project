@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Utilisation de tags JSON pour garantir la compatibilité avec le JS
+
 type UpdateRequest struct {
 	Id_user       int    `json:"id_user"`
 	Email         string `json:"email"`
@@ -75,21 +75,21 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Access-Control-Allow-Origin", "*")
     w.Header().Set("Content-Type", "application/json")
 
-    // On récupère l'ID passé dans l'URL (?id=...)
+
     id := r.URL.Query().Get("id")
     if id == "" {
         http.Error(w, `{"erreur":"ID manquant"}`, http.StatusBadRequest)
         return
     }
 
-    // Structure avec TAGS JSON (CRUCIAL pour le JS)
+
     var u struct {
         Id_user int    `json:"id_user"`
         Email   string `json:"email"`
         Role    string `json:"role"`
     }
 
-    // Requête SQL sur ta table 'users'
+
     query := "SELECT id_user, email, role FROM users WHERE id_user = $1"
     err := database.DB.QueryRow(query, id).Scan(&u.Id_user, &u.Email, &u.Role)
 
@@ -99,6 +99,5 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Envoi du JSON propre au JS
     json.NewEncoder(w).Encode(u)
 }

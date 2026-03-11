@@ -9,19 +9,19 @@ import (
 )
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	// 1. Headers globaux (CORS + Type de contenu)
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json") // Indispensable pour du JSON
+	w.Header().Set("Content-Type", "application/json") 
 
-	// 2. Gestion du Preflight CORS (Naviguateur)
+
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	// 3. Sécurité de la méthode
+
 	if r.Method != http.MethodGet {
 		http.Error(w, `{"erreur": "Méthode non autorisée"}`, http.StatusMethodNotAllowed)
 		return
