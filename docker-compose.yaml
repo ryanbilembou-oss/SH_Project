@@ -19,21 +19,15 @@ services:
     env_file:
       - .env
     ports:
-<<<<<<< HEAD
       - "8081:8081"
-=======
       - "8082:8081"
->>>>>>> origin/zak
     restart: always
     depends_on:
       - silver-db
     networks:
       - silver-net
-<<<<<<< HEAD
     volumes:
       - ./uploads:/app/uploads
-=======
->>>>>>> origin/zak
 
   silver-db:
     image: postgres:16-alpine

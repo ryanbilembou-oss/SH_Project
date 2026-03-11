@@ -1,9 +1,3 @@
-/**
- * delete_article.js
- * Gestion de la suppression des articles via modal de confirmation
- * API : DELETE http://localhost:8082/admin/article/delete?id=...
- */
-
 const API_BASE_DELETE = "http://localhost:8082";
 
 const DeleteArticleManager = {
@@ -13,7 +7,6 @@ const DeleteArticleManager = {
   cancelBtn: null,
   tableBody: null,
 
-  // ─── Init ──────────────────────────────────────────────────────────────────
   init() {
     this.modal = document.getElementById("deleteModal");
     this.confirmBtn = document.getElementById("confirmDeleteBtn");
@@ -25,7 +18,6 @@ const DeleteArticleManager = {
       return;
     }
 
-    // Délégation sur le tableau
     this.tableBody.addEventListener("click", (e) => {
       const btn = e.target.closest(".btn-delete");
       if (!btn) return;
@@ -43,7 +35,6 @@ const DeleteArticleManager = {
     });
   },
 
-  // ─── Ouverture ─────────────────────────────────────────────────────────────
   openModal() {
     this.modal.classList.remove("hidden");
     this.modal.classList.add("flex");
@@ -56,7 +47,6 @@ const DeleteArticleManager = {
     });
   },
 
-  // ─── Fermeture ─────────────────────────────────────────────────────────────
   closeModal() {
     this.modal.classList.replace("opacity-100", "opacity-0");
     document
@@ -68,7 +58,6 @@ const DeleteArticleManager = {
     }, 300);
   },
 
-  // ─── Appel API DELETE ──────────────────────────────────────────────────────
   async executeDeletion() {
     if (!this.pendingId) return;
 
@@ -80,13 +69,12 @@ const DeleteArticleManager = {
         `${API_BASE_DELETE}/admin/article/delete?id=${this.pendingId}`,
         {
           method: "DELETE",
-        },
+        }
       );
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur serveur.");
 
-      // Retrait fluide de la ligne
       const row = document.getElementById(`article-row-${this.pendingId}`);
       if (row) {
         row.style.transition = "all 0.4s ease";
@@ -101,7 +89,7 @@ const DeleteArticleManager = {
       console.error("[DeleteArticleManager]", err);
       showToastArticle(
         err.message || "Erreur lors de la suppression.",
-        "error",
+        "error"
       );
     } finally {
       this.confirmBtn.disabled = false;
@@ -111,7 +99,6 @@ const DeleteArticleManager = {
   },
 };
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
 function showToastArticle(message, type = "info") {
   const container = document.getElementById("toastContainer");
   const msgSpan = document.getElementById("toastMessage");
@@ -137,7 +124,6 @@ function showToastArticle(message, type = "info") {
   }, 3000);
 }
 
-// ─── Init au chargement ───────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () =>
-  DeleteArticleManager.init(),
+  DeleteArticleManager.init()
 );

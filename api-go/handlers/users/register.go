@@ -1,67 +1,54 @@
 package users
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 	"silver-happy-api/database"
+	"silver-happy-api/models"
 	"silver-happy-api/pass_hash"
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
+    // Configuration CORS
     w.Header().Set("Access-Control-Allow-Origin", "*")
     w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
     w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
     if r.Method == "OPTIONS" {
+        w.WriteHeader(http.StatusOK)
         return
     }
 
-    err := r.ParseMultipartForm(10 << 20)
+    // 1. Décodage du JSON envoyé par le Front-end
+    var u models.Users
+    if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+        log.Printf("Erreur décodage : %v", err)
+        http.Error(w, "Données JSON invalides", http.StatusBadRequest)
+        return
+    }
+
+    // 2. Hachage du mot de passe
+    hashedPassword, err := pass_hash.HashPassword(u.Password_hash)
     if err != nil {
-        http.Error(w, "Erreur formulaire", http.StatusBadRequest)
+        http.Error(w, "Erreur de hachage", http.StatusInternalServerError)
         return
     }
 
-<<<<<<< HEAD
-    hashedPassword, _ := pass_hash.HashPassword(r.FormValue("password"))
-
-    query := `INSERT INTO utilisateurs (
-        role, nom, prenom, genre, telephone, email, 
-        password, date_naissance, adresse, siret, bio
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`
-=======
-	var u models.Users
-	err := json.NewDecoder(r.Body).Decode(&u)
-	if err != nil {
-		http.Error(w, "Données invalides", http.StatusBadRequest)
-		return
-	}
-
-
-	hashedPassword, err := pass_hash.HashPassword(u.Password_hash)
-	if err != nil {
-		http.Error(w, "Erreur de hachage", http.StatusInternalServerError)
-		return
-	}
->>>>>>> origin/zak
-
-    _, err = database.DB.Exec(query, 
-        r.FormValue("role"),
-        r.FormValue("nom"),
-        r.FormValue("prenom"),
-        r.FormValue("genre"),
-        r.FormValue("telephone"),
-        r.FormValue("email"),
-        hashedPassword,
-        r.FormValue("date_naissance"),
-        r.FormValue("adresse"),
-        r.FormValue("siret"),
-        r.FormValue("bio"),
-    )
+    // 3. Requête SQL (Syntaxe Postgres avec $1, $2...)
+    // Attention : J'utilise les champs de base de ton modèle Users
+    query := `INSERT INTO users (email, password_hash, role, date_inscription) 
+              VALUES ($1, $2, $3, NOW())`
+    
+    _, err = database.DB.Exec(query, u.Email, hashedPassword, u.Role)
 
     if err != nil {
-        http.Error(w, "Erreur BDD : " + err.Error(), http.StatusInternalServerError)
+        log.Printf("Erreur insertion BDD : %v", err)
+        http.Error(w, "Erreur lors de l'inscription (Email peut-être déjà utilisé)", http.StatusConflict)
         return
     }
 
+    // 4. Réponse de succès
     w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(map[string]string{"message": "Inscription réussie"})
 }

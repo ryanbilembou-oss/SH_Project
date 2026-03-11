@@ -1,44 +1,9 @@
-/**
- * create_article.js
- * Chargement des catégories + création d'un article via POST
- */
-
 const API_BASE = "http://localhost:8082";
 
 (async () => {
-  //await loadCategories();
   document.getElementById("submitBtn").addEventListener("click", handleSubmit);
 })();
 
-// ════════════════════════════════════════════════════════════
-//  CATÉGORIES
-// ════════════════════════════════════════════════════════════
-/*async function loadCategories() {
-  try {
-    const res = await fetch(`${API_BASE}/admin/article/categorie/get`);
-    if (!res.ok) throw new Error("Impossible de charger les catégories.");
-
-    const categories = await res.json();
-    const select = document.getElementById("id_categorie");
-
-    select.innerHTML =
-      `<option value="">-- Choisir une catégorie --</option>` +
-      categories
-        .map(
-          (c) =>
-            `<option value="${c.id_categorie}">${esc(c.nom_categorie)}</option>`,
-        )
-        .join("");
-  } catch (err) {
-    console.warn("[loadCategories]", err);
-    document.getElementById("id_categorie").innerHTML =
-      `<option value="">Erreur chargement</option>`;
-  }
-}*/
-
-// ════════════════════════════════════════════════════════════
-//  SOUMISSION — POST
-// ════════════════════════════════════════════════════════════
 async function handleSubmit() {
   const nom = document.getElementById("nom").value.trim();
   const id_categorie = 1;
@@ -48,15 +13,11 @@ async function handleSubmit() {
   const bio = document.getElementById("bio").value.trim() || null;
   const submitBtn = document.getElementById("submitBtn");
 
-  // Validation
   if (!nom) {
     showToast("Le nom est obligatoire.", "error");
     return;
   }
-  //if (!id_categorie) {
-  //showToast("Veuillez choisir une catégorie.", "error");
-  //return;
-  //}
+
   if (isNaN(prix) || prix < 0) {
     showToast("Le prix ne peut pas être négatif.", "error");
     return;
@@ -92,9 +53,6 @@ async function handleSubmit() {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  TOAST + HELPERS
-// ════════════════════════════════════════════════════════════
 function showToast(message, type = "info") {
   const container = document.getElementById("toastContainer");
   const msgSpan = document.getElementById("toastMessage");

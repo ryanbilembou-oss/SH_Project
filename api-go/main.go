@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"silver-happy-api/database" 
+	"silver-happy-api/database"
 	"silver-happy-api/handlers/admin"
-	"silver-happy-api/handlers/users"
+	"silver-happy-api/handlers/admin/article"
 	"silver-happy-api/handlers/admin/evenement"
-	"silver-happy-api/handlers/admin/article" 
-
-
+	"silver-happy-api/handlers/users"
 )
 
 

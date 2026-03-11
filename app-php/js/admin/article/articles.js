@@ -1,9 +1,3 @@
-/**
- * articles.js
- * Listing et recherche des articles
- * La suppression est gérée par delete_article.js
- */
-
 const API_BASE = "http://localhost:8082";
 
 (async () => {
@@ -11,9 +5,6 @@ const API_BASE = "http://localhost:8082";
   initSearch();
 })();
 
-// ════════════════════════════════════════════════════════════
-//  CHARGEMENT
-// ════════════════════════════════════════════════════════════
 async function loadArticles() {
   const tableBody = document.getElementById("articleTableBody");
   if (!tableBody) return;
@@ -57,9 +48,6 @@ async function loadArticles() {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  CONSTRUCTION D'UNE LIGNE
-// ════════════════════════════════════════════════════════════
 function buildRow(a) {
   const prix = parseFloat(a.prix || 0).toFixed(2);
   const stock = a.stock ?? 0;
@@ -68,18 +56,22 @@ function buildRow(a) {
     stock === 0
       ? "bg-red-100 text-red-700 border-red-200"
       : stock < 5
-        ? "bg-orange-100 text-orange-700 border-orange-200"
-        : "bg-emerald-100 text-emerald-700 border-emerald-200";
+      ? "bg-orange-100 text-orange-700 border-orange-200"
+      : "bg-emerald-100 text-emerald-700 border-emerald-200";
 
   const stockLabel = stock === 0 ? "Rupture" : stock;
 
   return `
-    <tr id="article-row-${a.id}" class="border-b border-gray-100 hover:bg-blue-50/40 transition-colors duration-150">
+    <tr id="article-row-${
+      a.id
+    }" class="border-b border-gray-100 hover:bg-blue-50/40 transition-colors duration-150">
       <td class="py-4 px-5">
         <div class="flex items-center gap-3">
           ${
             a.image_url
-              ? `<img src="${esc(a.image_url)}" alt="${esc(a.nom)}" class="w-10 h-10 rounded-lg object-cover border border-gray-200">`
+              ? `<img src="${esc(a.image_url)}" alt="${esc(
+                  a.nom
+                )}" class="w-10 h-10 rounded-lg object-cover border border-gray-200">`
               : `<div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fas fa-image text-gray-400"></i></div>`
           }
           <span class="font-semibold text-gray-800 text-sm">${esc(a.nom)}</span>
@@ -120,9 +112,6 @@ function buildRow(a) {
     </tr>`;
 }
 
-// ════════════════════════════════════════════════════════════
-//  RECHERCHE
-// ════════════════════════════════════════════════════════════
 function initSearch() {
   const searchInput = document.getElementById("searchInput");
   const tableBody = document.getElementById("articleTableBody");
@@ -138,9 +127,6 @@ function initSearch() {
   });
 }
 
-// ════════════════════════════════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════════════════════════════
 function esc(str) {
   if (str == null) return "";
   return String(str)
