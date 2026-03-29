@@ -1,9 +1,3 @@
-/**
- * articles.js
- * Listing et recherche des articles
- * La suppression est gérée par delete_article.js
- */
-
 const API_BASE = "http://localhost:8082";
 
 (async () => {
@@ -11,9 +5,6 @@ const API_BASE = "http://localhost:8082";
   initSearch();
 })();
 
-// ════════════════════════════════════════════════════════════
-//  CHARGEMENT
-// ════════════════════════════════════════════════════════════
 async function loadArticles() {
   const tableBody = document.getElementById("articleTableBody");
   if (!tableBody) return;
@@ -57,9 +48,6 @@ async function loadArticles() {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  CONSTRUCTION D'UNE LIGNE
-// ════════════════════════════════════════════════════════════
 function buildRow(a) {
   const prix = parseFloat(a.prix || 0).toFixed(2);
   const stock = a.stock ?? 0;
@@ -120,9 +108,6 @@ function buildRow(a) {
     </tr>`;
 }
 
-// ════════════════════════════════════════════════════════════
-//  RECHERCHE
-// ════════════════════════════════════════════════════════════
 function initSearch() {
   const searchInput = document.getElementById("searchInput");
   const tableBody = document.getElementById("articleTableBody");
@@ -138,9 +123,6 @@ function initSearch() {
   });
 }
 
-// ════════════════════════════════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════════════════════════════
 function esc(str) {
   if (str == null) return "";
   return String(str)

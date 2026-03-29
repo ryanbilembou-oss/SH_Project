@@ -7,10 +7,8 @@ if (!userId || role !== "senior") {
   window.location.href = "/users/login.php";
 }
 
-// Affiche le prénom
 document.getElementById("prenomUser").textContent = email.split("@")[0] || "—";
 
-// Tutorial
 if (isFirstLogin) {
   document.getElementById("tutorialOverlay").classList.remove("hidden");
 }

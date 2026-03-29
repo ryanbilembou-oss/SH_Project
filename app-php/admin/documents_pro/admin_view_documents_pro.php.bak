@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    
+    <!-- Modal validation document -->
     <div id="modalValidDoc" class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm hidden items-center justify-center z-50 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
             <div class="text-center">
@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    
+    <!-- Modal refus document -->
     <div id="modalRefusDoc" class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm hidden items-center justify-center z-50 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
             <div class="text-center">
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    
+    <!-- Modal validation dossier complet -->
     <div id="modalValidDossier" class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm hidden items-center justify-center z-50 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div class="text-center">
@@ -80,7 +80,7 @@
             </div>
             <div class="p-6 space-y-6 max-w-4xl mx-auto">
 
-                
+                <!-- Info pro -->
                 <div id="proInfo" class="bg-white rounded-xl shadow border border-gray-200 p-5">
                     <div class="animate-pulse flex gap-3">
                         <div class="w-12 h-12 rounded-full bg-gray-200"></div>
@@ -91,7 +91,7 @@
                     </div>
                 </div>
 
-                
+                <!-- Documents -->
                 <div class="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
                     <div class="bg-gray-50 border-b border-gray-200 p-4">
                         <h5 class="font-bold uppercase text-gray-600 text-sm tracking-wider">
@@ -106,7 +106,7 @@
                     </div>
                 </div>
 
-                
+                <!-- Bouton valider dossier -->
                 <div class="flex justify-between items-center">
                     <span id="progressLabel" class="text-sm text-gray-500"></span>
                     <button id="btnValiderDossier" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-sm transition flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed" disabled>

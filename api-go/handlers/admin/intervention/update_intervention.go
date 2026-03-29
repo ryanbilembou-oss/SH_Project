@@ -44,20 +44,20 @@ func UpdateIntervention(w http.ResponseWriter, r *http.Request) {
     WHERE id=$12
   `
 
-  // Correction des noms de champs pour correspondre à la structure PascalCase
+
   _, err := database.DB.Exec(query,
-    req.Id_pro,          // Correct
-    req.Id_senior,       // Correct
-    req.Id_service,      // Correct
-    req.Bio_intervention, // Correct (si c'est bien Bio_intervention dans le type)
-    req.DateHeureDebut,   // CHANGÉ : était Date_heure_debut
-    req.DateHeureFin,     // CHANGÉ : était Date_heure_fin
-    req.Lieu,             // Correct
-    req.Statut,           // Correct
-    req.CommissionMontant, // CHANGÉ : était Commission_montant
-    req.Prix,             // Correct
-    req.EstMedical,       // CHANGÉ : était Est_medical
-    req.Id,               // Correct
+    req.Id_pro,          
+    req.Id_senior,       
+    req.Id_service,      
+    req.Bio_intervention, 
+    req.DateHeureDebut,  
+    req.DateHeureFin,     
+    req.Lieu,             
+    req.Statut,          
+    req.CommissionMontant, 
+    req.Prix,             
+    req.EstMedical,       
+    req.Id,               
   )
 
   if err != nil {
@@ -67,8 +67,7 @@ func UpdateIntervention(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  // J'ai simplifié en enlevant RowsAffected pour le build, 
-  // mais tu peux le remettre si tu gères bien le résultat.
+
 
   log.Printf("✅ UpdateIntervention - ID %d mis à jour", req.Id)
   w.WriteHeader(http.StatusOK)

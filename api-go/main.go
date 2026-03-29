@@ -79,7 +79,7 @@ func main() {
 	http.HandleFunc("/admin/article/categorie_article/update", categorie_article.UpdateCategorieArticle)
 	http.HandleFunc("/admin/article/categorie_article/delete", categorie_article.DeleteCategorieArticle)
 
-	// partie visuel NON COMMENCER 
+	
 
 	http.HandleFunc("/admin/service/create", service.CreateService)
 	http.HandleFunc("/admin/service/get", service.GetAllServices)

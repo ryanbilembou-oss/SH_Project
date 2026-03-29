@@ -1,7 +1,7 @@
 <?php
 session_start();
 $current_year = date('Y');
-$avatar = 'MF'; 
+$avatar = 'MF'; // Simulation
 ?>
 <!DOCTYPE html>
 <html lang="fr">

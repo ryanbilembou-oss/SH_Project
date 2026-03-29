@@ -1,7 +1,7 @@
 <?php
 session_start();
 $current_year = date('Y');
-$avatar = 'MF'; 
+$avatar = 'MF'; // Simulation
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -81,7 +81,7 @@ $avatar = 'MF';
                 attestations fiscales classés par année.</p>
         </div>
 
-        
+        <!-- Section 2026 -->
         <div class="mb-10 reveal">
             <h2 class="text-lg font-bold text-[#1A2B49] mb-4 border-b border-gray-100 pb-2">Année 2026</h2>
             <div class="space-y-3">
@@ -125,7 +125,7 @@ $avatar = 'MF';
             </div>
         </div>
 
-        
+        <!-- Section 2025 -->
         <div class="mb-10 reveal">
             <h2 class="text-lg font-bold text-[#1A2B49] mb-4 border-b border-gray-100 pb-2">Année 2025</h2>
             <div class="space-y-3">

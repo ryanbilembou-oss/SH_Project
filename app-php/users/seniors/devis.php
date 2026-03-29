@@ -41,18 +41,18 @@
             <h2 class="text-5xl font-black uppercase tracking-tighter text-[#1A2B49]">Devis & <span class="text-[#7CABD3]">Factures</span></h2>
             <p class="text-gray-400 mt-1 text-lg">Suivez vos demandes et vos paiements.</p>
         </div>
-        <!-- Tabs -->
+        
         <div class="flex gap-4 mb-8">
             <button onclick="showTab('devis')" id="tab-devis" class="px-8 py-3 rounded-full font-black uppercase text-sm bg-[#1A2B49] text-white transition-all">Devis</button>
             <button onclick="showTab('factures')" id="tab-factures" class="px-8 py-3 rounded-full font-black uppercase text-sm bg-white border-2 border-[#7CABD3] text-[#7CABD3] hover:bg-[#7CABD3] hover:text-white transition-all">Factures</button>
         </div>
-        <!-- Devis -->
+        
         <div id="section-devis" class="space-y-4">
             <div class="bg-white p-8 rounded-[40px] border-2 border-dashed border-gray-200 text-center">
                 <p class="text-gray-400 italic">Chargement...</p>
             </div>
         </div>
-        <!-- Factures -->
+        
         <div id="section-factures" class="space-y-4 hidden">
             <div class="bg-white p-8 rounded-[40px] border-2 border-dashed border-gray-200 text-center">
                 <p class="text-gray-400 italic">Chargement...</p>

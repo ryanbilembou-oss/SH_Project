@@ -155,11 +155,11 @@ async function executeValidation(idDoc, statut) {
     });
     if (!res.ok) throw new Error();
 
-    // Met à jour le doc localement
+
     const doc = docs.find((d) => d.id_doc === idDoc);
     if (doc) doc.statut = statut;
 
-    // Met à jour le badge
+
     const badge = document.querySelector(`.badge-statut-${idDoc}`);
     if (badge) {
       badge.className = `badge-statut-${idDoc} text-xs font-bold px-2 py-1 rounded border ${
@@ -170,7 +170,7 @@ async function executeValidation(idDoc, statut) {
       badge.textContent = statut === "valide" ? "Validé" : "Refusé";
     }
 
-    // Met à jour les boutons de cette ligne
+
     const row = document.getElementById(`doc-row-${idDoc}`);
     if (row) {
       row.querySelectorAll(".btn-action").forEach((btn) => {
@@ -214,7 +214,7 @@ async function executeValidation(idDoc, statut) {
       });
     }
 
-    // Met à jour le compteur
+-
     const valides = docs.filter((d) => d.statut === "valide").length;
     const total = docs.length;
     document.getElementById("progressLabel").textContent =

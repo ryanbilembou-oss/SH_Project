@@ -38,7 +38,7 @@ func CreateInscription(w http.ResponseWriter, r *http.Request) {
 
 	if req.Statut == "" { req.Statut = "inscrit" }
 
-	// Vérifie les places disponibles
+
 	var nbPlacesMax, nbInscrits int
 	err := database.DB.QueryRow(
 		`SELECT nb_places_max, nb_inscrits FROM evenements WHERE id_evenement = $1`,
@@ -55,7 +55,7 @@ func CreateInscription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Transaction
+
 	tx, err := database.DB.Begin()
 	if err != nil {
 		http.Error(w, `{"erreur": "Erreur serveur"}`, http.StatusInternalServerError)
@@ -73,7 +73,6 @@ _, err = tx.Exec(
 		return
 	}
 
-	// Incrémente nb_inscrits
 	_, err = tx.Exec(
 		`UPDATE evenements SET nb_inscrits = nb_inscrits + 1 WHERE id_evenement = $1`,
 		req.Id_evenement,

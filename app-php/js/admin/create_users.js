@@ -116,7 +116,7 @@ function initForm() {
 
       if (res.ok) {
         showToast("Utilisateur créé !", "success");
-        // Si c'est un pro avec profil → rediriger vers upload documents
+
         if (role === "pro" && isComplete && data.id_user) {
           setTimeout(() => {
             window.location.href = `../profile/admin_upload_documents_pro.php?id=${data.id_user}`;

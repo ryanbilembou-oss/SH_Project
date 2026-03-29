@@ -7,7 +7,7 @@
 
         <ul class="list-reset flex flex-row md:flex-col py-0 md:py-3 px-1 md:px-2 text-center md:text-left mb-10">
 
-            
+            <!-- UTILISATEURS -->
             <li class="mr-3 flex-1 md:w-full">
                 <button onclick="toggleSubMenu('users-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-blue-500 border-b-2 border-gray-800 hover:border-blue-500 flex justify-between items-center transition-all">
                     <div>
@@ -56,7 +56,7 @@
             </li>
 
 
-            
+            <!-- SERVICES / PRESTATIONS -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('services-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-pink-500 border-b-2 border-gray-800 hover:border-pink-500 flex justify-between items-center transition-all">
                     <div>
@@ -89,7 +89,7 @@
                 </ul>
             </li>
 
-            
+            <!-- ÉVÉNEMENTS -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('events-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-orange-500 border-b-2 border-gray-800 hover:border-orange-500 flex justify-between items-center transition-all">
                     <div>
@@ -122,7 +122,7 @@
                 </ul>
             </li>
 
-            
+            <!-- ARTICLES -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('articles-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-emerald-500 border-b-2 border-gray-800 hover:border-emerald-500 flex justify-between items-center transition-all">
                     <div>
@@ -155,7 +155,7 @@
                 </ul>
             </li>
 
-            
+            <!-- INTERVENTIONS -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('interventions-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-cyan-500 border-b-2 border-gray-800 hover:border-cyan-500 flex justify-between items-center transition-all">
                     <div>
@@ -188,7 +188,7 @@
                 </ul>
             </li>
 
-            
+            <!-- PRESTATAIRES -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('prestataires-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-violet-500 border-b-2 border-gray-800 hover:border-violet-500 flex justify-between items-center transition-all">
                     <div>
@@ -226,7 +226,7 @@
                 </ul>
             </li>
 
-            
+            <!-- PLANNING -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('planning-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-lime-500 border-b-2 border-gray-800 hover:border-lime-500 flex justify-between items-center transition-all">
                     <div>
@@ -249,7 +249,7 @@
                 </ul>
             </li>
 
-            
+            <!-- FINANCIER -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('finance-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-yellow-500 border-b-2 border-gray-800 hover:border-yellow-500 flex justify-between items-center transition-all">
                     <div>
@@ -272,7 +272,7 @@
                 </ul>
             </li>
 
-            
+            <!-- COMMUNICATION -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('communication-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-indigo-500 border-b-2 border-gray-800 hover:border-indigo-500 flex justify-between items-center transition-all">
                     <div>
@@ -295,7 +295,7 @@
                 </ul>
             </li>
 
-            
+            <!-- CONTENU -->
             <li class="mr-3 flex-1 md:w-full mt-2">
                 <button onclick="toggleSubMenu('contenu-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-teal-500 border-b-2 border-gray-800 hover:border-teal-500 flex justify-between items-center transition-all">
                     <div>

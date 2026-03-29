@@ -23,12 +23,11 @@ func DeleteCategorieService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// --- 1. Récupérer ou Créer la catégorie "Autre" ---
 	var idAutre int
 	err = database.DB.QueryRow("SELECT id_categorie FROM categorie_services WHERE nom_categorie = 'Autre'").Scan(&idAutre)
 	
 	if err != nil {
-		// Si elle n'existe pas, on la crée
+
 		err = database.DB.QueryRow("INSERT INTO categorie_services (nom_categorie) VALUES ('Autre') RETURNING id_categorie").Scan(&idAutre)
 		if err != nil {
 			sendError(w, "global", "Erreur lors de la préparation de la catégorie 'Autre'.", http.StatusInternalServerError)
@@ -36,28 +35,28 @@ func DeleteCategorieService(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Sécurité : Ne pas supprimer la catégorie "Autre" elle-même
+
 	if idToDelete == idAutre {
 		sendError(w, "id", "Impossible de supprimer la catégorie de secours 'Autre'.", http.StatusForbidden)
 		return
 	}
 
-	// --- 2. Début de la Transaction ---
+
 	tx, err := database.DB.Begin()
 	if err != nil {
 		sendError(w, "global", "Erreur de base de données.", http.StatusInternalServerError)
 		return
 	}
 
-	// --- 3. Déplacer les services liés ---
+	
 	_, err = tx.Exec("UPDATE service SET id_categorie = $1 WHERE id_categorie = $2", idAutre, idToDelete)
 	if err != nil {
-		tx.Rollback() // Annule tout en cas d'erreur
+		tx.Rollback() 
 		sendError(w, "global", "Erreur lors du transfert des services.", http.StatusInternalServerError)
 		return
 	}
 
-	// --- 4. Supprimer la catégorie d'origine ---
+
 	res, err := tx.Exec("DELETE FROM categorie_services WHERE id_categorie = $1", idToDelete)
 	if err != nil {
 		tx.Rollback()
@@ -65,7 +64,7 @@ func DeleteCategorieService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// --- 5. Finalisation ---
+
 	rows, _ := res.RowsAffected()
 	if rows == 0 {
 		tx.Rollback()
@@ -73,7 +72,7 @@ func DeleteCategorieService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tx.Commit() // Tout est OK, on valide en DB
+	tx.Commit()
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{

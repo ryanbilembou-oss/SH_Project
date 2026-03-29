@@ -41,7 +41,7 @@
             <p class="text-gray-400 mt-1 text-lg">Gérez vos informations personnelles.</p>
         </div>
         <div class="bg-white rounded-[40px] shadow-lg border-2 border-gray-100 p-10 space-y-6">
-            
+            <!-- Avatar -->
             <div class="flex items-center gap-6 mb-8">
                 <div class="w-20 h-20 rounded-full bg-[#7CABD3]/20 flex items-center justify-center text-[#7CABD3] font-black text-3xl" id="avatarInitials">—</div>
                 <div>

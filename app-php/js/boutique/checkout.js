@@ -1,7 +1,3 @@
-/**
- * param {Event} event
- * param {number} articleId
- */
 async function acheterArticle(event, articleId) {
   const btn = event.currentTarget;
   const iconNormal = btn.innerHTML;

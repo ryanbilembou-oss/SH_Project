@@ -1,8 +1,3 @@
-/**
- * edit_article.js
- * Charge l'article via GET one, pré-remplit le formulaire, envoie le PUT
- */
-
 const API_BASE = "http://localhost:8082";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -17,14 +12,10 @@ const submitBtn = document.getElementById("submitBtn");
     showError("Aucun ID d'article fourni dans l'URL.");
     return;
   }
-  //await loadCategories();
   await loadArticle(articleId);
   submitBtn.addEventListener("click", handleSubmit);
 })();
 
-// ════════════════════════════════════════════════════════════
-//  CHARGEMENT DE L'ARTICLE
-// ════════════════════════════════════════════════════════════
 async function loadArticle(id) {
   try {
     const res = await fetch(`${API_BASE}/admin/article/getone?id=${id}`);
@@ -50,31 +41,6 @@ async function loadArticle(id) {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  CATÉGORIES
-/* ════════════════════════════════════════════════════════════
-async function loadCategories() {
-  try {
-    const res = await fetch(`${API_BASE}/admin/article/categorie/get`);
-    if (!res.ok) throw new Error("Impossible de charger les catégories.");
-
-    const categories = await res.json();
-    const select = document.getElementById("id_categorie");
-
-    select.innerHTML = categories
-      .map(
-        (c) =>
-          `<option value="${c.id_categorie}">${esc(c.nom_categorie)}</option>`,
-      )
-      .join("");
-  } catch (err) {
-    console.warn("[loadCategories]", err);
-  }
-}
-*/
-// ════════════════════════════════════════════════════════════
-//  SOUMISSION — PUT
-// ════════════════════════════════════════════════════════════
 async function handleSubmit() {
   const id = parseInt(document.getElementById("article_id").value);
   const nom = document.getElementById("nom").value.trim();
@@ -84,15 +50,11 @@ async function handleSubmit() {
   const image_url = document.getElementById("image_url").value.trim() || null;
   const bio = document.getElementById("bio").value.trim() || null;
 
-  // Validation
   if (!nom) {
     showToast("Le nom est obligatoire.", "error");
     return;
   }
-  //if (!id_categorie) {
-  // showToast("Veuillez choisir une catégorie.", "error");
-  // return;
-  //}
+
   if (isNaN(prix) || prix < 0) {
     showToast("Le prix ne peut pas être négatif.", "error");
     return;
@@ -136,9 +98,6 @@ async function handleSubmit() {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  TOAST + HELPERS
-// ════════════════════════════════════════════════════════════
 function showError(message) {
   formLoader.innerHTML = `
     <div class="p-20 text-center">

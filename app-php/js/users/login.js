@@ -73,14 +73,12 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       return;
     }
 
-    // Stocke en localStorage
     localStorage.setItem("id_user", data.id_user);
     localStorage.setItem("email", data.email);
     localStorage.setItem("role", data.role);
     localStorage.setItem("is_first_login", data.is_first_login);
     localStorage.setItem("statut_validation", data.statut_validation || "");
 
-    // Crée la session PHP
     try {
       await fetch("/users/session.php", {
         method: "POST",

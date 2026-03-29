@@ -14,7 +14,7 @@
 </head>
 <body class="bg-[#FFFFF6] min-h-screen">
 
-    <!-- Toast -->
+    
     <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 z-50 transition-all duration-500 pointer-events-none">
         <div class="bg-[#1A2B49] text-white px-8 py-4 rounded-full shadow-2xl flex items-center gap-3">
             <span id="toastIcon" class="text-lg">✅</span>
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <!-- Nav -->
+    
     <nav class="bg-white px-6 pt-4 shadow-sm border-b-2 border-[#FCE297] sticky top-0 z-50">
         <div class="container mx-auto flex flex-col gap-4">
             <div class="flex justify-between items-center w-full">
@@ -60,7 +60,7 @@
 
     <main class="container mx-auto max-w-6xl px-4 py-10">
 
-        <!-- Header -->
+        
         <div class="mb-10">
             <h2 class="text-5xl font-black uppercase tracking-tighter text-[#1A2B49]">
                 Nos <span class="text-[#7CABD3]">événements</span>
@@ -68,14 +68,14 @@
             <p class="text-gray-400 mt-1 text-lg">Découvrez et réservez vos activités.</p>
         </div>
 
-        <!-- Filtres par catégorie -->
+        
         <div class="flex flex-wrap gap-3 mb-10" id="filtresCat">
             <button onclick="filtrerCategorie(null)" id="btn-cat-all" class="px-5 py-2 rounded-full font-bold text-sm bg-[#1A2B49] text-white transition-all">
                 Tous
             </button>
         </div>
 
-        <!-- Liste événements -->
+        
         <div id="evenementsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="bg-white p-8 rounded-[40px] border-2 border-dashed border-gray-200 text-center col-span-3">
                 <iconify-icon icon="mdi:calendar" class="text-5xl text-gray-300 mb-3 block"></iconify-icon>
@@ -85,7 +85,7 @@
 
     </main>
 
-  <!-- Modal inscription -->
+  
   <div id="modalInscription" class="fixed inset-0 bg-[#1A2B49]/70 backdrop-blur-sm hidden items-center justify-center z-50 opacity-0 transition-opacity duration-300">
       <div class="bg-white rounded-[40px] p-10 max-w-md w-full shadow-2xl mx-4">
           <div class="text-center mb-6">
@@ -104,7 +104,7 @@
           </div>
       </div>
   </div>
-  <!-- Modal annulation -->
+  
     <div id="modalAnnulation" class="fixed inset-0 bg-[#1A2B49]/70 backdrop-blur-sm hidden items-center justify-center z-50 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-[40px] p-10 max-w-md w-full shadow-2xl mx-4">
             <div class="text-center mb-6">
@@ -124,7 +124,7 @@
     </div>
   
 
-    <!-- Footer -->
+    
     <footer class="bg-[#7CABD3] pt-16 pb-8 mt-16">
         <div class="max-w-7xl mx-auto px-4">
             <div class="pt-8 border-t border-white/30 flex flex-col md:flex-row justify-between items-center gap-4">

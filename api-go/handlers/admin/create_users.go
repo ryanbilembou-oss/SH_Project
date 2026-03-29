@@ -103,6 +103,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	tx.Commit()
 	w.WriteHeader(http.StatusCreated)
-	// Retourne l'id du user créé pour rediriger vers l'upload de documents
+
 	json.NewEncoder(w).Encode(map[string]interface{}{"status": "success", "id_user": lastID, "role": req.Role})
 }

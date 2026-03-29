@@ -39,7 +39,7 @@
             <section class="p-6">
                 <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
 
-                    
+                    <!-- Navigation semaine -->
                     <div class="flex items-center justify-between p-4 border-b border-gray-200">
                         <button id="prevWeek" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-100 transition">
                             <i class="fas fa-chevron-left text-gray-500 text-xs"></i>
@@ -52,7 +52,7 @@
                         </button>
                     </div>
 
-                    
+                    <!-- Grille calendrier -->
                     <div class="overflow-x-auto">
                         <div id="calendarGrid"></div>
                     </div>

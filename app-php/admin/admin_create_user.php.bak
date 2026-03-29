@@ -33,7 +33,7 @@
                     <div class="bg-white rounded-xl shadow-2xl border border-gray-200 p-8">
                         <form id="createFullUserForm" class="space-y-8">
 
-                            
+                            <!-- Identifiants -->
                             <div>
                                 <h4 class="text-lg font-bold text-gray-700 border-b pb-2 mb-4">
                                     <i class="fas fa-lock text-blue-500 mr-2"></i> 1. Identifiants de connexion
@@ -62,7 +62,7 @@
                                 </div>
                             </div>
 
-                            
+                            <!-- Toggle profil -->
                             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 flex items-center justify-between">
                                 <div>
                                     <h4 class="font-bold text-gray-700">Générer le profil métier ?</h4>
@@ -74,7 +74,7 @@
                                 </label>
                             </div>
 
-                            
+                            <!-- Section profil -->
                             <div id="profileSection" class="hidden space-y-6">
                                 <h4 class="text-lg font-bold text-gray-700 border-b pb-2">
                                     <i class="fas fa-id-card text-blue-500 mr-2"></i> 2. Informations du Profil
@@ -108,7 +108,7 @@
                                     </div>
                                 </div>
 
-                                
+                                <!-- Champs senior -->
                                 <div id="fieldsSenior" class="hidden">
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div>
@@ -118,9 +118,9 @@
                                     </div>
                                 </div>
 
-                                
+                                <!-- Champs pro -->
                                 <div id="fieldsPro" class="hidden space-y-6">
-                                    
+                                    <!-- Type de prestataire -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">
                                             <i class="fas fa-tag mr-1 text-blue-400"></i> Type de prestataire *

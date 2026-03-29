@@ -123,7 +123,6 @@ function renderCalendar() {
     });
   });
 
-  // 🔵 Créneaux dispo
   plannings.forEach((p) => {
     if (!p.est_actif) return;
     const jourIndex = p.jour_semaine - 1;
@@ -157,7 +156,6 @@ function renderCalendar() {
     </div>`;
   });
 
-  // 🟢 Interventions
   interventions.forEach((i) => {
     const debut = new Date(i.date_heure_debut);
     const fin = new Date(i.date_heure_fin);
@@ -182,7 +180,6 @@ function renderCalendar() {
     </div>`;
   });
 
-  // 🟣 Événements
   evenements.forEach((e) => {
     if (!e.date_heure) return;
     const debut = new Date(e.date_heure);
@@ -207,7 +204,6 @@ function renderCalendar() {
 
   html += `</div>`;
 
-  // Légende
   html += `<div style="display: flex; gap: 16px; padding: 12px 16px; border-top: 1px solid #e5e7eb; font-size: 11px;">
     <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #DBEAFE; border: 1px solid #93C5FD; border-radius: 3px; display: inline-block;"></span> Disponibilité</span>
     <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; background: #D1FAE5; border: 1px solid #6EE7B7; border-radius: 3px; display: inline-block;"></span> Intervention</span>

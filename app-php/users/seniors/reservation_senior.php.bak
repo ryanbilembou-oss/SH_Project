@@ -167,7 +167,7 @@ $current_year = date('Y');
         </div>
     </nav>
 
-    
+    <!-- Page Content -->
     <main class="flex-1 w-full max-w-6xl mx-auto px-6 py-12">
         <a href="profil_senior.php"
             class="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#7CABD3] transition-colors mb-6">
@@ -181,7 +181,7 @@ $current_year = date('Y');
         </div>
 
         <div class="grid lg:grid-cols-3 gap-10 reveal">
-            
+            <!-- Colonne 1 : Choix du service -->
             <div class="lg:col-span-1 space-y-6">
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6">
                     <div class="flex items-center gap-3 mb-6">
@@ -221,7 +221,7 @@ $current_year = date('Y');
                 </div>
             </div>
 
-            
+            <!-- Colonne 2 : Calendrier (étape 2) -->
             <div class="lg:col-span-1 space-y-6">
                 <div id="step-2-container"
                     class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 step-inactive transition-all duration-300">
@@ -251,7 +251,7 @@ $current_year = date('Y');
                             <span class="text-xs text-center text-gray-400 font-black uppercase">D</span>
                         </div>
 
-                        
+                        <!-- Grille statique du frontend -->
                         <div class="calendar-grid">
                             <div class="cal-day disabled">23</div>
                             <div class="cal-day disabled">24</div>
@@ -281,7 +281,7 @@ $current_year = date('Y');
                 </div>
             </div>
 
-            
+            <!-- Colonne 3 : Heure et Confirmation (étape 3) -->
             <div class="lg:col-span-1 space-y-6">
                 <div id="step-3-container"
                     class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-6 step-inactive transition-all duration-300">
@@ -324,7 +324,7 @@ $current_year = date('Y');
         </div>
     </main>
 
-    
+    <!-- Script simple de flow UI -->
     <script>
         function enableStep2() {
             document.getElementById('wrapper-prestation').classList.remove('opacity-30', 'pointer-events-none');

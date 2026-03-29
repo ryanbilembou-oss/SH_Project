@@ -27,7 +27,6 @@ function renderTable(docs) {
     return;
   }
 
-  // Grouper par pro
   const grouped = {};
   docs.forEach((d) => {
     if (!grouped[d.id_user]) {

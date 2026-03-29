@@ -33,7 +33,7 @@ func DeleteInscription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Change statut en annule
+
 	_, err = tx.Exec(
 		`UPDATE inscription_evenement SET statut = 'annule' WHERE id_user = $1 AND id_evenement = $2`,
 		idUser, idEvenement,
@@ -45,7 +45,7 @@ func DeleteInscription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Décrémente nb_inscrits
+
 	_, err = tx.Exec(
 		`UPDATE evenements SET nb_inscrits = GREATEST(nb_inscrits - 1, 0) WHERE id_evenement = $1`,
 		idEvenement,

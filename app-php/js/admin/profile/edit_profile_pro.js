@@ -37,7 +37,6 @@ async function loadProfile() {
         p.date_naissance.split("T")[0];
     }
 
-    // Affichage statut en lecture seule
     const badge = document.getElementById("statut_validation_badge");
     if (badge) {
       const statutClass =

@@ -28,7 +28,7 @@
             <div class="flex flex-wrap p-6">
                 <div class="w-full max-w-3xl mx-auto space-y-6">
 
-                    
+                    <!-- Info pro -->
                     <div class="bg-white rounded-xl shadow border border-gray-200 p-5" id="proInfo">
                         <div class="animate-pulse flex gap-3">
                             <div class="w-10 h-10 rounded-full bg-gray-200"></div>
@@ -39,7 +39,7 @@
                         </div>
                     </div>
 
-                    
+                    <!-- Documents obligatoires -->
                     <div class="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
                         <div class="bg-gray-50 border-b border-gray-200 p-4">
                             <h5 class="font-bold uppercase text-gray-600 text-sm tracking-wider">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
 
-                    
+                    <!-- Bouton valider dossier -->
                     <div class="flex justify-between items-center">
                         <span id="progressLabel" class="text-sm text-gray-500 italic"></span>
                         <button id="btnValiderDossier" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-sm transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>

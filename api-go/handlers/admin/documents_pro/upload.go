@@ -29,7 +29,7 @@ func UploadDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse multipart form — max 10MB
+
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		http.Error(w, `{"erreur": "Fichier trop volumineux (max 10MB)"}`, http.StatusBadRequest)
 		return
@@ -54,7 +54,6 @@ func UploadDocument(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	// Crée le dossier uploads si inexistant
 	uploadDir := fmt.Sprintf("uploads/documents_pro/%d", idUser)
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {
 		log.Printf("❌ UploadDocument - Erreur création dossier: %v", err)
@@ -62,12 +61,11 @@ func UploadDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Nom de fichier unique
 	ext := filepath.Ext(handler.Filename)
 	filename := fmt.Sprintf("%d_%s%s", time.Now().UnixNano(), strings.ReplaceAll(typeDoc, " ", "_"), ext)
 	filePath := filepath.Join(uploadDir, filename)
 
-	// Sauvegarde le fichier
+
 	dst, err := os.Create(filePath)
 	if err != nil {
 		log.Printf("❌ UploadDocument - Erreur création fichier: %v", err)
@@ -77,10 +75,10 @@ func UploadDocument(w http.ResponseWriter, r *http.Request) {
 	defer dst.Close()
 	io.Copy(dst, file)
 
-	// URL publique
+
 	urlDocument := fmt.Sprintf("/uploads/documents_pro/%d/%s", idUser, filename)
 
-	// Insère en BDD
+
 	var idDoc int
 	var query string
 	var execErr error
