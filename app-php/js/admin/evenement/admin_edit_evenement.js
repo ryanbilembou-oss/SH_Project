@@ -21,7 +21,9 @@ const submitBtn = document.getElementById("submitBtn");
 
 async function loadEvent(id) {
   try {
-    const res = await fetch(`${API_BASE}/admin/evenement/getone?id=${id}`);
+    const res = await fetch(
+      `http://localhost:8082/admin/evenement/getone?id=${id}`,
+    );
     if (!res.ok) throw new Error(`Événement introuvable (${res.status})`);
 
     const e = await res.json();
@@ -48,7 +50,9 @@ async function loadEvent(id) {
 
 async function loadCategories() {
   try {
-    const res = await fetch(`${API_BASE}/admin/categorie/get`);
+    const res = await fetch(
+      `http://localhost:8082/admin/evenement/categorie_evenement/get`,
+    );
     if (!res.ok) throw new Error("Impossible de charger les catégories.");
 
     const categories = await res.json();
@@ -103,7 +107,7 @@ async function handleSubmit() {
   submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Enregistrement...`;
 
   try {
-    const res = await fetch(`${API_BASE}/admin/evenement/update`, {
+    const res = await fetch(`http://localhost:8082/admin/evenement/update`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -1,0 +1,1 @@
+ALTER TABLE note_avis DROP CONSTRAINT IF EXISTS note_avis_id_intervention_key;

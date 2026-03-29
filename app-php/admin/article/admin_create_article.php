@@ -13,7 +13,6 @@
 </head>
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
 
-    <!-- Toast -->
     <div id="toastContainer" class="fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 z-[100] transition-all duration-300 pointer-events-none">
         <div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center space-x-3 border border-gray-700">
             <i id="toastIcon" class="fas fa-check-circle text-emerald-400 text-xl"></i>
@@ -26,12 +25,12 @@
 
         <div class="main-content flex-1 bg-gray-100 mt-12 md:mt-0 pb-24 md:pb-5">
 
-            <!-- Header -->
+
             <div class="bg-gray-800 pt-3">
                 <div class="rounded-tl-3xl bg-gradient-to-r from-blue-900 to-gray-800 p-6 shadow text-2xl text-white flex justify-between items-center">
                     <h3 class="font-bold pl-2 uppercase tracking-wide">Créer un Article</h3>
-                    <a href="admin_articles.php" class="text-sm font-normal italic text-gray-300 hover:text-white transition flex items-center gap-2">
-                        <i class="fas fa-arrow-left"></i> Retour au catalogue
+                    <a href="admin_article.php" class="text-sm font-normal italic text-gray-300 hover:text-white transition flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Retour à la liste des articles
                     </a>
                 </div>
             </div>
@@ -49,7 +48,8 @@
                         <div class="p-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                <!-- Nom -->
+          
+                
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-bold text-gray-700 mb-1">
                                         <i class="fas fa-tag mr-1 text-blue-400"></i> Nom de l'article
@@ -58,7 +58,7 @@
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition">
                                 </div>
 
-                                <!-- Catégorie 
+                                
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-1">
                                         <i class="fas fa-folder mr-1 text-purple-400"></i> Catégorie
@@ -67,9 +67,9 @@
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition bg-white">
                                         <option value="">Chargement...</option>
                                     </select>
-                                </div>-->
+                                </div>
 
-                                <!-- Prix -->
+                                
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-1">
                                         <i class="fas fa-euro-sign mr-1 text-emerald-500"></i> Prix (€)
@@ -87,7 +87,7 @@
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition">
                                 </div>
 
-                                <!-- Image URL -->
+        
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-1">
                                         <i class="fas fa-image mr-1 text-pink-400"></i> URL de l'image (optionnel)
@@ -96,7 +96,7 @@
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition">
                                 </div>
 
-                                <!-- Bio / Description -->
+                  
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-bold text-gray-700 mb-1">
                                         <i class="fas fa-align-left mr-1 text-gray-400"></i> Description (optionnel)
@@ -107,7 +107,8 @@
 
                             </div>
 
-                            <!-- Boutons -->
+
+                            
                             <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
                                 <a href="admin_articles.php" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-semibold text-sm">
                                     Annuler
@@ -126,5 +127,7 @@
     </div>
 
     <script src="../../js/admin/article/create_article.js"></script>
+
+
 </body>
 </html>

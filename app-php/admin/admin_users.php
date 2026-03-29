@@ -29,7 +29,9 @@
             <div class="bg-gray-800 pt-3">
                 <div class="rounded-tl-3xl bg-gradient-to-r from-blue-900 to-gray-800 p-6 shadow text-2xl text-white flex justify-between items-center">
                     <h3 class="font-bold pl-2 uppercase tracking-wide">Gestion des Utilisateurs</h3>
-                    <div class="text-sm font-normal italic">Session Admin : Connecté</div>
+                    <a href="admin_create_user.php" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors shadow-lg flex items-center gap-2">
+                        <i class="fas fa-plus"></i> <span>Nouvel Utilisateur</span>
+                    </a>
                 </div>
             </div>
 

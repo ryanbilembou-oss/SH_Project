@@ -1,14 +1,10 @@
+const API_BASE = "http://localhost:8082";
+
 const roleSelect = document.getElementById("role");
 const seniorFields = document.getElementById("seniorFields");
-const proTextFields = document.getElementById("proTextFields");
-const etape1 = document.getElementById("etape1");
-const etape2 = document.getElementById("etape2");
-const btnSuivant = document.getElementById("btnSuivant");
-const btnSubmitSenior = document.getElementById("btnSubmitSenior");
+const proFields = document.getElementById("proFields");
 const passwordInput = document.getElementById("password");
 const dateInput = document.getElementById("date_naissance");
-const ageError = document.getElementById("ageError");
-const registerForm = document.getElementById("registerForm");
 
 const today = new Date();
 const eighteenYearsAgo = new Date(
@@ -18,107 +14,184 @@ const eighteenYearsAgo = new Date(
 );
 dateInput.max = eighteenYearsAgo.toISOString().split("T")[0];
 
-function globalValidation() {
-  const mdp = passwordInput.value;
-  const isLongEnough = mdp.length >= 8;
-  const hasNumber = /\d/.test(mdp);
-  const hasSpecial = /[!@#$%^&*(),.?":{}|<> ]/.test(mdp);
-  const mdpValid = isLongEnough && hasNumber && hasSpecial;
-
-  let isMajeur = false;
-  if (dateInput.value) {
-    isMajeur = new Date(dateInput.value) <= eighteenYearsAgo;
+async function loadTypes() {
+  try {
+    const res = await fetch(`${API_BASE}/admin/type_prestataire/get`);
+    const types = await res.json();
+    document.getElementById("id_type").innerHTML =
+      `<option value="">-- Choisir votre type --</option>` +
+      types
+        .map((t) => `<option value="${t.id_type}">${t.nom_type}</option>`)
+        .join("");
+  } catch {
+    document.getElementById("id_type").innerHTML =
+      `<option value="">Erreur chargement</option>`;
   }
-
-  if (dateInput.value && !isMajeur) ageError.classList.remove("hidden");
-  else ageError.classList.add("hidden");
-
-  updateCriteria(
-    document.getElementById("crit-length"),
-    isLongEnough,
-    "8 caractères",
-  );
-  updateCriteria(
-    document.getElementById("crit-number"),
-    hasNumber,
-    "Un chiffre",
-  );
-  updateCriteria(
-    document.getElementById("crit-special"),
-    hasSpecial,
-    "Un caractère spécial",
-  );
-
-  const canProceed = mdpValid && isMajeur;
-  [btnSuivant, btnSubmitSenior].forEach((btn) => {
-    btn.disabled = !canProceed;
-    btn.classList.toggle("opacity-50", !canProceed);
-    btn.classList.toggle("cursor-not-allowed", !canProceed);
-  });
 }
-
-function updateCriteria(el, valid, text) {
-  el.innerHTML = (valid ? "[OK] " : "[X] ") + text;
-  el.className = `text-[9px] font-bold uppercase tracking-widest italic ${valid ? "critere-valid" : "critere-invalid"}`;
-}
-
-passwordInput.addEventListener("input", globalValidation);
-dateInput.addEventListener("change", globalValidation);
+loadTypes();
 
 roleSelect.addEventListener("change", () => {
   const isPro = roleSelect.value === "pro";
   seniorFields.classList.toggle("hidden", isPro);
-  proTextFields.classList.toggle("hidden", !isPro);
-  btnSubmitSenior.classList.toggle("hidden", isPro);
-  btnSuivant.classList.toggle("hidden", !isPro);
-  etape2.classList.add("hidden");
-  etape1.classList.remove("hidden");
+  proFields.classList.toggle("hidden", !isPro);
 });
 
-btnSuivant.addEventListener("click", () => {
-  etape1.classList.add("hidden");
-  etape2.classList.remove("hidden");
-});
-document.getElementById("btnPrecedent").addEventListener("click", () => {
-  etape2.classList.add("hidden");
-  etape1.classList.remove("hidden");
+document.getElementById("togglePassword").addEventListener("click", () => {
+  const input = document.getElementById("password");
+  input.type = input.type === "password" ? "text" : "password";
 });
 
-registerForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const formData = new FormData();
-  formData.append("role", roleSelect.value);
-  formData.append("email", document.getElementById("email").value);
-  formData.append("password", passwordInput.value);
-  formData.append("nom", document.getElementById("nom").value);
-  formData.append("prenom", document.getElementById("prenom").value);
-  formData.append("genre", document.getElementById("genre").value);
-  formData.append("telephone", document.getElementById("telephone").value);
-  formData.append("date_naissance", dateInput.value);
+passwordInput.addEventListener("input", validatePassword);
+dateInput.addEventListener("change", validateAge);
 
-  if (roleSelect.value === "pro") {
-    formData.append("siret", document.getElementById("siret").value);
-    formData.append("bio", document.getElementById("bio").value);
-    const rib = document.getElementById("document_rib").files[0];
-    const idCard = document.getElementById("piece_identite").files[0];
-    if (rib) formData.append("document_rib", rib);
-    if (idCard) formData.append("piece_identite", idCard);
-  } else {
-    formData.append("adresse", document.getElementById("adresse").value);
-  }
+function validatePassword() {
+  const mdp = passwordInput.value;
+  const isLongEnough = mdp.length >= 8;
+  const hasNumber = /\d/.test(mdp);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(mdp);
+  updateCritere("crit-length", isLongEnough, "8 caractères");
+  updateCritere("crit-number", hasNumber, "Un chiffre");
+  updateCritere("crit-special", hasSpecial, "Un caractère spécial");
+  return isLongEnough && hasNumber && hasSpecial;
+}
 
-  try {
-    const response = await fetch("http://localhost:8082/admin/register", {
-      method: "POST",
-      body: formData,
-    });
-    if (response.ok) {
-      alert("Succès : Bienvenue !");
-      window.location.href = "login.php";
-    } else {
-      alert("Erreur lors de l'inscription.");
+function validateAge() {
+  if (!dateInput.value) return false;
+  const isMajeur = new Date(dateInput.value) <= eighteenYearsAgo;
+  document.getElementById("ageError").classList.toggle("hidden", isMajeur);
+  return isMajeur;
+}
+
+function updateCritere(id, valid, text) {
+  const el = document.getElementById(id);
+  el.innerHTML = (valid ? "✅ " : "❌ ") + text;
+  el.className = `text-[9px] font-bold uppercase tracking-widest italic ${valid ? "critere-valid" : "critere-invalid"}`;
+}
+
+document
+  .getElementById("registerForm")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    document.getElementById("error-email").classList.add("hidden");
+    document.getElementById("error-captcha").classList.add("hidden");
+
+    if (!validatePassword()) {
+      showToast("Mot de passe invalide.", "error");
+      return;
     }
-  } catch (err) {
-    alert("Serveur injoignable.");
-  }
-});
+    if (!validateAge()) {
+      showToast("Vous devez être majeur.", "error");
+      return;
+    }
+
+    const captchaResponse = grecaptcha.getResponse();
+    if (!captchaResponse) {
+      document.getElementById("error-captcha").classList.remove("hidden");
+      return;
+    }
+
+    const captchaRes = await fetch("../../users/verify_captcha.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ captcha: captchaResponse }),
+    });
+    const captchaData = await captchaRes.json();
+    if (!captchaData.success) {
+      document.getElementById("error-captcha").textContent =
+        "Captcha invalide.";
+      document.getElementById("error-captcha").classList.remove("hidden");
+      grecaptcha.reset();
+      return;
+    }
+
+    const role = roleSelect.value;
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Inscription...";
+
+    const payload = {
+      email: document.getElementById("email").value.trim(),
+      password: document.getElementById("password").value,
+      role: role,
+      nom: document.getElementById("nom").value.trim(),
+      prenom: document.getElementById("prenom").value.trim(),
+      genre: document.getElementById("genre").value,
+      telephone: document.getElementById("telephone").value.trim(),
+      date_naissance: dateInput.value,
+    };
+
+    if (role === "senior") {
+      payload.adresse = document.getElementById("adresse").value.trim();
+    } else if (role === "pro") {
+      payload.id_type = Number(document.getElementById("id_type").value);
+      payload.nom_entreprise = document
+        .getElementById("nom_entreprise")
+        .value.trim();
+      payload.siret = document.getElementById("siret").value.trim();
+      payload.telephone_pro = document
+        .getElementById("telephone_pro")
+        .value.trim();
+      payload.adresse_pro = document.getElementById("adresse_pro").value.trim();
+      payload.statut_juridique =
+        document.getElementById("statut_juridique").value;
+      payload.bio = document.getElementById("bio").value.trim();
+
+      if (!payload.id_type) {
+        showToast("Veuillez choisir votre type de prestataire.", "error");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "S'inscrire";
+        return;
+      }
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.error && data.error.includes("email")) {
+          const el = document.getElementById("error-email");
+          el.textContent = data.error;
+          el.classList.remove("hidden");
+        } else {
+          showToast(data.error || "Erreur inscription.", "error");
+        }
+        grecaptcha.reset();
+        return;
+      }
+
+      showToast(
+        "Compte créé ! Connectez-vous pour compléter votre dossier.",
+        "success",
+      );
+      setTimeout(() => {
+        window.location.href = "login.php";
+      }, 2000);
+    } catch {
+      showToast("Serveur injoignable.", "error");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "S'inscrire";
+    }
+  });
+
+function showToast(message, type = "info") {
+  const toast = document.getElementById("toast");
+  const msg = document.getElementById("toastMsg");
+  const icon = document.getElementById("toastIcon");
+  msg.textContent = message;
+  icon.textContent = type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️";
+  toast.classList.remove("-translate-y-20", "opacity-0");
+  toast.classList.add("translate-y-0", "opacity-100");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => {
+    toast.classList.remove("translate-y-0", "opacity-100");
+    toast.classList.add("-translate-y-20", "opacity-0");
+  }, 3000);
+}

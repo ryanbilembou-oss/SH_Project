@@ -1,0 +1,1 @@
+ALTER DATABASE silver_happy SET timezone TO 'Europe/Paris';

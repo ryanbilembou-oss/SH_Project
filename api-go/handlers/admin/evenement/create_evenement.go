@@ -5,18 +5,18 @@ import (
 	"log"
 	"net/http"
 	"silver-happy-api/database"
+	"strconv"
 	"strings"
 )
 
-
 type CreateEvenementRequest struct {
-	IDCategorie int     `json:"id_categorie"`
-	Titre       string  `json:"titre"`
-	Description string  `json:"description"`
-	DateHeure   string  `json:"date_heure"`
-	Lieu        string  `json:"lieu"`
-	PrixTicket  float64 `json:"prix_ticket"`
-	NbPlacesMax int     `json:"nb_places_max"`
+	IDCategorie json.Number `json:"id_categorie"`
+	Titre       string      `json:"titre"`
+	Description string      `json:"description"`
+	DateHeure   string      `json:"date_heure"`
+	Lieu        string      `json:"lieu"`
+	PrixTicket  float64     `json:"prix_ticket"`
+	NbPlacesMax int         `json:"nb_places_max"`
 }
 
 type ErrorResponse struct {
@@ -45,12 +45,17 @@ func CreateEvenement(w http.ResponseWriter, r *http.Request) {
 		sendError(w, "global", "Format de données invalide", http.StatusBadRequest)
 		return
 	}
+
+	idCat, err := strconv.Atoi(req.IDCategorie.String())
+	if err != nil {
+		sendError(w, "id_categorie", "Catégorie invalide", http.StatusBadRequest)
+		return
+	}
+
 	cleanDate := strings.Replace(req.DateHeure, "T", " ", 1)
 	cleanDate = strings.Replace(cleanDate, "Z", "", 1)
 
-
-	adminID := 1 
-
+	adminID := 11
 
 	query := `
 		INSERT INTO evenements (
@@ -60,12 +65,11 @@ func CreateEvenement(w http.ResponseWriter, r *http.Request) {
 		) RETURNING id_evenement;
 	`
 
-
 	var lastID int
-	err := database.DB.QueryRow(
+	err = database.DB.QueryRow(
 		query,
 		adminID,
-		req.IDCategorie,
+		idCat,
 		req.Titre,
 		req.Description,
 		cleanDate,
@@ -75,16 +79,15 @@ func CreateEvenement(w http.ResponseWriter, r *http.Request) {
 	).Scan(&lastID)
 
 	if err != nil {
-
-		log.Printf("❌ Erreur SQL lors de la création de l'événement : %v", err)
+		log.Printf(" Erreur SQL : %v", err)
 		sendError(w, "global", "Erreur lors de la création de l'événement.", http.StatusInternalServerError)
 		return
 	}
 
-
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"status": "success",
+		"status":       "success",
 		"id_evenement": lastID,
 	})
 }

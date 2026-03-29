@@ -84,7 +84,7 @@
         </div>
     </div>
     <script type="module" src="../../js/admin/evenement/evenement_delete.js"></script>
-    <script type="module" src="../../js/admin/evenement/evenement.js"></script>
+    <script src="../../js/admin/evenement/evenement.js"></script>
 
 </body>
 </html>

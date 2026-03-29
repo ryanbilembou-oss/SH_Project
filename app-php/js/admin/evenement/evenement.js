@@ -56,13 +56,13 @@ function buildRow(event) {
     >
       <!-- Titre -->
       <td class="py-4 px-5">
-        <span class="font-semibold text-gray-800 text-sm">${escapeHtml(event.titre)}</span>
+        <span class="font-semibold text-gray-800 text-sm">${event.titre}</span>
       </td>
 
       <!-- Catégorie -->
       <td class="py-4 px-5">
         <span class="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
-          ${escapeHtml(event.nom_categorie || "—")}
+          ${event.nom_categorie || "—"}
         </span>
       </td>
 
@@ -75,7 +75,7 @@ function buildRow(event) {
       <!-- Lieu -->
       <td class="py-4 px-5 text-sm text-gray-500">
         <i class="fas fa-map-marker-alt mr-1.5 text-red-400"></i>
-        ${escapeHtml(event.lieu || "—")}
+        ${event.lieu || "—"}
       </td>
 
       <!-- Inscrits / Places -->
@@ -109,7 +109,7 @@ function buildRow(event) {
             data-id="${event.id_evenement}"
             class="btn-delete-trigger group flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 hover:bg-red-600 transition-colors duration-200"
             title="Supprimer"
-            aria-label="Supprimer l'événement ${escapeHtml(event.titre)}"
+            aria-label="Supprimer l'événement ${event.titre}"
           >
             <i class="fas fa-trash-alt text-red-500 group-hover:text-white text-sm transition-colors"></i>
           </button>

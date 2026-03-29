@@ -85,6 +85,10 @@ type Service struct {
 	Image_url      *string `json:"image_url"`
 }
 
+type TypePrestataire struct {
+	Id_type  int    `json:"id_type"`
+	Nom_type string `json:"nom_type"`
+}
 type OffrePrestataire struct {
 	Id_offre          int     `json:"id_offre"`
 	Id_pro            *int    `json:"id_pro"`
@@ -117,15 +121,19 @@ type Evenements struct {
 	Nb_places_max int       `json:"nb_places_max"`
 	Nb_inscrits   int       `json:"nb_inscrits"`
 }
-
 type DocumentsPro struct {
 	Id_doc       int        `json:"id_doc"`
 	Id_user      int        `json:"id_user"`
 	Type_doc     string     `json:"type_doc"`
 	Url_document string     `json:"url_document"`
 	Date_upload  *time.Time `json:"date_upload"`
+	Id_categorie *int       `json:"id_categorie"`
 }
-
+type CategorieDocument struct {
+	Id_categorie  int    `json:"id_categorie"`
+	Id_type       int    `json:"id_type"`
+	Nom_categorie string `json:"nom_categorie"`
+}
 type PlanningPro struct {
 	Id_planning  int    `json:"id_planning"`
 	Id_pro       int    `json:"id_pro"`
