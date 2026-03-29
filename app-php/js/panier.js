@@ -1,5 +1,5 @@
 window.addEventListener("load", () => {
-  console.log("🚀 Panier.js chargé et prêt !");
+  console.log("Panier.js chargé et prêt !");
 
   const liste = document.getElementById("liste-panier");
   const totalAffichage = document.getElementById("total-prix");
@@ -61,7 +61,7 @@ window.addEventListener("load", () => {
       btnPayer.classList.add("opacity-50", "cursor-not-allowed");
 
       setTimeout(() => {
-        alert("✅ Paiement réussi ! Merci de votre confiance.");
+        alert("Paiement réussi ! Merci de votre confiance.");
         localStorage.removeItem("panier_silver");
         window.location.href = "boutique.php";
       }, 1500);
