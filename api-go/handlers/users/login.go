@@ -2,50 +2,76 @@ package users
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
+	"log"
 	"net/http"
 	"silver-happy-api/database"
 	"silver-happy-api/pass_hash"
 )
 
+type LoginForm struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func LoginUser(w http.ResponseWriter, r *http.Request) {
+	// Gestion des CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	email := r.FormValue("email")
-	password := r.FormValue("password")
+	var credentials LoginForm
+	if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
+		log.Printf("❌ Erreur JSON login: %v", err)
+		http.Error(w, "Données invalides", http.StatusBadRequest)
+		return
+	}
 
 	var storedHash string
 	var role string
-	var nom string
 	var prenom string
 
-	query := `SELECT password, role, nom, prenom FROM utilisateurs WHERE email = $1`
-	err := database.DB.QueryRow(query, email).Scan(&storedHash, &role, &nom, &prenom)
-	
+	// Requête pour récupérer le hash et le prénom (soit senior, soit pro)
+	query := `
+        SELECT u.password_hash, u.role, COALESCE(s.prenom, p.prenom, 'Utilisateur') as prenom
+        FROM users u
+        LEFT JOIN profile_senior s ON u.id_user = s.id_user
+        LEFT JOIN profile_pro p ON u.id_user = p.id_user
+        WHERE u.email = $1`
+
+	err := database.DB.QueryRow(query, credentials.Email).Scan(&storedHash, &role, &prenom)
+
 	if err == sql.ErrNoRows {
-		fmt.Printf("DEBUG: L'email [%s] n'existe pas dans la base.\n", email)
-		http.Error(w, "Utilisateur non trouvé", http.StatusUnauthorized)
+		log.Printf("❌ Échec login : Email inconnu (%s)", credentials.Email)
+		http.Error(w, "Identifiants incorrects", http.StatusUnauthorized)
 		return
 	} else if err != nil {
-		fmt.Printf("DEBUG: Erreur SQL technique: %v\n", err)
-		http.Error(w, "Erreur base de données", http.StatusInternalServerError)
+		log.Printf("❌ Erreur SQL login: %v", err)
+		http.Error(w, "Erreur serveur", http.StatusInternalServerError)
 		return
 	}
 
-	if !pass_hash.CheckPasswordHash(password, storedHash) {
-		fmt.Printf("DEBUG: Mot de passe incorrect pour %s\n", email)
-		http.Error(w, "Mot de passe incorrect", http.StatusUnauthorized)
+	// Vérification du mot de passe haché
+	if !pass_hash.CheckPasswordHash(credentials.Password, storedHash) {
+		log.Printf("❌ Échec login pour %s : Mot de passe incorrect", credentials.Email)
+		http.Error(w, "Identifiants incorrects", http.StatusUnauthorized)
 		return
 	}
 
-	fmt.Printf("DEBUG: Connexion réussie pour %s\n", email)
+	// Succès !
+	log.Printf("✅ Connexion réussie : %s (%s)", credentials.Email, role)
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Bienvenue " + prenom))
+	
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Bienvenue chez Silver Happy !",
+		"prenom":  prenom,
+		"role":    role,
+	})
 }

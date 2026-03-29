@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!doctype html>
 <html lang="fr">
   <head>
@@ -15,7 +16,6 @@
         <div class="flex justify-between items-center w-full">
           <img src="img/logo.png" alt="Logo Silver Happy" class="h-14" />
           <div class="flex items-center space-x-6 group">
-            <a href="login.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 hover:bg-white hover:text-[#7CABD3]">
             <a href="users/login.php" class="bg-[#7CABD3] text-white border-2 border-[#7CABD3] px-6 py-2 rounded-full font-black uppercase text-xs shadow-sm transition-all duration-300 group-hover:bg-transparent group-hover:text-[#7CABD3] hover:!bg-[#7CABD3] hover:!text-white">
               Connexion
             </a>
@@ -23,6 +23,11 @@
             <a href="register.php" class="text-[#7CABD3] border-2 border-[#7CABD3] px-6 py-2 rounded-full font-bold uppercase text-xs transition-all duration-300 hover:bg-[#7CABD3] hover:text-white hover:shadow-md">
               Inscription
             </a>
+            <?php if (isset($_SESSION['utilisateur_connecte'])): ?>
+    <a href="boutique.php" class="bg-[#7CABD3] text-white px-6 py-3 rounded-xl font-bold text-lg hover:bg-[#1A2B49] transition-colors shadow-md flex items-center gap-2">
+        La Boutique
+    </a>
+<?php endif; ?>
           </div>
         </div>
         <div class="hidden md:flex justify-center space-x-12 font-bold uppercase text-xs tracking-widest pb-4">

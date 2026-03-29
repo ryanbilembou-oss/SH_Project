@@ -14,227 +14,141 @@
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6 relative">
-
-    <a href="index.php" class="absolute top-8 left-8 text-[#1A2B49] font-black uppercase text-[10px] tracking-widest flex items-center group">
+    
+    <a href="/index.php" class="absolute top-8 left-8 text-[#1A2B49] font-black uppercase text-[10px] tracking-widest flex items-center group">
         <span class="mr-2 transform group-hover:-translate-x-1 transition-transform">←</span> Retour
     </a>
 
-    <div class="max-w-lg w-full bg-white rounded-[40px] shadow-2xl p-10 relative overflow-hidden my-10">
-        
-        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-[#7CABD3]/20 rounded-full blur-3xl"></div>
-        
-        <div class="relative z-10">
-            <div class="mb-8">
-                <h2 class="text-3xl font-black uppercase tracking-tighter text-[#1A2B49] mb-2">Créer un <span class="text-[#7CABD3]">compte</span></h2>
-                <p class="text-gray-400 text-sm font-medium italic">Rejoignez l'aventure Silver Happy.</p>
-            </div>
+<div class="max-w-lg w-full bg-white rounded-[40px] shadow-2xl p-10 relative overflow-hidden my-10">
+    
+    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-[#7CABD3]/20 rounded-full blur-3xl"></div>
 
-            <form id="registerForm" class="space-y-5">
+    <div class="relative z-10">
+
+        <div class="mb-8"> 
+            <h2 class="text-3xl font-black uppercase tracking-tighter text-[#1A2B49] mb-2">
+                Créer un <span class="text-[#7CABD3]">compte</span>
+            </h2>
+            <p class="text-gray-400 text-sm font-medium italic">Rejoignez l'aventure Silver Happy</p>
+        </div>
+
+        <form id="registerForm" class="space-y-5" novalidate>
+
+            <div id="etape1" class="space-y-5 transition-all duration-300">
                 
-                <div id="etape1" class="space-y-5 transition-all duration-300">
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Je suis un...</label>
-                        <select id="role" name="role" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium">
-                            <option value="senior" selected>Senior</option>
-                            <option value="pro">Prestataire (Professionnel)</option>
+                <div>
+                    <label for="role" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">
+                        Je suis un ...
+                    </label>
+                    <select id="role" name="role" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium">
+                        <option value="senior" selected>Senior</option>
+                        <option value="pro">Prestataire (Professionnel)</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="w-1/2">
+                        <label for="nom" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Nom</label>
+                        <input type="text" id="nom" placeholder="Nom" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
+                    </div>
+
+                    <div class="w-1/2">
+                        <label for="prenom" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Prénom</label>
+                        <input type="text" id="prenom" placeholder="Prénom" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="w-1/2">
+                        <label for="genre" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Genre</label>
+                        <select id="genre" name="genre" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium">
+                            <option value="homme">Homme</option>
+                            <option value="femme">Femme</option>
+                            <option value="autre">Autre</option>
                         </select>
                     </div>
-
-                    <div class="flex gap-4">
-                        <div class="w-1/2">
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Nom</label>
-                            <input type="text" id="nom" placeholder="Nom" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
-                        </div>
-                        <div class="w-1/2">
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Prénom</label>
-                            <input type="text" id="prenom" placeholder="Prénom" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
-                        </div>
+                    <div class="w-1/2">
+                        <label for="telephone" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Téléphone</label>
+                        <input type="tel" id="telephone" placeholder="06 12 34 56 78" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
                     </div>
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Identifiant (Email)</label>
+                    <input type="email" id="email" placeholder="votre@email.com" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Mot de passe</label>
+                    <input type="password" id="password" placeholder="••••••••" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
 
-                    <div class="flex gap-4">
-                        <div class="w-1/2">
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Genre</label>
-                            <select id="genre" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium">
-                                <option value="homme">Homme</option>
-                                <option value="femme">Femme</option>
-                                <option value="autre">Autre</option>
-                            </select>
-                        </div>
-                        <div class="w-1/2">
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Téléphone</label>
-                            <input type="tel" id="telephone" placeholder="06..." required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
-                        </div>
+                    <div id="passwordCriteria" class="mt-3 ml-4 space-y-1">
+                        <p id="crit-length" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">8 caractères</p>
+                        <p id="crit-number" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">Un chiffre</p>
+                        <p id="crit-special" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">Un caractère spécial</p>
                     </div>
+                </div>
 
+                <div>
+                    <label for="date_naissance" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Date de naissance</label>
+                    <input type="date" id="date_naissance" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium">
+                    <p id="ageError" class="hidden text-[9px] text-red-600 font-bold uppercase mt-2 ml-4 tracking-widest italic">Vous n'êtes pas majeur.</p>
+                </div>
+
+                <div id="seniorFields">
+                    <label for="adresse" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Adresse complète</label>
+                    <input type="text" id="adresse" placeholder="Votre adresse..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#16a34a] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
+                </div>
+                
+                <div id="proTextFields" class="hidden space-y-5">
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Identifiant (Email)</label>
-                        <input type="email" id="email" placeholder="votre@email.com" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
+                        <label for="siret" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">N° SIRET</label>
+                        <input type="text" id="siret" placeholder="14 chiffres" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
                     </div>
                     
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Mot de passe</label>
-                        <input type="password" id="password" placeholder="••••••••" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
-                        <div id="passwordCriteria" class="mt-3 ml-4 space-y-1">
-                            <p id="crit-length" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic"> 8 caractères</p>
-                            <p id="crit-number" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic"> Un chiffre</p>
-                            <p id="crit-special" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic"> Un caractère spécial</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Date de naissance</label>
-                        <input type="date" id="date_naissance" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium">
-                        <p id="ageError" class="hidden text-[9px] text-red-600 font-bold uppercase mt-2 ml-4 tracking-widest italic">Vous n'êtes pas majeur pour acceder à notre plateforme.</p>
-                    </div>
-
-                    <div id="seniorFields">
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Adresse complète</label>
-                        <input type="text" id="adresse" placeholder="Votre adresse..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#16a34a] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
-                    </div>
-
-                    <div id="proTextFields" class="hidden space-y-5">
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">N° SIRET</label>
-                            <input type="text" id="siret" placeholder="14 chiffres" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Biographie</label>
-                            <textarea id="bio" placeholder="Votre parcours..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium h-24 resize-none placeholder:text-gray-300"></textarea>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="btnSubmitSenior" class="w-full bg-[#1A2B49] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-[#16a34a] transition-all transform hover:-translate-y-1 opacity-50 cursor-not-allowed" disabled>S'inscrire</button>
-                    <button type="button" id="btnSuivant" class="hidden w-full bg-[#1A2B49] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-[#7CABD3] transition-all transform hover:-translate-y-1 opacity-50 cursor-not-allowed" disabled>Suivant</button>
-                </div>
-
-                <div id="etape2" class="hidden space-y-6 transition-all duration-300">
-                    <div class="text-center mb-6">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dernière étape : Vos documents</p>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-[#1A2B49] mb-3 ml-4 text-center">Pièce d'identité</label>
-                            <input type="file" id="piece_identite" accept=".pdf, .jpg, .png, .jpeg" class="w-full px-6 py-4 bg-gray-50 border-2 border-dashed border-[#7CABD3] rounded-2xl outline-none text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-[#1A2B49] file:text-white cursor-pointer">
-                        </div>
-
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-[#1A2B49] mb-3 ml-4 text-center">Votre RIB</label>
-                            <input type="file" id="document_rib" accept=".pdf, .jpg, .png, .jpeg" class="w-full px-6 py-4 bg-gray-50 border-2 border-dashed border-[#7CABD3] rounded-2xl outline-none text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-[#1A2B49] file:text-white cursor-pointer">
-                        </div>
-                    </div>
-
-                    <div class="flex gap-4">
-                        <button type="button" id="btnPrecedent" class="w-1/3 bg-gray-100 text-[#1A2B49] font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl hover:bg-gray-200 transition-all">Retour</button>
-                        <button type="submit" id="btnSubmitPro" class="w-2/3 bg-[#16a34a] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-green-700 transition-all transform hover:-translate-y-1">S'inscrire</button>
+                        <label for="bio" class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Biographie</label>
+                        <textarea id="bio" placeholder="Votre parcours..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium h-24 resize-none placeholder:text-gray-300"></textarea>
                     </div>
                 </div>
 
-            </form>
+                <button type="submit" id="btnSubmitSenior" class="w-full bg-[#1A2B49] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-[#16a34a] transition-all transform hover:-translate-y-1 opacity-50 cursor-not-allowed" disabled>S'inscrire</button>
+                <button type="button" id="btnSuivant" class="hidden w-full bg-[#1A2B49] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-[#7CABD3] transition-all transform hover:-translate-y-1 opacity-50 cursor-not-allowed" disabled>Suivant</button>
             
-            <div class="mt-10 pt-6 border-t border-gray-100 text-center">
-                <p class="text-gray-500 text-xs font-medium">
-                    Déjà inscrit ? 
-                    <a href="login.php" class="text-[#1A2B49] font-black uppercase ml-1 hover:text-[#7CABD3] transition-colors">Se connecter</a>
-                </p>
-            </div>
+            </div> <div id="etape2" class="hidden space-y-6 transition-all duration-300">
+                
+                <div class="text-center mb-6">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dernière étape : Vos documents</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="piece_identite" class="block text-[10px] font-black uppercase tracking-widest text-[#1A2B49] mb-3 ml-4 text-center">Pièce d'identité</label>
+                        <input type="file" id="piece_identite" accept=".pdf, .jpg, .png, .jpeg" class="w-full px-6 py-4 bg-gray-50 border-2 border-dashed border-[#7CABD3] rounded-2xl outline-none text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-[#1A2B49] file:text-white cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="document_rib" class="block text-[10px] font-black uppercase tracking-widest text-[#1A2B49] mb-3 ml-4 text-center">Votre RIB</label>
+                        <input type="file" id="document_rib" accept=".pdf, .jpg, .png, .jpeg" class="w-full px-6 py-4 bg-gray-50 border-2 border-dashed border-[#7CABD3] rounded-2xl outline-none text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-[#1A2B49] file:text-white cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="button" id="btnPrecedent" class="w-1/3 bg-gray-100 text-[#1A2B49] font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl hover:bg-gray-200 transition-all">Retour</button>
+                    <button type="submit" id="btnSubmitPro" class="w-2/3 bg-[#16a34a] text-white font-black uppercase text-xs tracking-[0.2em] py-5 rounded-2xl shadow-lg hover:bg-green-700 transition-all transform hover:-translate-y-1 opacity-50 cursor-not-allowed" disabled>S'inscrire</button>
+                </div>
+            </div> </form>
+        
+        <div class="mt-10 pt-6 border-t border-gray-100 text-center">
+            <p class="text-gray-500 text-xs font-medium">
+                Déjà inscrit ? 
+                <a href="/users/login.php" class="text-[#1A2B49] font-black uppercase ml-1 hover:text-[#7CABD3] transition-colors">Se connecter</a>
+            </p>
         </div>
+
     </div>
+</div>
 
-    <script>
-        const roleSelect = document.getElementById('role');
-        const seniorFields = document.getElementById('seniorFields');
-        const proTextFields = document.getElementById('proTextFields');
-        const etape1 = document.getElementById('etape1');
-        const etape2 = document.getElementById('etape2');
-        const btnSuivant = document.getElementById('btnSuivant');
-        const btnSubmitSenior = document.getElementById('btnSubmitSenior');
-        const passwordInput = document.getElementById('password');
-        const dateInput = document.getElementById('date_naissance');
-        const ageError = document.getElementById('ageError');
-        const registerForm = document.getElementById('registerForm');
+<script src="js/users/register.js?v=114"></script>
 
-        const today = new Date();
-        const eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-        dateInput.max = eighteenYearsAgo.toISOString().split("T")[0];
-
-        function globalValidation() {
-            const mdp = passwordInput.value;
-            const isLongEnough = mdp.length >= 8;
-            const hasNumber = /\d/.test(mdp);
-            const hasSpecial = /[!@#$%^&*(),.?":{}|<> ]/.test(mdp);
-            const mdpValid = isLongEnough && hasNumber && hasSpecial;
-
-            let isMajeur = false;
-            if (dateInput.value) {
-                isMajeur = new Date(dateInput.value) <= eighteenYearsAgo;
-            }
-
-            if (dateInput.value && !isMajeur) ageError.classList.remove('hidden');
-            else ageError.classList.add('hidden');
-
-            updateCriteria(document.getElementById('crit-length'), isLongEnough, "8 caractères");
-            updateCriteria(document.getElementById('crit-number'), hasNumber, "Un chiffre");
-            updateCriteria(document.getElementById('crit-special'), hasSpecial, "Un caractère spécial");
-
-            const canProceed = mdpValid && isMajeur;
-            [btnSuivant, btnSubmitSenior].forEach(btn => {
-                btn.disabled = !canProceed;
-                btn.classList.toggle('opacity-50', !canProceed);
-                btn.classList.toggle('cursor-not-allowed', !canProceed);
-            });
-        }
-
-        function updateCriteria(el, valid, text) {
-            el.innerHTML = (valid ? "[OK] " : "[X] ") + text;
-            el.className = `text-[9px] font-bold uppercase tracking-widest italic ${valid ? 'critere-valid' : 'critere-invalid'}`;
-        }
-
-        passwordInput.addEventListener('input', globalValidation);
-        dateInput.addEventListener('change', globalValidation);
-
-        roleSelect.addEventListener('change', () => {
-            const isPro = roleSelect.value === 'pro';
-            seniorFields.classList.toggle('hidden', isPro);
-            proTextFields.classList.toggle('hidden', !isPro);
-            btnSubmitSenior.classList.toggle('hidden', isPro);
-            btnSuivant.classList.toggle('hidden', !isPro);
-            etape2.classList.add('hidden');
-            etape1.classList.remove('hidden');
-        });
-
-        btnSuivant.addEventListener('click', () => { etape1.classList.add('hidden'); etape2.classList.remove('hidden'); });
-        document.getElementById('btnPrecedent').addEventListener('click', () => { etape2.classList.add('hidden'); etape1.classList.remove('hidden'); });
-
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('role', roleSelect.value);
-            formData.append('email', document.getElementById('email').value);
-            formData.append('password', passwordInput.value);
-            formData.append('nom', document.getElementById('nom').value);
-            formData.append('prenom', document.getElementById('prenom').value);
-            formData.append('genre', document.getElementById('genre').value);
-            formData.append('telephone', document.getElementById('telephone').value);
-            formData.append('date_naissance', dateInput.value);
-
-            if (roleSelect.value === 'pro') {
-                formData.append('siret', document.getElementById('siret').value);
-                formData.append('bio', document.getElementById('bio').value);
-                const rib = document.getElementById('document_rib').files[0];
-                const idCard = document.getElementById('piece_identite').files[0];
-                if (rib) formData.append('document_rib', rib);
-                if (idCard) formData.append('piece_identite', idCard);
-            } else {
-                formData.append('adresse', document.getElementById('adresse').value);
-            }
-
-            try {
-                const response = await fetch('http://localhost:8082/register', { method: 'POST', body: formData });
-                if (response.ok) { alert("Succès : Bienvenue !"); window.location.href = "login.php"; }
-                else { alert("Erreur lors de l'inscription."); }
-            } catch (err) { alert("Serveur injoignable."); }
-        });
-    </script>
 </body>
 </html>

@@ -8,15 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
-      console.log("Tentative de connexion pour :", email);
-
       const loginData = {
         email: email,
-        password_hash: password,
+        password: password,
       };
 
       try {
-        const response = await fetch("http://localhost:8081/login", {
+        // 1. Appel à l'API Go (Port 8082) pour la vérification BDD
+        const response = await fetch("http://localhost:8082/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -26,17 +25,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (response.ok) {
           const result = await response.json();
-          alert("Connexion réussie !");
-          window.location.href = "index.php";
+          console.log("✅ Go : OK. Création de la session PHP...");
+
+          // 2. ÉTAPE CRUCIALE : Création de la session côté PHP (Port 8080)
+          // Utilisation d'un chemin absolu (/users/...) pour éviter les erreurs de dossier
+          const sessionResponse = await fetch("/users/set_session.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "email=" + encodeURIComponent(email),
+          });
+
+          const sessionStatus = await sessionResponse.text();
+          console.log("🔹 PHP Session Status :", sessionStatus);
+
+          // 3. Redirection vers l'accueil
+          alert(`✅ Ravi de vous revoir, ${result.prenom} !`);
+          window.location.href = "../index.php";
         } else {
-          const errorText = await response.text();
-          alert("Erreur de connexion : " + errorText);
+          alert("❌ Identifiants incorrects.");
         }
       } catch (err) {
         console.error("Erreur réseau :", err);
-        alert(
-          "Impossible de contacter l'API Go. Vérifie que le conteneur Docker tourne sur le port 8081."
-        );
+        alert("❌ Impossible de contacter l'API Go.");
       }
     });
   }

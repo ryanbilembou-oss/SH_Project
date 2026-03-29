@@ -12,7 +12,7 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
 
-    <a href="index.php" class="absolute top-8 left-8 text-[#1A2B49] font-black uppercase text-[10px] tracking-widest flex items-center group">
+    <a href="../index.php" class="absolute top-8 left-8 text-[#1A2B49] font-black uppercase text-[10px] tracking-widest flex items-center group">
         <span class="mr-2 transform group-hover:-translate-x-1 transition-transform">←</span> Retour
     </a>
 
@@ -51,12 +51,12 @@
             <div class="mt-10 pt-6 border-t border-gray-100 text-center">
                 <p class="text-gray-500 text-xs font-medium">
                     Pas encore de compte ? 
-                    <a href="register.php" class="text-[#1A2B49] font-black uppercase ml-1 hover:text-[#7CABD3] transition-colors">S'inscrire</a>
+                    <a href="../register.php" class="text-[#1A2B49] font-black uppercase ml-1 hover:text-[#7CABD3] transition-colors">S'inscrire</a>
                 </p>
             </div>
         </div>
     </div>
 
-    <script src="js/users/login.js"></script>
+    <script src="/js/users/login.js"></script>
 </body>
 </html>

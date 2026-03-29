@@ -19,15 +19,12 @@ services:
     env_file:
       - .env
     ports:
-      - "8081:8081"
       - "8082:8081"
     restart: always
     depends_on:
       - silver-db
     networks:
       - silver-net
-    volumes:
-      - ./uploads:/app/uploads
 
   silver-db:
     image: postgres:16-alpine
@@ -50,7 +47,7 @@ services:
     container_name: silver_happy_pgadmin
     restart: always
     ports:
-      - "5050:80"
+      - "8081:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@silverhappy.com
       PGADMIN_DEFAULT_PASSWORD: root
