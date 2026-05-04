@@ -64,8 +64,8 @@ function validateAge() {
 
 function updateCritere(id, valid, text) {
   const el = document.getElementById(id);
-  el.innerHTML = (valid ? "✅ " : "❌ ") + text;
-  el.className = `text-[9px] font-bold uppercase tracking-widest italic ${valid ? "critere-valid" : "critere-invalid"}`;
+  el.innerHTML = (valid ? "V " : "X ") + text;
+  el.className = `text-[9px] font-fira uppercase tracking-widest italic ${valid ? "critere-valid" : "critere-invalid"}`;
 }
 
 document
@@ -186,7 +186,7 @@ function showToast(message, type = "info") {
   const msg = document.getElementById("toastMsg");
   const icon = document.getElementById("toastIcon");
   msg.textContent = message;
-  icon.textContent = type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️";
+  icon.textContent = type === "success" ? "V" : type === "error" ? "X" : "i";
   toast.classList.remove("-translate-y-20", "opacity-0");
   toast.classList.add("translate-y-0", "opacity-100");
   clearTimeout(showToast._t);

@@ -70,6 +70,7 @@ type ProfilePro struct {
 	Siret                 *string    `json:"siret"`
 	Bio                   *string    `json:"bio"`
 	Rib                   *string    `json:"rib"`
+	Id_type               *int       `json:"id_type"`
 	Telephone_pro         *string    `json:"telephone_pro"`
 	Logo_url              *string    `json:"logo_url"`
 	Note_moyenne          float64    `json:"note_moyenne"`
@@ -128,6 +129,7 @@ type DocumentsPro struct {
 	Url_document string     `json:"url_document"`
 	Date_upload  *time.Time `json:"date_upload"`
 	Id_categorie *int       `json:"id_categorie"`
+	Statut       string     `json:"statut"`
 }
 type CategorieDocument struct {
 	Id_categorie  int    `json:"id_categorie"`

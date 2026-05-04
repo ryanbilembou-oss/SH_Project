@@ -27,8 +27,9 @@ func GetProfilePro(w http.ResponseWriter, r *http.Request) {
 
 	var p models.ProfilePro
 	err := database.DB.QueryRow(
-		`SELECT id_user, nom, prenom, nom_entreprise, adresse_pro, statut_juridique, date_naissance, genre, statut_validation, is_subscription_valid, siret, bio, rib, telephone_pro, logo_url, note_moyenne, commission FROM profile_pro WHERE id_user = $1`, id,
-	).Scan(&p.Id_user, &p.Nom, &p.Prenom, &p.Nom_entreprise, &p.Adresse_pro, &p.Statut_juridique, &p.Date_naissance, &p.Genre, &p.Statut_validation, &p.Is_subscription_valid, &p.Siret, &p.Bio, &p.Rib, &p.Telephone_pro, &p.Logo_url, &p.Note_moyenne, &p.Commission)
+		`SELECT id_user, nom, prenom, nom_entreprise, adresse_pro, statut_juridique, date_naissance, genre, statut_validation, is_subscription_valid, siret, bio, rib, id_type,telephone_pro, logo_url, note_moyenne, commission FROM profile_pro WHERE id_user = $1`, id,
+	).Scan(&p.Id_user, &p.Nom, &p.Prenom, &p.Nom_entreprise, &p.Adresse_pro, &p.Statut_juridique, &p.Date_naissance, &p.Genre, &p.Statut_validation, 
+		&p.Is_subscription_valid, &p.Siret, &p.Bio, &p.Rib, &p.Id_type,&p.Telephone_pro, &p.Logo_url, &p.Note_moyenne, &p.Commission)
 	if err != nil {
 		log.Printf("❌ GetProfilePro - ID %s introuvable: %v", id, err)
 		http.Error(w, `{"erreur": "Profil pro introuvable"}`, http.StatusNotFound)
@@ -37,3 +38,4 @@ func GetProfilePro(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(p)
 }
+

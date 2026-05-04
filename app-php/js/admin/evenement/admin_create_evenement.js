@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         errorMsg = error.message;
       }
 
-      alert(`❌ Erreur : ${errorMsg}`);
+      alert(` Erreur : ${errorMsg}`);
 
       btnSubmit.disabled = false;
       btnSubmit.innerHTML = originalBtnText;

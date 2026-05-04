@@ -141,7 +141,6 @@ function renderCalendar() {
     });
   });
 
-  // Interventions
   interventions.forEach((i) => {
     const jourIndex = days.findIndex(
       (d) => formatDate(d) === getDayFR(i.date_heure_debut || i.date_debut),
@@ -164,7 +163,7 @@ function renderCalendar() {
     </div>`;
   });
 
-  // Événements
+
   evenements.forEach((e) => {
     if (!e.date_heure) return;
     const jourIndex = days.findIndex(
@@ -185,7 +184,7 @@ function renderCalendar() {
     </div>`;
   });
 
-  // Rappels
+
   plannings.forEach((p) => {
     if (!p.rappel_notification) return;
     const jourIndex = days.findIndex(

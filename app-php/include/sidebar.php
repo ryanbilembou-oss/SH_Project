@@ -3,11 +3,17 @@
         
         <div class="hidden md:flex items-center px-6 py-4 border-b border-gray-700 mb-4">
             <span class="text-white font-bold text-xl tracking-tighter">SILVER HAPPY</span>
+            <a href="/users/seniors/accueil_senior.php" class="inline-block px-2 py-1 bg-[#FF7000] rounded-full shadow text-white hover:text-[#FF7000] hover:bg-white border-2 border-[#000000] transition-all font-bold">Dashboard</a>
         </div>
 
         <ul class="list-reset flex flex-row md:flex-col py-0 md:py-3 px-1 md:px-2 text-center md:text-left mb-10">
 
-            
+            <li class="mr-3 flex-1 md:w-full">
+                <a href="/admin/admin_dashboard.php" class="block py-1 md:py-3 pl-1 text-white hover:text-blue-500 border-b-2 border-gray-800 hover:border-blue-500 transition-all">
+                    <i class="fas fa-chart-line pr-3 text-blue-500"></i>
+                    <span class="text-xs md:text-base text-gray-300 font-bold">Dashboard</span>
+                </a>
+            </li>
             <li class="mr-3 flex-1 md:w-full">
                 <button onclick="toggleSubMenu('users-sub')" class="w-full block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-blue-500 border-b-2 border-gray-800 hover:border-blue-500 flex justify-between items-center transition-all">
                     <div>
@@ -223,6 +229,16 @@
                             <i class="fas fa-folder mr-2 text-purple-400"></i> Catégories documents
                         </a>
                     </li>
+                    <li class="py-2 pl-8 hover:bg-gray-700 transition-colors">
+                        <a href="/admin/admin_type_prestataire_categorie.php" class="text-xs md:text-sm text-gray-300 flex items-center">
+                            <i class="fas fa-link mr-2 text-violet-400"></i> Types & Catégories services
+                        </a>
+                    </li>
+                    <li class="py-2 pl-8 hover:bg-gray-700 transition-colors">
+                        <a href="/admin/admin_referencement.php" class="text-xs md:text-sm text-gray-300 flex items-center">
+                            <i class="fas fa-star mr-2 text-yellow-400"></i> Référencements actifs
+                        </a>
+                    </li>
                 </ul>
             </li>
 
@@ -256,9 +272,15 @@
                         <i class="fas fa-file-invoice-dollar pr-0 md:pr-3 text-yellow-500"></i>
                         <span class="pb-1 md:pb-0 text-xs md:text-base text-gray-300 block md:inline-block font-bold">Financier</span>
                     </div>
+                    
                     <i class="fas fa-angle-down text-xs mr-2 transition-transform duration-200" id="finance-sub-arrow"></i>
                 </button>
                 <ul id="finance-sub" class="hidden bg-gray-900 flex-col mt-1 rounded-r-lg border-l-2 border-yellow-600">
+                    <li class="py-2 pl-8 hover:bg-gray-700 transition-colors">
+                        <a href="/admin/admin_negociation.php" class="text-xs md:text-sm text-gray-300 flex items-center">
+                            <i class="fas fa-handshake mr-2 text-yellow-400"></i> Négociations commission
+                        </a>
+                    </li>
                     <li class="py-2 pl-8 hover:bg-gray-700 transition-colors">
                         <a href="/admin/devis/admin_devis.php" class="text-xs md:text-sm text-gray-300 flex items-center">
                             <i class="fas fa-file-alt mr-2 text-yellow-400"></i> Devis

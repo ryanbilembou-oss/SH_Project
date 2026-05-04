@@ -31,8 +31,14 @@ import (
 	profile_pro    "silver-happy-api/handlers/admin/profile/profile_pro"
 	profile_admin  "silver-happy-api/handlers/admin/profile/profile_admin"
 	inscription_evenement "silver-happy-api/handlers/admin/inscription_evenement"
+	"silver-happy-api/handlers/admin/panier"
+	"silver-happy-api/handlers/admin/demande_service"
 
-
+ 	abonnement_handler "silver-happy-api/handlers/admin/abonnement"
+	stripe_handler "silver-happy-api/handlers/admin/stripe"
+	tpc "silver-happy-api/handlers/admin/type_prestataire_categorie"
+	nego "silver-happy-api/handlers/admin/negociation_commission"
+	ref "silver-happy-api/handlers/admin/referencement"
 
 )
 
@@ -225,9 +231,48 @@ func main() {
 	http.HandleFunc("/admin/profile_pro/update_statut", profile_pro.UpdateStatutValidation)
 	http.HandleFunc("/senior/planning/get", planning_senior.GetPlanningSeniorByUser)
 
+	http.HandleFunc("/admin/panier/get", panier.GetPanier)
+	http.HandleFunc("/admin/panier/add", panier.AddPanier)
+	http.HandleFunc("/admin/panier/delete", panier.DeletePanier)
+	http.HandleFunc("/admin/panier/update", panier.UpdateQuantite)
+	http.HandleFunc("/admin/panier/vider", panier.ViderPanier)
 
+	http.HandleFunc("/admin/devis/get_by_senior", devis.GetDevisBySenior)
+	http.HandleFunc("/admin/demande_service/create", demande_service.CreateDemande)
+	http.HandleFunc("/admin/demande_service/get", demande_service.GetAllDemandes)
+	http.HandleFunc("/admin/demande_service/get_by_senior", demande_service.GetDemandesBySenior)
+	http.HandleFunc("/admin/demande_service/update", demande_service.UpdateStatutDemande)
+	http.HandleFunc("/admin/demande_service/delete", demande_service.DeleteDemande)
+	http.HandleFunc("/admin/offre_prestataire/get_by_service", offre_prestataire.GetOffresByService)
+	http.HandleFunc("/admin/devis/update_statut", devis.UpdateStatutDevis)
 
+	http.HandleFunc("/admin/abonnement/get_by_user", abonnement_handler.GetByUser)
+	http.HandleFunc("/admin/abonnement/create", abonnement_handler.CreateAbonnement)
+	http.HandleFunc("/admin/abonnement/resilier", abonnement_handler.ResilierAbonnement)
+	
+	http.HandleFunc("/admin/stripe/checkout/abonnement", stripe_handler.CheckoutAbonnement)
+	http.HandleFunc("/admin/stripe/checkout/article", stripe_handler.CheckoutArticle)
+	http.HandleFunc("/admin/stripe/checkout/evenement", stripe_handler.CheckoutEvenement)
+	http.HandleFunc("/admin/stripe/webhook", stripe_handler.Webhook)
+	http.HandleFunc("/admin/stripe/checkout/panier", stripe_handler.CheckoutPanier)
 
+	http.HandleFunc("/admin/type_prestataire_categorie/get",          tpc.GetAllTypePrestataireCategorie)
+	http.HandleFunc("/admin/type_prestataire_categorie/get_by_type",  tpc.GetCategoriesByType)
+	http.HandleFunc("/admin/type_prestataire_categorie/create",       tpc.CreateTypePrestataireCategorie)
+	http.HandleFunc("/admin/type_prestataire_categorie/delete",       tpc.DeleteTypePrestataireCategorie)
+	http.HandleFunc("/admin/type_prestataire_categorie/delete_by_type", tpc.DeleteAllByType)
+
+	http.HandleFunc("/admin/stripe/checkout/intervention", stripe_handler.CheckoutIntervention)
+	http.HandleFunc("/admin/negociation_commission/get",        nego.GetAll)
+	http.HandleFunc("/admin/negociation_commission/get_by_pro", nego.GetByPro)
+	http.HandleFunc("/admin/negociation_commission/create",     nego.Create)
+	http.HandleFunc("/admin/negociation_commission/repondre",   nego.Repondre)
+	http.HandleFunc("/admin/referencement/get_actifs",    ref.GetActifs)
+	http.HandleFunc("/admin/referencement/get_by_pro",    ref.GetByPro)
+	http.HandleFunc("/admin/referencement/checkout",      ref.Checkout)
+
+	http.HandleFunc("/admin/referencement/get_tous", ref.GetTous)
+	http.HandleFunc("/admin/facture/generate_pdfs", facture.GenerateMissingPDFs)
 
 	fmt.Println(" API Go lancée et connectée à PostgreSQL sur le port 8081...")
 	log.Fatal(http.ListenAndServe(":8081", nil))

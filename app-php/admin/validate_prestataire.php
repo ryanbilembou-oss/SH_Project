@@ -1,9 +1,5 @@
 <?php
-
-
-
-
-
+require_once('../auth.php');
 
 ?>
 <!DOCTYPE html>

@@ -84,10 +84,10 @@ function renderDocuments() {
 
       const statutLabel = existing
         ? existing.statut === "valide"
-          ? "✅ Validé"
+          ? "Validé"
           : existing.statut === "refuse"
-            ? "❌ Refusé"
-            : "⏳ En attente"
+            ? " Refusé"
+            : "En attente"
         : "📎 Non uploadé";
 
       return `

@@ -11,7 +11,7 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 
-RUN chown -W www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html
 
 
 EXPOSE 80

@@ -148,7 +148,7 @@ function renderCalendar() {
       background: #DBEAFE; border: 1px solid #93C5FD;
       border-radius: 6px; padding: 4px 6px; font-size: 11px; overflow: hidden; z-index: 10;">
       <div style="font-weight: 500; color: #1D4ED8;">${formatHeure(p.heure_debut)} - ${formatHeure(p.heure_fin)}</div>
-      <div style="color: #2563EB; font-size: 10px; margin-top: 2px;">📅 Disponible</div>
+      <div style="color: #2563EB; font-size: 10px; margin-top: 2px;">Disponible</div>
       <div style="display: flex; gap: 4px; margin-top: 4px;">
         <a href="admin_edit_planning_pro.php?id=${p.id_planning}" style="font-size: 10px; padding: 1px 5px; border-radius: 3px; background: white; color: #374151; border: 1px solid #d1d5db; text-decoration: none;">✎</a>
         <button type="button" data-id="${p.id_planning}" class="btn-delete" style="font-size: 10px; padding: 1px 5px; border-radius: 3px; background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5; cursor: pointer;">×</button>
@@ -176,7 +176,7 @@ function renderCalendar() {
       background: #D1FAE5; border: 1px solid #6EE7B7;
       border-radius: 6px; padding: 4px 6px; font-size: 11px; overflow: hidden; z-index: 10;">
       <div style="font-weight: 500; color: #065F46;">${formatHeure(i.date_heure_debut)} - ${formatHeure(i.date_heure_fin)}</div>
-      <div style="color: #047857; font-size: 10px; margin-top: 2px;">🏠 ${esc(i.nom_service || "Intervention")}</div>
+      <div style="color: #047857; font-size: 10px; margin-top: 2px;"> ${esc(i.nom_service || "Intervention")}</div>
     </div>`;
   });
 
@@ -198,7 +198,7 @@ function renderCalendar() {
       background: #EDE9FE; border: 1px solid #C4B5FD;
       border-radius: 6px; padding: 4px 6px; font-size: 11px; overflow: hidden; z-index: 10;">
       <div style="font-weight: 500; color: #5B21B6;">${formatHeure(e.date_heure)}</div>
-      <div style="color: #7C3AED; font-size: 10px; margin-top: 2px;">🎉 ${esc(e.titre_evenement)}</div>
+      <div style="color: #7C3AED; font-size: 10px; margin-top: 2px;"> ${esc(e.titre_evenement)}</div>
     </div>`;
   });
 

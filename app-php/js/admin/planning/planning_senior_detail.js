@@ -160,7 +160,7 @@ function renderCalendar() {
       background: #D1FAE5; border: 1px solid #6EE7B7;
       border-radius: 6px; padding: 4px 6px; font-size: 11px; overflow: hidden; z-index: 10;">
       <div style="font-weight: 500; color: #065F46;">${formatHeure(i.date_heure_debut)} - ${formatHeure(i.date_heure_fin)}</div>
-      <div style="color: #047857; font-size: 10px; margin-top: 2px;">🏠 ${esc(i.nom_service || "Intervention")}</div>
+      <div style="color: #047857; font-size: 10px; margin-top: 2px;"> ${esc(i.nom_service || "Intervention")}</div>
     </div>`;
   });
 
@@ -180,7 +180,7 @@ function renderCalendar() {
       background: #EDE9FE; border: 1px solid #C4B5FD;
       border-radius: 6px; padding: 4px 6px; font-size: 11px; overflow: hidden; z-index: 10;">
       <div style="font-weight: 500; color: #5B21B6;">${formatHeure(e.date_heure)}</div>
-      <div style="color: #7C3AED; font-size: 10px; margin-top: 2px;">🎉 ${esc(e.titre_evenement)}</div>
+      <div style="color: #7C3AED; font-size: 10px; margin-top: 2px;"> ${esc(e.titre_evenement)}</div>
     </div>`;
   });
 

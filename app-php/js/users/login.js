@@ -80,9 +80,10 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     localStorage.setItem("statut_validation", data.statut_validation || "");
 
     try {
-      await fetch("/users/session.php", {
+      await fetch("/session.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
         body: JSON.stringify(data),
       });
     } catch {}
@@ -91,7 +92,9 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
     setTimeout(() => {
       if (data.role === "senior") {
-        window.location.href = "seniors/accueil_senior.php";
+        setTimeout(() => {
+          window.location.href = "seniors/accueil_senior.php";
+        }, 4000);
       } else if (data.role === "pro") {
         if (data.statut_validation === "valide") {
           window.location.href = "pro/accueil_pro.php";
@@ -125,7 +128,7 @@ function showToast(message, type = "info") {
   const msg = document.getElementById("toastMsg");
   const icon = document.getElementById("toastIcon");
   msg.textContent = message;
-  icon.textContent = type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️";
+  icon.textContent = type === "success" ? "V" : type === "error" ? "X" : " i ";
   toast.classList.remove("-translate-y-20", "opacity-0");
   toast.classList.add("translate-y-0", "opacity-100");
   clearTimeout(showToast._t);

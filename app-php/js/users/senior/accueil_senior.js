@@ -1,17 +1,13 @@
 const API_BASE = "http://localhost:8082";
 const userId = Number(localStorage.getItem("id_user"));
-const isFirstLogin = localStorage.getItem("is_first_login") === "true";
-const email = localStorage.getItem("email") || "";
 
-if (!userId || role !== "senior") {
+const email = localStorage.getItem("email") || "";
+const role = localStorage.getItem("role");
+if (!userId || role != "senior") {
   window.location.href = "/users/login.php";
 }
 
 document.getElementById("prenomUser").textContent = email.split("@")[0] || "—";
-
-if (isFirstLogin) {
-  document.getElementById("tutorialOverlay").classList.remove("hidden");
-}
 
 (async () => {
   await Promise.all([
@@ -20,6 +16,8 @@ if (isFirstLogin) {
     loadPlanning(),
     loadStats(),
   ]);
+
+  lancerIntro();
 })();
 
 async function loadProfil() {
@@ -29,8 +27,12 @@ async function loadProfil() {
     );
     if (!res.ok) return;
     const p = await res.json();
-    document.getElementById("prenomUser").textContent =
-      p.prenom || email.split("@")[0];
+    const prenom = p.prenom || email.split("@")[0];
+    document.getElementById("prenomUser").textContent = prenom;
+    localStorage.setItem("prenom", prenom);
+
+    const is_first_login = p.is_first_login || null;
+    localStorage.setItem("is_first_login", is_first_login);
   } catch {}
 }
 
@@ -123,14 +125,14 @@ async function loadPlanning() {
         return `
         <div class="group bg-white p-6 rounded-[40px] border-2 border-transparent ${border} hover:shadow-xl transition-all duration-500 flex items-center gap-4">
           <div class="${bg} rounded-[20px] p-4 text-center min-w-[70px]">
-            <p class="text-sm font-black uppercase">${mois[date.getMonth()]}</p>
-            <p class="text-3xl font-black">${date.getDate()}</p>
+            <p class="text-sm font-fira uppercase">${mois[date.getMonth()]}</p>
+            <p class="text-3xl font-fira">${date.getDate()}</p>
           </div>
           <div class="flex-1">
-            <p class="font-black text-[#1A2B49] text-lg">${esc(p.titre || p.description || "—")}</p>
+            <p class="font-fira text-[#1A2B49] text-lg">${esc(p.titre || p.description || "—")}</p>
             <p class="text-base text-gray-400">${p.heure_debut || ""} — ${esc(p.lieu || "À domicile")}</p>
           </div>
-          <span class="${textColor} font-black uppercase text-xs tracking-widest border-b-2 ${borderLabel} pb-1">${p.type || "Activité"}</span>
+          <span class="${textColor} font-fira uppercase text-xs tracking-widest border-b-2 ${borderLabel} pb-1">${p.type || "Activité"}</span>
         </div>`;
       })
       .join("");
@@ -158,13 +160,13 @@ async function loadEvenements() {
           : "—";
         return `
         <div class="group bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] hover:shadow-xl transition-all duration-500 w-80">
-          <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-sm font-black px-3 py-1 rounded-full">${esc(e.nom_categorie || "Événement")}</span>
-          <h4 class="font-black text-[#1A2B49] mt-4 mb-2 text-xl">${esc(e.titre)}</h4>
-          <p class="text-base text-gray-400 mb-1">📍 ${esc(e.lieu || "—")}</p>
-          <p class="text-base text-gray-400 mb-4">🕐 ${date}</p>
+          <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-sm font-fira px-3 py-1 rounded-full">${esc(e.nom_categorie || "Événement")}</span>
+          <h4 class="font-fira text-[#1A2B49] mt-4 mb-2 text-xl">${esc(e.titre)}</h4>
+          <p class="text-base text-gray-400 mb-1"> ${esc(e.lieu || "—")}</p>
+          <p class="text-base text-gray-400 mb-4"> ${date}</p>
           <div class="flex justify-between items-center mt-4">
-            <span class="font-black text-[#1A2B49] text-lg">${e.prix_ticket == 0 ? "Gratuit" : e.prix_ticket + " €"}</span>
-            <a href="/users/seniors/evenements.php?id=${e.id_evenement}" class="bg-[#1A2B49] text-white text-sm font-black uppercase px-5 py-2 rounded-full hover:bg-[#7CABD3] transition-all">
+            <span class="font-fira text-[#1A2B49] text-lg">${e.prix_ticket == 0 ? "Gratuit" : e.prix_ticket + " €"}</span>
+            <a href="/users/seniors/evenements.php?id=${e.id_evenement}" class="bg-[#1A2B49] text-white text-sm font-fira uppercase px-5 py-2 rounded-full hover:bg-[#7CABD3] transition-all">
               Réserver
             </a>
           </div>
@@ -184,4 +186,86 @@ function esc(str) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+function lancerIntro() {
+  introJs()
+    .setOptions({
+      nextLabel: "Suivant →",
+      prevLabel: "← Retour",
+      doneLabel: "Commencer !",
+      steps: [
+        {
+          title: " Bienvenue " + (localStorage.getItem("prenom") || "") + " !",
+          intro:
+            "Silver Happy est votre plateforme de services à domicile. En quelques secondes, découvrez tout ce que vous pouvez faire ici.",
+        },
+        {
+          element: document.getElementById("tab-bord"),
+          title: " Tableau de bord",
+          intro:
+            "Votre point de départ. Retrouvez vos interventions à venir, vos avis reçus et vos statistiques en un coup d'œil.",
+        },
+        {
+          element: document.getElementById("services"),
+          title: " Services à domicile",
+          intro:
+            "Recherchez un prestataire selon vos besoins : ménage, santé, sport, aide administrative... Faites une demande en quelques clics.",
+        },
+        {
+          element: document.getElementById("event"),
+          title: " Événements",
+          intro:
+            "Découvrez et inscrivez-vous aux événements organisés près de chez vous.",
+        },
+        {
+          element: document.getElementById("boutique"),
+          title: " Boutique",
+          intro:
+            "Achetez des articles sélectionnés pour votre bien-être et votre quotidien.",
+        },
+        {
+          element: document.getElementById("panier"),
+          title: " Panier",
+          intro:
+            "Retrouvez vos articles et événements sélectionnés avant de passer au paiement.",
+        },
+        {
+          element: document.getElementById("devisfacture"),
+          title: " Devis & Factures",
+          intro:
+            "Acceptez ou refusez les devis de vos prestataires et retrouvez toutes vos factures.",
+        },
+        {
+          element: document.getElementById("interventions"),
+          title: " Mes Interventions",
+          intro:
+            "Suivez l'état de vos interventions en temps réel et laissez un avis une fois terminées.",
+        },
+        {
+          element: document.getElementById("conseils"),
+          title: " Conseils",
+          intro:
+            "Notre équipe vous partage des conseils personnalisés pour votre bien-être au quotidien.",
+        },
+        {
+          element: document.getElementById("messagerie"),
+          title: " Messagerie",
+          intro:
+            "Échangez directement avec vos prestataires pour organiser vos interventions.",
+        },
+        {
+          element: document.getElementById("profil"),
+          title: " Mon Profil",
+          intro:
+            "Complétez votre profil pour une meilleure expérience. Plus votre profil est complet, mieux nos prestataires pourront vous accompagner.",
+        },
+        {
+          element: document.getElementById("deconnexion"),
+          title: " Déconnexion sécurisée",
+          intro:
+            "Pensez à vous déconnecter après chaque session pour protéger vos données personnelles. Bonne navigation sur Silver Happy !",
+        },
+      ],
+    })
+    .start();
 }

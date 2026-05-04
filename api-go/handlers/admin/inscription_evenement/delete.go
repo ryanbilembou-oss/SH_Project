@@ -40,7 +40,7 @@ func DeleteInscription(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		tx.Rollback()
-		log.Printf("❌ DeleteInscription - Erreur SQL: %v", err)
+		log.Printf(" DeleteInscription - Erreur SQL: %v", err)
 		http.Error(w, `{"erreur": "Erreur annulation"}`, http.StatusInternalServerError)
 		return
 	}
@@ -57,6 +57,6 @@ func DeleteInscription(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tx.Commit()
-	log.Printf("✅ Inscription annulée user %s → événement %s", idUser, idEvenement)
+	log.Printf(" Inscription annulée user %s → événement %s", idUser, idEvenement)
 	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 }

@@ -1,4 +1,5 @@
 <?php
+require_once('../../auth.php');
 session_start();
 $current_year = date('Y');
 ?>
@@ -130,42 +131,7 @@ $current_year = date('Y');
 </head>
 
 <body class="bg-[#FFFFF6] min-h-screen flex flex-col">
-
-    <nav class="bg-white px-6 pt-4 shadow-sm border-b-2 border-[#FCE297] sticky top-0 z-50 rounded-full flex-shrink-0">
-        <div class="container mx-auto flex flex-col gap-4">
-            <div class="flex justify-between items-center w-full">
-                <a href="index.php" class="h-20"><img src="img/logo.png" alt="Logo Silver Happy" class="h-14" /></a>
-                <div class="flex items-center space-x-6 group">
-                    <div
-                        class="w-10 h-10 rounded-full bg-[#7CABD3] flex items-center justify-center text-white text-sm font-bold shadow cursor-pointer">
-                        MF
-                    </div>
-                    <p class="text-gray-300">|</p>
-                    <a href="logout.php"
-                        class="inline-block px-6 py-2 btn text-gray-500 bg-white hover:text-red-500 hover:bg-gray-50 rounded-full transition-all duration-300"
-                        role="button">Déconnexion</a>
-                </div>
-            </div>
-            <div class="flex pb-4 gap-10 mx-auto overflow-x-auto whitespace-nowrap px-4 w-full justify-center">
-                <a href="profil_senior.php"
-                    class="flex items-center gap-1 font-fira pb-2 border-b-2 border-transparent hover:border-[#FCE297] hover:text-[#7CABD3] transition-all duration-200">Mon
-                    profil</a>
-                <a href="reservation_senior.php"
-                    class="flex items-center gap-1 font-fira pb-2 border-b-2 border-[#FCE297] text-[#7CABD3] transition-all duration-200">Réserver</a>
-                <a href="mes_devis.php"
-                    class="flex items-center gap-1 font-fira pb-2 border-b-2 border-transparent hover:border-[#FCE297] hover:text-[#7CABD3] transition-all duration-200">Mes
-                    devis</a>
-                <a href="chat.php"
-                    class="flex items-center gap-1 font-fira pb-2 border-b-2 border-transparent hover:border-[#FCE297] hover:text-[#7CABD3] transition-all duration-200">Chat</a>
-                <a href="catalogue.php"
-                    class="flex items-center gap-1 font-fira pb-2 border-b-2 border-transparent hover:border-[#FCE297] hover:text-[#7CABD3] transition-all duration-200">Catalogue</a>
-                <a href="conseils.php"
-                    class="flex items-center gap-1 font-fira pb-2 border-b-2 border-transparent hover:border-[#FCE297] hover:text-[#7CABD3] transition-all duration-200">Conseils</a>
-                <a href="documents.php"
-                    class="flex items-center gap-1 font-fira pb-2 border-b-2 border-transparent hover:border-[#FCE297] hover:text-[#7CABD3] transition-all duration-200">Documents</a>
-            </div>
-        </div>
-    </nav>
+    <?php include('../include/navbar.php'); ?>
 
     
     <main class="flex-1 w-full max-w-6xl mx-auto px-6 py-12">
@@ -175,7 +141,7 @@ $current_year = date('Y');
         </a>
 
         <div class="reveal">
-            <h1 class="text-4xl font-bold text-[#1A2B49] mb-2">Planifier une prestation</h1>
+            <h1 class="text-4xl font-fira text-[#1A2B49] mb-2">Planifier une prestation</h1>
             <p class="text-gray-500 text-sm mb-10 text-lg">Choisissez le service, la date et l'heure pour votre
                 prochaine intervention.</p>
         </div>
@@ -188,15 +154,15 @@ $current_year = date('Y');
                         <div
                             class="w-8 h-8 rounded-full bg-[#FCE297] flex items-center justify-center text-[#1A2B49] font-black">
                             1</div>
-                        <h2 class="text-xl font-bold text-[#1A2B49]">Choix du service</h2>
+                        <h2 class="text-xl font-fira text-[#1A2B49]">Choix du service</h2>
                     </div>
 
                     <div class="space-y-4">
                         <div>
                             <label
-                                class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Catégorie</label>
+                                class="block text-[10px] font-fira uppercase tracking-widest text-gray-400 mb-2">Catégorie</label>
                             <select id="select-category"
-                                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1A2B49] font-bold focus:outline-none focus:border-[#7CABD3] transition-colors bg-gray-50 hover:bg-white cursor-pointer"
+                                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1A2B49] font-fira focus:outline-none focus:border-[#7CABD3] transition-colors bg-gray-50 hover:bg-white cursor-pointer"
                                 onchange="enableStep2()">
                                 <option value="" disabled selected>Sélectionner une catégorie...</option>
                                 <option value="domicile">Services à domicile</option>
@@ -206,10 +172,10 @@ $current_year = date('Y');
                         </div>
                         <div id="wrapper-prestation" class="opacity-30 pointer-events-none transition-opacity">
                             <label
-                                class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Prestation
+                                class="block text-[10px] font-fira uppercase tracking-widest text-gray-400 mb-2">Prestation
                                 exacte</label>
                             <select id="select-prestation"
-                                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1A2B49] font-bold focus:outline-none focus:border-[#7CABD3] transition-colors bg-gray-50 hover:bg-white cursor-pointer"
+                                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1A2B49] font-fira focus:outline-none focus:border-[#7CABD3] transition-colors bg-gray-50 hover:bg-white cursor-pointer"
                                 onchange="enableStep3()">
                                 <option value="" disabled selected>Choisir la prestation...</option>
                                 <option value="menage">Aide au ménage</option>
@@ -228,17 +194,17 @@ $current_year = date('Y');
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-black transition-colors"
                             id="step-2-badge">2</div>
-                        <h2 class="text-xl font-bold text-gray-400 transition-colors" id="step-2-title">Date souhaitée
+                        <h2 class="text-xl font-fira text-gray-400 transition-colors" id="step-2-title">Date souhaitée
                         </h2>
                     </div>
 
                     <div class="mb-4">
                         <div class="flex justify-between items-center mb-6">
                             <button
-                                class="text-[#7CABD3] hover:bg-[#7CABD3]/10 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold">&lsaquo;</button>
-                            <span class="font-bold text-[#1A2B49] text-sm uppercase tracking-wider">Mars 2026</span>
+                                class="text-[#7CABD3] hover:bg-[#7CABD3]/10 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-fira">&lsaquo;</button>
+                            <span class="font-fira text-[#1A2B49] text-sm uppercase tracking-wider">Mars 2026</span>
                             <button
-                                class="text-[#7CABD3] hover:bg-[#7CABD3]/10 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold">&rsaquo;</button>
+                                class="text-[#7CABD3] hover:bg-[#7CABD3]/10 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-fira">&rsaquo;</button>
                         </div>
 
                         <div class="calendar-grid mb-2">
@@ -288,12 +254,12 @@ $current_year = date('Y');
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-black transition-colors"
                             id="step-3-badge">3</div>
-                        <h2 class="text-xl font-bold text-gray-400 transition-colors" id="step-3-title">Heure et Valider
+                        <h2 class="text-xl font-fira text-gray-400 transition-colors" id="step-3-title">Heure et Valider
                         </h2>
                     </div>
 
                     <div id="time-selector" class="hidden">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#7CABD3] mb-3">Créneaux du jour
+                        <p class="text-[10px] font-fira uppercase tracking-widest text-[#7CABD3] mb-3">Créneaux du jour
                         </p>
                         <div class="grid grid-cols-2 gap-3 mb-8">
                             <div class="time-slot" onclick="selectTime(this)">09:00</div>
@@ -304,8 +270,8 @@ $current_year = date('Y');
 
                         <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100">
                             <p class="text-xs text-gray-500 mb-2">Récapitulatif :</p>
-                            <p class="text-sm font-bold text-[#1A2B49] mb-1" id="recap-service">Service sélectionné</p>
-                            <p class="text-sm text-[#7CABD3] font-semibold" id="recap-datetime">En attente de sélection
+                            <p class="text-sm font-fira text-[#1A2B49] mb-1" id="recap-service">Service sélectionné</p>
+                            <p class="text-sm text-[#7CABD3] font-semifira" id="recap-datetime">En attente de sélection
                             </p>
                         </div>
 
@@ -391,12 +357,8 @@ $current_year = date('Y');
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 
-    <footer class="bg-[#1A2B49] text-white pt-14 pb-8 px-6 mt-12 flex-shrink-0">
-        <div class="max-w-6xl mx-auto">
-            <p class="text-[10px] text-center text-gray-500 font-black uppercase tracking-[0.3em]">©
-                <?php echo $current_year; ?> Silver Happy — Votre espace bien-être</p>
-        </div>
-    </footer>
+    <?php include('../include/footer.php'); ?>
+
 </body>
 
 </html>

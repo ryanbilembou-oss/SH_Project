@@ -1,0 +1,136 @@
+.introjs-tooltip {
+  background-color: #fffff6;
+  color: #1a2b49;
+  font-family: "Fira Sans Condensed", sans-serif;
+  border-radius: 30px;
+  padding: 28px 24px;
+  box-shadow: 0 20px 60px rgba(26, 43, 73, 0.15);
+  border: 2px solid #7cabd3;
+  max-width: 380px;
+}
+
+.introjs-tooltip-title {
+  font-family: "Fira Sans Condensed", sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: #1a2b49;
+}
+
+.introjs-tooltiptext {
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.6;
+  padding: 12px 0;
+}
+
+.introjs-button {
+  font-family: "Fira Sans Condensed", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  border-radius: 50px;
+  padding: 10px 24px;
+  border: 2px solid #7cabd3;
+  transition: all 0.3s ease;
+  text-shadow: none;
+  box-shadow: none;
+}
+
+.introjs-button.introjs-nextbutton {
+  background-color: #1a2b49;
+  color: #fff;
+  border-color: #1a2b49;
+}
+
+.introjs-button.introjs-nextbutton:hover {
+  background-color: #7cabd3;
+  border-color: #7cabd3;
+}
+
+.introjs-button.introjs-prevbutton {
+  background-color: #fff;
+  color: #1a2b49;
+  border-color: #7cabd3;
+}
+
+.introjs-button.introjs-prevbutton:hover {
+  background-color: #7cabd3;
+  color: #fff;
+}
+
+.introjs-button.introjs-skipbutton {
+  color: #9ca3af;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.introjs-button.introjs-skipbutton:hover {
+  color: #1a2b49;
+}
+
+.introjs-button.introjs-donebutton {
+  background-color: #7cabd3;
+  color: #fff;
+  border-color: #7cabd3;
+}
+
+.introjs-button.introjs-donebutton:hover {
+  background-color: #1a2b49;
+  border-color: #1a2b49;
+}
+
+.introjs-overlay {
+  background-color: transparent !important;
+  opacity: 0.85 !important;
+}
+
+.introjs-helperLayer {
+  border-radius: 20px;
+  box-shadow:
+    0 0 0 4px #fce297,
+    0 0 0 6000px rgba(26, 43, 73, 0.85);
+}
+
+.introjs-bullets ul li a {
+  background: #d1d5db;
+  width: 10px;
+  height: 10px;
+}
+
+.introjs-bullets ul li a.active {
+  background: #7cabd3;
+  width: 24px;
+  border-radius: 50px;
+}
+
+.introjs-helperNumberLayer {
+  background: #fce297;
+  color: #1a2b49;
+  font-family: "Fira Sans Condensed", sans-serif;
+  font-weight: 900;
+  border-radius: 50%;
+  font-size: 0.85rem;
+}
+
+.introjs-arrow.top {
+  border-bottom-color: #7cabd3;
+}
+
+.introjs-arrow.bottom {
+  border-top-color: #7cabd3;
+}
+
+.introjs-arrow.left {
+  border-right-color: #7cabd3;
+}
+
+.introjs-arrow.right {
+  border-left-color: #7cabd3;
+}

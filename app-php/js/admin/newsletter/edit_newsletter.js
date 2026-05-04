@@ -99,14 +99,3 @@ function esc(str) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
-```
-
-Structure fichiers :
-```;
-admin / newsletter / admin_newsletter.php;
-admin_create_newsletter.php;
-admin_edit_newsletter.php;
-
-js / admin / newsletter / newsletters.js;
-create_newsletter.js;
-edit_newsletter.js;

@@ -54,31 +54,31 @@ function buildRow(event) {
       id="event-row-${event.id_evenement}"
       class="border-b border-gray-100 hover:bg-blue-50/40 transition-colors duration-150"
     >
-      <!-- Titre -->
+
       <td class="py-4 px-5">
         <span class="font-semibold text-gray-800 text-sm">${event.titre}</span>
       </td>
 
-      <!-- Catégorie -->
+
       <td class="py-4 px-5">
         <span class="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
           ${event.nom_categorie || "—"}
         </span>
       </td>
 
-      <!-- Date & Heure -->
+     
       <td class="py-4 px-5 text-sm text-gray-600 whitespace-nowrap">
         <i class="far fa-calendar-alt mr-1.5 text-blue-400"></i>
         ${dateFormatted}
       </td>
 
-      <!-- Lieu -->
+
       <td class="py-4 px-5 text-sm text-gray-500">
         <i class="fas fa-map-marker-alt mr-1.5 text-red-400"></i>
         ${event.lieu || "—"}
       </td>
 
-      <!-- Inscrits / Places -->
+      
       <td class="py-4 px-5 text-center">
         <span class="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-bold border ${badgeClass}">
           ${inscrits} / ${placesMax}
@@ -86,15 +86,14 @@ function buildRow(event) {
         </span>
       </td>
 
-      <!-- Prix -->
+
       <td class="py-4 px-5 text-center">
         <span class="font-bold text-emerald-600 text-sm">${prix}&nbsp;€</span>
       </td>
 
-      <!-- Actions -->
       <td class="py-4 px-5">
         <div class="flex items-center justify-center gap-3">
-          <!-- Modifier -->
+      
           <a
             href="admin_edit_evenement.php?id=${event.id_evenement}"
             class="group flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-600 transition-colors duration-200"
@@ -103,7 +102,7 @@ function buildRow(event) {
             <i class="fas fa-edit text-blue-600 group-hover:text-white text-sm transition-colors"></i>
           </a>
 
-          <!-- Supprimer -->
+    
           <button
             type="button"
             data-id="${event.id_evenement}"

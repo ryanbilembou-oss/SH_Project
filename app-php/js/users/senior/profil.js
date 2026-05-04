@@ -69,7 +69,7 @@ function showToast(message, type = "info") {
   const msg = document.getElementById("toastMsg");
   const icon = document.getElementById("toastIcon");
   msg.textContent = message;
-  icon.textContent = type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️";
+  icon.textContent = type === "success" ? "V" : type === "error" ? "X" : "i";
   toast.classList.remove("-translate-y-20", "opacity-0");
   toast.classList.add("translate-y-0", "opacity-100");
   clearTimeout(showToast._t);

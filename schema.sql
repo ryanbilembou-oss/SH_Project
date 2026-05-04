@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict QvtYvCD9w5Zv1hJBZ9bn1CTzjZ7yOrlrsOMrIfWVORhje9ClL9QwDuepipPRg15
+\restrict okToWqp56sPPEZ8Pv9fcQ29pMoxn1p1Lih7XqwWINBQCIqUEIykl8p9ToylUx1D
 
 -- Dumped from database version 16.13
 -- Dumped by pg_dump version 16.13
@@ -33,7 +33,9 @@ CREATE TABLE public.abonnement (
     prix_abonnement numeric(10,2) NOT NULL,
     date_debut timestamp with time zone NOT NULL,
     date_fin timestamp with time zone NOT NULL,
-    stripe_subscription_id character varying(255) NOT NULL
+    stripe_subscription_id character varying(255),
+    statut character varying(20) DEFAULT 'actif'::character varying,
+    date_resiliation timestamp with time zone
 );
 
 
@@ -276,6 +278,45 @@ ALTER SEQUENCE public.conseil_id_conseil_seq OWNED BY public.conseil.id_conseil;
 
 
 --
+-- Name: demande_service; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.demande_service (
+    id_demande integer NOT NULL,
+    id_senior integer NOT NULL,
+    id_offre integer NOT NULL,
+    date_souhaitee date NOT NULL,
+    message text,
+    statut character varying(50) DEFAULT 'en_attente'::character varying,
+    date_creation timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.demande_service OWNER TO postgres;
+
+--
+-- Name: demande_service_id_demande_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.demande_service_id_demande_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.demande_service_id_demande_seq OWNER TO postgres;
+
+--
+-- Name: demande_service_id_demande_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.demande_service_id_demande_seq OWNED BY public.demande_service.id_demande;
+
+
+--
 -- Name: devis; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -289,7 +330,8 @@ CREATE TABLE public.devis (
     montant_ttc numeric(10,2) NOT NULL,
     taux_commission numeric(5,2) NOT NULL,
     date_validite date NOT NULL,
-    statut character varying(50) DEFAULT 'en_attente'::character varying
+    statut character varying(50) DEFAULT 'en_attente'::character varying,
+    CONSTRAINT devis_statut_check CHECK (((statut)::text = ANY ((ARRAY['en_attente'::character varying, 'accepte'::character varying, 'refuse'::character varying, 'paye'::character varying, 'annule'::character varying])::text[])))
 );
 
 
@@ -411,7 +453,10 @@ CREATE TABLE public.facture (
     montant_ht numeric(10,2) NOT NULL,
     montant_ttc numeric(10,2) NOT NULL,
     commission_sh numeric(10,2) NOT NULL,
-    pdf_url character varying(255) NOT NULL
+    pdf_url character varying(255),
+    type_achat character varying(50),
+    id_achat integer,
+    details_json text
 );
 
 
@@ -632,6 +677,48 @@ ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
 
 
 --
+-- Name: negociation_commission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.negociation_commission (
+    id integer NOT NULL,
+    id_pro integer,
+    taux_propose numeric(5,2) NOT NULL,
+    taux_actuel numeric(5,2) NOT NULL,
+    message text,
+    statut character varying(20) DEFAULT 'en_attente'::character varying,
+    reponse_admin text,
+    date_demande timestamp without time zone DEFAULT now(),
+    date_reponse timestamp without time zone,
+    CONSTRAINT negociation_commission_statut_check CHECK (((statut)::text = ANY ((ARRAY['en_attente'::character varying, 'accepte'::character varying, 'refuse'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.negociation_commission OWNER TO postgres;
+
+--
+-- Name: negociation_commission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.negociation_commission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.negociation_commission_id_seq OWNER TO postgres;
+
+--
+-- Name: negociation_commission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.negociation_commission_id_seq OWNED BY public.negociation_commission.id;
+
+
+--
 -- Name: newsletter; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -799,7 +886,7 @@ CREATE TABLE public.paiements (
     stripe_session_id character varying(255),
     stripe_paiement_id character varying(255),
     statut character varying(50) DEFAULT 'en_attente'::character varying,
-    CONSTRAINT paiements_type_objet_check CHECK (((type_objet)::text = ANY ((ARRAY['article'::character varying, 'abonnement'::character varying, 'evenement'::character varying, 'intervention'::character varying])::text[])))
+    CONSTRAINT paiements_type_objet_check CHECK (((type_objet)::text = ANY ((ARRAY['article'::character varying, 'abonnement'::character varying, 'evenement'::character varying, 'intervention'::character varying, 'panier'::character varying])::text[])))
 );
 
 
@@ -825,6 +912,46 @@ ALTER SEQUENCE public.paiements_id_paiement_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.paiements_id_paiement_seq OWNED BY public.paiements.id_paiement;
+
+
+--
+-- Name: panier; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.panier (
+    id_panier integer NOT NULL,
+    id_user integer NOT NULL,
+    type_objet character varying(20) NOT NULL,
+    id_objet integer NOT NULL,
+    quantite integer DEFAULT 1 NOT NULL,
+    date_ajout timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT panier_quantite_check CHECK ((quantite > 0)),
+    CONSTRAINT panier_type_objet_check CHECK (((type_objet)::text = ANY ((ARRAY['article'::character varying, 'evenement'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.panier OWNER TO postgres;
+
+--
+-- Name: panier_id_panier_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.panier_id_panier_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.panier_id_panier_seq OWNER TO postgres;
+
+--
+-- Name: panier_id_panier_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.panier_id_panier_seq OWNED BY public.panier.id_panier;
 
 
 --
@@ -967,6 +1094,47 @@ CREATE TABLE public.profile_senior (
 ALTER TABLE public.profile_senior OWNER TO postgres;
 
 --
+-- Name: referencement; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.referencement (
+    id integer NOT NULL,
+    id_pro integer,
+    type character varying(20) NOT NULL,
+    prix numeric(5,2) NOT NULL,
+    date_debut timestamp without time zone DEFAULT now(),
+    date_fin timestamp without time zone NOT NULL,
+    actif boolean DEFAULT true,
+    stripe_session_id character varying(255),
+    CONSTRAINT referencement_type_check CHECK (((type)::text = ANY ((ARRAY['semaine'::character varying, 'mois'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.referencement OWNER TO postgres;
+
+--
+-- Name: referencement_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.referencement_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.referencement_id_seq OWNER TO postgres;
+
+--
+-- Name: referencement_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.referencement_id_seq OWNED BY public.referencement.id;
+
+
+--
 -- Name: service; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1015,6 +1183,18 @@ CREATE TABLE public.type_prestataire (
 
 
 ALTER TABLE public.type_prestataire OWNER TO postgres;
+
+--
+-- Name: type_prestataire_categorie; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.type_prestataire_categorie (
+    id_type integer NOT NULL,
+    id_categorie integer NOT NULL
+);
+
+
+ALTER TABLE public.type_prestataire_categorie OWNER TO postgres;
 
 --
 -- Name: type_prestataire_id_type_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -1128,6 +1308,13 @@ ALTER TABLE ONLY public.conseil ALTER COLUMN id_conseil SET DEFAULT nextval('pub
 
 
 --
+-- Name: demande_service id_demande; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.demande_service ALTER COLUMN id_demande SET DEFAULT nextval('public.demande_service_id_demande_seq'::regclass);
+
+
+--
 -- Name: devis id_devis; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1191,6 +1378,13 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
+-- Name: negociation_commission id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.negociation_commission ALTER COLUMN id SET DEFAULT nextval('public.negociation_commission_id_seq'::regclass);
+
+
+--
 -- Name: newsletter id_newsletter; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1226,6 +1420,13 @@ ALTER TABLE ONLY public.paiements ALTER COLUMN id_paiement SET DEFAULT nextval('
 
 
 --
+-- Name: panier id_panier; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.panier ALTER COLUMN id_panier SET DEFAULT nextval('public.panier_id_panier_seq'::regclass);
+
+
+--
 -- Name: planning_pro id_planning; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1237,6 +1438,13 @@ ALTER TABLE ONLY public.planning_pro ALTER COLUMN id_planning SET DEFAULT nextva
 --
 
 ALTER TABLE ONLY public.planning_senior ALTER COLUMN id_agenda SET DEFAULT nextval('public.planning_senior_id_agenda_seq'::regclass);
+
+
+--
+-- Name: referencement id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.referencement ALTER COLUMN id SET DEFAULT nextval('public.referencement_id_seq'::regclass);
 
 
 --
@@ -1357,6 +1565,22 @@ ALTER TABLE ONLY public.conseil
 
 
 --
+-- Name: demande_service demande_service_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.demande_service
+    ADD CONSTRAINT demande_service_pkey PRIMARY KEY (id_demande);
+
+
+--
+-- Name: demande_service demande_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.demande_service
+    ADD CONSTRAINT demande_unique UNIQUE (id_senior, id_offre, date_souhaitee);
+
+
+--
 -- Name: devis devis_id_intervention_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1461,6 +1685,14 @@ ALTER TABLE ONLY public.migrations
 
 
 --
+-- Name: negociation_commission negociation_commission_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.negociation_commission
+    ADD CONSTRAINT negociation_commission_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: newsletter newsletter_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1533,6 +1765,22 @@ ALTER TABLE ONLY public.paiements
 
 
 --
+-- Name: panier panier_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.panier
+    ADD CONSTRAINT panier_pkey PRIMARY KEY (id_panier);
+
+
+--
+-- Name: panier panier_unique_item; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.panier
+    ADD CONSTRAINT panier_unique_item UNIQUE (id_user, type_objet, id_objet);
+
+
+--
 -- Name: planning_pro planning_pro_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1581,6 +1829,14 @@ ALTER TABLE ONLY public.profile_senior
 
 
 --
+-- Name: referencement referencement_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.referencement
+    ADD CONSTRAINT referencement_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: service service_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1589,11 +1845,27 @@ ALTER TABLE ONLY public.service
 
 
 --
+-- Name: type_prestataire_categorie type_prestataire_categorie_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.type_prestataire_categorie
+    ADD CONSTRAINT type_prestataire_categorie_pkey PRIMARY KEY (id_type, id_categorie);
+
+
+--
 -- Name: type_prestataire type_prestataire_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.type_prestataire
     ADD CONSTRAINT type_prestataire_pkey PRIMARY KEY (id_type);
+
+
+--
+-- Name: note_avis unique_avis_intervention; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.note_avis
+    ADD CONSTRAINT unique_avis_intervention UNIQUE (id_intervention);
 
 
 --
@@ -1642,6 +1914,22 @@ ALTER TABLE ONLY public.article
 
 ALTER TABLE ONLY public.categorie_document
     ADD CONSTRAINT categorie_document_id_type_fkey FOREIGN KEY (id_type) REFERENCES public.type_prestataire(id_type) ON DELETE CASCADE;
+
+
+--
+-- Name: demande_service demande_service_id_offre_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.demande_service
+    ADD CONSTRAINT demande_service_id_offre_fkey FOREIGN KEY (id_offre) REFERENCES public.offre_prestataire(id_offre) ON DELETE CASCADE;
+
+
+--
+-- Name: demande_service demande_service_id_senior_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.demande_service
+    ADD CONSTRAINT demande_service_id_senior_fkey FOREIGN KEY (id_senior) REFERENCES public.profile_senior(id_user) ON DELETE CASCADE;
 
 
 --
@@ -1805,6 +2093,14 @@ ALTER TABLE ONLY public.messagerie
 
 
 --
+-- Name: negociation_commission negociation_commission_id_pro_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.negociation_commission
+    ADD CONSTRAINT negociation_commission_id_pro_fkey FOREIGN KEY (id_pro) REFERENCES public.users(id_user) ON DELETE CASCADE;
+
+
+--
 -- Name: newsletter newsletter_id_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1850,6 +2146,14 @@ ALTER TABLE ONLY public.offre_prestataire
 
 ALTER TABLE ONLY public.paiements
     ADD CONSTRAINT paiements_id_user_fkey FOREIGN KEY (id_user) REFERENCES public.users(id_user) ON DELETE RESTRICT;
+
+
+--
+-- Name: panier panier_id_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.panier
+    ADD CONSTRAINT panier_id_user_fkey FOREIGN KEY (id_user) REFERENCES public.users(id_user) ON DELETE CASCADE;
 
 
 --
@@ -1901,6 +2205,14 @@ ALTER TABLE ONLY public.profile_senior
 
 
 --
+-- Name: referencement referencement_id_pro_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.referencement
+    ADD CONSTRAINT referencement_id_pro_fkey FOREIGN KEY (id_pro) REFERENCES public.users(id_user) ON DELETE CASCADE;
+
+
+--
 -- Name: service service_id_categorie_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1909,8 +2221,24 @@ ALTER TABLE ONLY public.service
 
 
 --
+-- Name: type_prestataire_categorie type_prestataire_categorie_id_categorie_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.type_prestataire_categorie
+    ADD CONSTRAINT type_prestataire_categorie_id_categorie_fkey FOREIGN KEY (id_categorie) REFERENCES public.categorie_services(id_categorie) ON DELETE CASCADE;
+
+
+--
+-- Name: type_prestataire_categorie type_prestataire_categorie_id_type_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.type_prestataire_categorie
+    ADD CONSTRAINT type_prestataire_categorie_id_type_fkey FOREIGN KEY (id_type) REFERENCES public.type_prestataire(id_type) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict QvtYvCD9w5Zv1hJBZ9bn1CTzjZ7yOrlrsOMrIfWVORhje9ClL9QwDuepipPRg15
+\unrestrict okToWqp56sPPEZ8Pv9fcQ29pMoxn1p1Lih7XqwWINBQCIqUEIykl8p9ToylUx1D
 

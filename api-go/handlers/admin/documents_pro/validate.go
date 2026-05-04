@@ -33,30 +33,31 @@ func ValidateDocument(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"erreur": "Statut invalide"}`, http.StatusBadRequest)
 		return
 	}
-
-	// Met à jour le statut du document
+ 
 	_, err := database.DB.Exec(`UPDATE documents_pro SET statut = $1 WHERE id_doc = $2`, req.Statut, req.Id_doc)
 	if err != nil {
 		log.Printf("❌ ValidateDocument - Erreur SQL: %v", err)
 		http.Error(w, `{"erreur": "Erreur base de données"}`, http.StatusInternalServerError)
 		return
-	}
-
-	// Vérifie si tous les documents du pro sont validés
+	} 
 	var idUser int
 	database.DB.QueryRow(`SELECT id_user FROM documents_pro WHERE id_doc = $1`, req.Id_doc).Scan(&idUser)
-
+ 
 	var totalDocs, validatedDocs int
 	database.DB.QueryRow(`SELECT COUNT(*) FROM documents_pro WHERE id_user = $1`, idUser).Scan(&totalDocs)
 	database.DB.QueryRow(`SELECT COUNT(*) FROM documents_pro WHERE id_user = $1 AND statut = 'valide'`, idUser).Scan(&validatedDocs)
 
 	dossierComplet := totalDocs > 0 && totalDocs == validatedDocs
-
-	if dossierComplet {
+	if dossierComplet { 
 		database.DB.Exec(`UPDATE profile_pro SET statut_validation = 'valide' WHERE id_user = $1`, idUser)
 		log.Printf("✅ Dossier complet pour user %d → statut_validation = valide", idUser)
-	} else if req.Statut == "refuse" {
-		database.DB.Exec(`UPDATE profile_pro SET statut_validation = 'refuse' WHERE id_user = $1`, idUser)
+	} else if req.Statut == "refuse" { 
+		var statutActuel string
+		database.DB.QueryRow(`SELECT statut_validation FROM profile_pro WHERE id_user = $1`, idUser).Scan(&statutActuel)
+		if statutActuel == "valide" {
+			database.DB.Exec(`UPDATE profile_pro SET statut_validation = 'en_attente' WHERE id_user = $1`, idUser)
+			log.Printf("⚠️ Document refusé pour user %d → statut_validation repassé en en_attente", idUser)
+		}
 	}
 
 	log.Printf("✅ Document %d → statut: %s", req.Id_doc, req.Statut)

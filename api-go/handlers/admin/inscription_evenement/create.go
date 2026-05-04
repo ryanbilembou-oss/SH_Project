@@ -68,7 +68,7 @@ _, err = tx.Exec(
 )
 	if err != nil {
 		tx.Rollback()
-		log.Printf("❌ CreateInscription - Erreur SQL: %v", err)
+		log.Printf(" CreateInscription - Erreur SQL: %v", err)
 		http.Error(w, `{"erreur": "Erreur lors de la création"}`, http.StatusInternalServerError)
 		return
 	}
@@ -79,13 +79,13 @@ _, err = tx.Exec(
 	)
 	if err != nil {
 		tx.Rollback()
-		log.Printf("❌ CreateInscription - Erreur UPDATE: %v", err)
+		log.Printf(" CreateInscription - Erreur UPDATE: %v", err)
 		http.Error(w, `{"erreur": "Erreur mise à jour places"}`, http.StatusInternalServerError)
 		return
 	}
 
 	tx.Commit()
-	log.Printf("✅ Inscription créée user %d → événement %d", req.Id_user, req.Id_evenement)
+	log.Printf(" Inscription créée user %d → événement %d", req.Id_user, req.Id_evenement)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 }

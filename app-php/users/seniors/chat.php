@@ -303,15 +303,6 @@ $current_year = date('Y');
                     </div>
 
 
-                    <div id="emoji-picker"
-                        class="hidden absolute bottom-20 left-72 bg-white rounded-2xl shadow-xl border border-gray-100 p-3 grid grid-cols-7 gap-1 z-10">
-                        <?php foreach (['😊', '😄', '👍', '❤️', '🙏', '😢', '😮', '🎉', '👋', '💪', '✅', '⭐', '🏠', '🌸', '☀️', '🤝', '💬', '📞', '📅', '🔔', '🌈'] as $e): ?>
-                            <button onclick="insertEmoji('<?php echo $e; ?>')"
-                                class="text-xl hover:scale-125 transition-transform p-1">
-                                <?php echo $e; ?>
-                            </button>
-                        <?php endforeach; ?>
-                    </div>
 
 
                     <div class="flex-1 bg-gray-50 rounded-2xl px-4 py-2.5 flex items-end gap-2">

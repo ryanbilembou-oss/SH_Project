@@ -24,7 +24,7 @@ func UpdateService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req ServiceRequest // Utilise la structure définie dans types.go
+	var req ServiceRequest  
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		sendError(w, "global", "Données invalides", http.StatusBadRequest)
 		return

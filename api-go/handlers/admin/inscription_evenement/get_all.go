@@ -37,7 +37,7 @@ func GetAllInscriptions(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := database.DB.Query(query)
 	if err != nil {
-		log.Printf("❌ GetAllInscriptions - Erreur SQL: %v", err)
+		log.Printf("GetAllInscriptions - Erreur SQL: %v", err)
 		http.Error(w, `{"erreur": "Erreur base de données"}`, http.StatusInternalServerError)
 		return
 	}
@@ -47,7 +47,7 @@ func GetAllInscriptions(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var i InscriptionDisplay
 		if err := rows.Scan(&i.Id, &i.Id_user, &i.Id_evenement, &i.TitreEvenement, &i.DateHeure, &i.Lieu, &i.Statut, &i.Date_inscription); err != nil {
-			log.Printf("⚠️ GetAllInscriptions - Erreur scan: %v", err)
+			log.Printf("GetAllInscriptions - Erreur scan: %v", err)
 			continue
 		}
 		inscriptions = append(inscriptions, i)
@@ -81,7 +81,7 @@ func GetInscriptionsByUser(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := database.DB.Query(query, id)
 	if err != nil {
-		log.Printf("❌ GetInscriptionsByUser - Erreur SQL: %v", err)
+		log.Printf("GetInscriptionsByUser - Erreur SQL: %v", err)
 		http.Error(w, `{"erreur": "Erreur base de données"}`, http.StatusInternalServerError)
 		return
 	}

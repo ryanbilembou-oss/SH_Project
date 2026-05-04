@@ -25,6 +25,7 @@ type RegisterRequest struct {
 	AdressePro     string `json:"adresse_pro"`
 	StatutJuridique string `json:"statut_juridique"`
 	TelephonePro   string `json:"telephone_pro"`
+  IdType          int    `json:"id_type"` 
 }
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -94,12 +95,12 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 			lastID, req.Nom, req.Prenom, req.Genre, req.Telephone, req.DateNaissance, req.Adresse,
 		)
 	case "pro":
-		_, errProfile = tx.Exec(
-			`INSERT INTO profile_pro (id_user, nom, prenom, genre, telephone_pro, date_naissance, siret, bio, nom_entreprise, adresse_pro, statut_juridique, statut_validation, is_first_login)
-			 VALUES ($1, $2, $3, $4, $5, NULLIF($6, '')::DATE, NULLIF($7, ''), NULLIF($8, ''), NULLIF($9, ''), NULLIF($10, ''), NULLIF($11, ''), 'en_attente', true)`,
-			lastID, req.Nom, req.Prenom, req.Genre, req.TelephonePro, req.DateNaissance,
-			req.Siret, req.Bio, req.NomEntreprise, req.AdressePro, req.StatutJuridique,
-		)
+			_, errProfile = tx.Exec(
+					`INSERT INTO profile_pro (id_user, nom, prenom, genre, telephone_pro, date_naissance, siret, bio, nom_entreprise, adresse_pro, statut_juridique, id_type, statut_validation, is_first_login)
+					VALUES ($1, $2, $3, $4, $5, NULLIF($6, '')::DATE, NULLIF($7, ''), NULLIF($8, ''), NULLIF($9, ''), NULLIF($10, ''), NULLIF($11, ''), NULLIF($12, 0), 'en_attente', true)`,
+					lastID, req.Nom, req.Prenom, req.Genre, req.TelephonePro, req.DateNaissance,
+					req.Siret, req.Bio, req.NomEntreprise, req.AdressePro, req.StatutJuridique, req.IdType,
+			)
 	}
 
 	if errProfile != nil {
