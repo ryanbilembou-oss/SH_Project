@@ -8,52 +8,62 @@ import (
 )
 
 type LitigeRequest struct {
-	Id_intervention int    `json:"id_intervention"`
-	Motif           string `json:"motif"`
-	Statut          string `json:"statut"`
+	IdIntervention int    `json:"id_intervention"`
+	IdSenior       int    `json:"id_senior"`
+	IdPro          int    `json:"id_pro"`
+	Motif          string `json:"motif"`
+	OuvertPar      string `json:"ouvert_par"`
 }
 
 func CreateLitige(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
-	if r.Method != http.MethodPost {
-		http.Error(w, `{"erreur": "Méthode non autorisée"}`, http.StatusMethodNotAllowed)
-		return
-	}
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method == "OPTIONS" { w.WriteHeader(200); return }
+	if r.Method != "POST" { w.WriteHeader(405); return }
 
 	var req LitigeRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, `{"erreur": "Format de données invalide"}`, http.StatusBadRequest)
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(map[string]string{"erreur": "Format invalide"})
 		return
 	}
 
-	if req.Id_intervention == 0 || req.Motif == "" {
-		http.Error(w, `{"erreur": "id_intervention et motif sont obligatoires"}`, http.StatusBadRequest)
+	if req.IdIntervention == 0 || req.Motif == "" {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(map[string]string{"erreur": "id_intervention et motif obligatoires"})
 		return
 	}
 
-	if req.Statut == "" {
-		req.Statut = "ouvert"
+	if req.OuvertPar == "" {
+		req.OuvertPar = "senior"
 	}
 
-	_, err := database.DB.Exec(
-		`INSERT INTO litiges (id_intervention, motif, statut, date_ouverture) VALUES ($1, $2, $3, NOW())`,
-		req.Id_intervention, req.Motif, req.Statut,
-	)
+	var dejaExiste bool
+	database.DB.QueryRow(
+		`SELECT EXISTS(SELECT 1 FROM litiges WHERE id_intervention = $1 AND statut = 'ouvert')`,
+		req.IdIntervention,
+	).Scan(&dejaExiste)
+	if dejaExiste {
+		w.WriteHeader(409)
+		json.NewEncoder(w).Encode(map[string]string{"erreur": "Un litige est déjà ouvert pour cette intervention"})
+		return
+	}
+
+	var idLitige int
+	err := database.DB.QueryRow(`
+		INSERT INTO litiges (id_intervention, id_senior, id_pro, motif, statut, ouvert_par, statut_detail)
+		VALUES ($1, $2, $3, $4, 'ouvert', $5, 'ouvert')
+		RETURNING id_litige
+	`, req.IdIntervention, req.IdSenior, req.IdPro, req.Motif, req.OuvertPar).Scan(&idLitige)
 	if err != nil {
-		log.Printf("❌ CreateLitige - Erreur SQL: %v", err)
-		http.Error(w, `{"erreur": "Erreur lors de la création"}`, http.StatusInternalServerError)
+		log.Printf("CreateLitige error: %v", err)
+		w.WriteHeader(500)
 		return
 	}
 
-	log.Printf("✅ Litige créé pour intervention %d", req.Id_intervention)
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
+	log.Printf("Litige cree: id=%d intervention=%d", idLitige, req.IdIntervention)
+	w.WriteHeader(201)
+	json.NewEncoder(w).Encode(map[string]interface{}{"id_litige": idLitige})
 }

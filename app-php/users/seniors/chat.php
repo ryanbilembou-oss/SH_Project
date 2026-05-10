@@ -326,6 +326,12 @@ $current_year = date('Y');
         </div>
 
     </div>
+    <script>
+(function() {
+    const z = localStorage.getItem("senior_zoom");
+    if (z) document.documentElement.style.zoom = z;
+})();
+</script>
 
     <script>
         let allConvs = [];
@@ -557,6 +563,13 @@ $current_year = date('Y');
 
         loadConversations().then(() => openConv(0));
     </script>
+        <script src="/js/include/zoom_ihm.js?v=<?php echo time(); ?>"></script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script src="/js/include/onesignal.js" defer></script>
+
+<script src="/js/include/notifications.js?v=<?php echo time(); ?>"></script>
+
 
 </body>
 

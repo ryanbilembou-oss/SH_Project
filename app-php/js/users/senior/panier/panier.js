@@ -167,7 +167,6 @@ function renderPanier() {
 
   document.getElementById("totalPrix").textContent = total.toFixed(2) + " €";
 }
-
 async function updateQty(idPanier, newQty) {
   if (newQty <= 0) return;
 
@@ -188,6 +187,15 @@ async function updateQty(idPanier, newQty) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id_panier: idPanier, quantite: newQty }),
     });
+    if (res.status === 409) {
+      const data = await res.json();
+      const max = data.stock || 0;
+      const label =
+        item?.type_objet === "evenement" ? "places disponibles" : "en stock";
+      showToast(`Maximum ${max} ${label}.`, "error");
+      await loadPanier();
+      return;
+    }
     if (!res.ok) throw new Error();
     await loadPanier();
   } catch {

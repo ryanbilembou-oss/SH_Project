@@ -39,6 +39,9 @@ import (
 	tpc "silver-happy-api/handlers/admin/type_prestataire_categorie"
 	nego "silver-happy-api/handlers/admin/negociation_commission"
 	ref "silver-happy-api/handlers/admin/referencement"
+	virement "silver-happy-api/handlers/admin/virement"
+	"silver-happy-api/jobs"
+	notification "silver-happy-api/handlers/admin/notification"
 
 )
 
@@ -46,6 +49,7 @@ import (
 func main() {
 	database.Connect()
 	database.RunMigrations()
+	jobs.StartVirementAuto(database.DB)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Bienvenue sur l'API Go de Silver Happy !")
@@ -171,12 +175,16 @@ func main() {
 	http.HandleFunc("/admin/planning_senior/update", planning_senior.UpdatePlanningSenior)
 	http.HandleFunc("/admin/planning_senior/delete", planning_senior.DeletePlanningSenior)
 
-
 	http.HandleFunc("/admin/litiges/get", litiges.GetAllLitiges)
-	http.HandleFunc("/admin/litiges/getone", litiges.GetLitige)
+	http.HandleFunc("/admin/litiges/getone", litiges.GetOneLitige)
+	http.HandleFunc("/admin/litiges/get_by_user", litiges.GetLitigesByUser)
 	http.HandleFunc("/admin/litiges/create", litiges.CreateLitige)
 	http.HandleFunc("/admin/litiges/update", litiges.UpdateLitige)
 	http.HandleFunc("/admin/litiges/delete", litiges.DeleteLitige)
+	http.HandleFunc("/admin/litiges/messages/get", litiges.GetMessages)
+	http.HandleFunc("/admin/litiges/messages/send", litiges.SendMessage)
+
+
 
 	
 
@@ -273,6 +281,19 @@ func main() {
 
 	http.HandleFunc("/admin/referencement/get_tous", ref.GetTous)
 	http.HandleFunc("/admin/facture/generate_pdfs", facture.GenerateMissingPDFs)
+
+	http.HandleFunc("/admin/virement/trigger", virement.TriggerVirement)
+	http.HandleFunc("/admin/virement/get_by_pro", virement.GetVirementsByPro)
+	http.HandleFunc("/admin/virement/get_all", virement.GetAllVirements)
+	http.HandleFunc("/admin/stripe/refund/intervention", stripe_handler.RefundIntervention)
+	http.HandleFunc("/admin/users/ban", admin.BanUser)
+	http.HandleFunc("/admin/users/unban", admin.UnbanUser)
+	http.HandleFunc("/admin/notification/get", notification.GetByUser)
+	http.HandleFunc("/admin/notification/marquer_lu", notification.MarquerLu)
+	http.HandleFunc("/admin/notification/save_player_id", notification.SavePlayerID)
+	http.HandleFunc("/admin/notification/envoyer_a_tous", notification.EnvoyerATous)
+
+
 
 	fmt.Println(" API Go lancée et connectée à PostgreSQL sur le port 8081...")
 	log.Fatal(http.ListenAndServe(":8081", nil))

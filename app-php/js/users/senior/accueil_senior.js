@@ -188,84 +188,105 @@ function esc(str) {
     .replace(/'/g, "&#39;");
 }
 function lancerIntro() {
-  introJs()
-    .setOptions({
-      nextLabel: "Suivant →",
-      prevLabel: "← Retour",
-      doneLabel: "Commencer !",
-      steps: [
-        {
-          title: " Bienvenue " + (localStorage.getItem("prenom") || "") + " !",
-          intro:
-            "Silver Happy est votre plateforme de services à domicile. En quelques secondes, découvrez tout ce que vous pouvez faire ici.",
-        },
-        {
-          element: document.getElementById("tab-bord"),
-          title: " Tableau de bord",
-          intro:
-            "Votre point de départ. Retrouvez vos interventions à venir, vos avis reçus et vos statistiques en un coup d'œil.",
-        },
-        {
-          element: document.getElementById("services"),
-          title: " Services à domicile",
-          intro:
-            "Recherchez un prestataire selon vos besoins : ménage, santé, sport, aide administrative... Faites une demande en quelques clics.",
-        },
-        {
-          element: document.getElementById("event"),
-          title: " Événements",
-          intro:
-            "Découvrez et inscrivez-vous aux événements organisés près de chez vous.",
-        },
-        {
-          element: document.getElementById("boutique"),
-          title: " Boutique",
-          intro:
-            "Achetez des articles sélectionnés pour votre bien-être et votre quotidien.",
-        },
-        {
-          element: document.getElementById("panier"),
-          title: " Panier",
-          intro:
-            "Retrouvez vos articles et événements sélectionnés avant de passer au paiement.",
-        },
-        {
-          element: document.getElementById("devisfacture"),
-          title: " Devis & Factures",
-          intro:
-            "Acceptez ou refusez les devis de vos prestataires et retrouvez toutes vos factures.",
-        },
-        {
-          element: document.getElementById("interventions"),
-          title: " Mes Interventions",
-          intro:
-            "Suivez l'état de vos interventions en temps réel et laissez un avis une fois terminées.",
-        },
-        {
-          element: document.getElementById("conseils"),
-          title: " Conseils",
-          intro:
-            "Notre équipe vous partage des conseils personnalisés pour votre bien-être au quotidien.",
-        },
-        {
-          element: document.getElementById("messagerie"),
-          title: " Messagerie",
-          intro:
-            "Échangez directement avec vos prestataires pour organiser vos interventions.",
-        },
-        {
-          element: document.getElementById("profil"),
-          title: " Mon Profil",
-          intro:
-            "Complétez votre profil pour une meilleure expérience. Plus votre profil est complet, mieux nos prestataires pourront vous accompagner.",
-        },
-        {
-          element: document.getElementById("deconnexion"),
-          title: " Déconnexion sécurisée",
-          intro:
-            "Pensez à vous déconnecter après chaque session pour protéger vos données personnelles. Bonne navigation sur Silver Happy !",
-        },
-      ],
-    })
-    .start();
+  const intro = introJs();
+  intro.setOptions({
+    nextLabel: "Suivant →",
+    prevLabel: "← Retour",
+    doneLabel: "Commencer !",
+    exitOnOverlayClick: false,
+    exitOnEsc: false,
+    showBullets: true,
+    showStepNumbers: false,
+    steps: [
+      {
+        title: "Bienvenue " + (localStorage.getItem("prenom") || "") + " !",
+        intro:
+          "Silver Happy est votre plateforme de services à domicile. En quelques secondes, découvrez tout ce que vous pouvez faire ici.",
+      },
+      {
+        element: document.getElementById("tab-bord"),
+        title: "Tableau de bord",
+        intro:
+          "Votre point de départ. Retrouvez vos interventions à venir, vos avis reçus et vos statistiques en un coup d'œil.",
+      },
+      {
+        element: document.getElementById("services"),
+        title: "Services à domicile",
+        intro:
+          "Recherchez un prestataire selon vos besoins : ménage, santé, sport, aide administrative... Faites une demande en quelques clics.",
+      },
+      {
+        element: document.getElementById("event"),
+        title: "Événements",
+        intro:
+          "Découvrez et inscrivez-vous aux événements organisés près de chez vous.",
+      },
+      {
+        element: document.getElementById("boutique"),
+        title: "Boutique",
+        intro:
+          "Achetez des articles sélectionnés pour votre bien-être et votre quotidien.",
+      },
+      {
+        element: document.getElementById("panier"),
+        title: "Panier",
+        intro:
+          "Retrouvez vos articles et événements sélectionnés avant de passer au paiement.",
+      },
+      {
+        element: document.getElementById("devisfacture"),
+        title: "Devis et Factures",
+        intro:
+          "Acceptez ou refusez les devis de vos prestataires et retrouvez toutes vos factures.",
+      },
+      {
+        element: document.getElementById("interventions"),
+        title: "Mes Interventions",
+        intro:
+          "Suivez l'état de vos interventions en temps réel et laissez un avis une fois terminées.",
+      },
+      {
+        element: document.getElementById("conseils"),
+        title: "Conseils",
+        intro:
+          "Notre équipe vous partage des conseils personnalisés pour votre bien-être au quotidien.",
+      },
+      {
+        element: document.getElementById("messagerie"),
+        title: "Messagerie",
+        intro:
+          "Échangez directement avec vos prestataires pour organiser vos interventions.",
+      },
+      {
+        element: document.getElementById("profil"),
+        title: "Mon Profil",
+        intro:
+          "Complétez votre profil pour une meilleure expérience. Plus votre profil est complet, mieux nos prestataires pourront vous accompagner.",
+      },
+      {
+        element: document.getElementById("deconnexion"),
+        title: "Deconnexion securisee",
+        intro:
+          "Pensez à vous déconnecter après chaque session pour protéger vos données personnelles. Bonne navigation sur Silver Happy !",
+      },
+    ],
+  });
+
+  intro.onstart(function () {
+    setTimeout(() => {
+      document
+        .querySelectorAll(".introjs-skipbutton")
+        .forEach((el) => (el.style.display = "none"));
+    }, 50);
+  });
+
+  intro.onchange(function () {
+    setTimeout(() => {
+      document
+        .querySelectorAll(".introjs-skipbutton")
+        .forEach((el) => (el.style.display = "none"));
+    }, 50);
+  });
+
+  intro.start();
 }

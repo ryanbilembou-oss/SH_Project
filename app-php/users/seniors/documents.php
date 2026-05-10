@@ -138,6 +138,12 @@ $avatar = 'MF';
     </main>
 
     <?php include('../include/footer.php'); ?>
+    <script>
+(function() {
+    const z = localStorage.getItem("senior_zoom");
+    if (z) document.documentElement.style.zoom = z;
+})();
+</script>
 
 
     <script>
@@ -146,6 +152,14 @@ $avatar = 'MF';
         });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
+        <script src="/js/include/zoom_ihm.js?v=<?php echo time(); ?>"></script>
+
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script src="/js/include/onesignal.js" defer></script>
+
+<script src="/js/include/notifications.js?v=<?php echo time(); ?>"></script>
+
 </body>
 
 </html>

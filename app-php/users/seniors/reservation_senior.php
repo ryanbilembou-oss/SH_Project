@@ -289,8 +289,15 @@ $current_year = date('Y');
 
         </div>
     </main>
+    <script>
+(function() {
+    const z = localStorage.getItem("senior_zoom");
+    if (z) document.documentElement.style.zoom = z;
+})();
+</script>
 
-    
+    <script src="/js/include/zoom_ihm.js?v=<?php echo time(); ?>"></script>
+
     <script>
         function enableStep2() {
             document.getElementById('wrapper-prestation').classList.remove('opacity-30', 'pointer-events-none');
@@ -358,6 +365,11 @@ $current_year = date('Y');
     </script>
 
     <?php include('../include/footer.php'); ?>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script src="/js/include/onesignal.js" defer></script>
+
+<script src="/js/include/notifications.js?v=<?php echo time(); ?>"></script>
 
 </body>
 

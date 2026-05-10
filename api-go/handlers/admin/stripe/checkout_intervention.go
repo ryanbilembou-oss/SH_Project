@@ -10,10 +10,10 @@ import (
 )
 
 type CheckoutInterventionRequest struct {
-	IDSenior      int    `json:"id_senior"`
-	IDDevis       int    `json:"id_devis"`
-	IDIntervention int   `json:"id_intervention"`
-	RedirectURL   string `json:"redirect_url"`
+	IDSenior       int    `json:"id_senior"`
+	IDDevis        int    `json:"id_devis"`
+	IDIntervention int    `json:"id_intervention"`
+	RedirectURL    string `json:"redirect_url"`
 }
 
 func CheckoutIntervention(w http.ResponseWriter, r *http.Request) {
@@ -37,20 +37,30 @@ func CheckoutIntervention(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"erreur": "id_senior, id_devis et id_intervention obligatoires"}`, 400)
 		return
 	}
- 
+
 	var montantTTC float64
 	var nomService string
 	var idPro int
 	err := database.DB.QueryRow(`
-			SELECT d.montant_ttc, COALESCE(s.nom, 'Intervention'), i.id_pro
-			FROM devis d
-			LEFT JOIN intervention i ON i.id_devis = d.id_devis
-			LEFT JOIN offre_prestataire op ON op.id_offre = i.id_offre
-			LEFT JOIN service s ON s.id = op.id_service
-			WHERE d.id_devis = $1 AND d.statut = 'accepte'
+		SELECT d.montant_ttc, COALESCE(s.nom, 'Intervention'), d.id_pro
+		FROM devis d
+		LEFT JOIN service s ON s.id = d.id_service
+		WHERE d.id_devis = $1 AND d.statut = 'accepte'
 	`, req.IDDevis).Scan(&montantTTC, &nomService, &idPro)
-		montantCentimes := int64(montantTTC * 100)
- 
+	if err != nil {
+		log.Printf("CheckoutIntervention - Erreur query devis: %v", err)
+		http.Error(w, `{"erreur": "Devis introuvable ou non accepte"}`, 404)
+		return
+	}
+
+	if montantTTC <= 0 {
+		log.Printf("CheckoutIntervention - Montant invalide: %.2f", montantTTC)
+		http.Error(w, `{"erreur": "Montant invalide"}`, 400)
+		return
+	}
+
+	montantCentimes := int64(montantTTC * 100)
+
 	var idPaiement int
 	err = database.DB.QueryRow(`
 		INSERT INTO paiements (id_user, prix, type_objet, id_objet, statut)
@@ -58,7 +68,7 @@ func CheckoutIntervention(w http.ResponseWriter, r *http.Request) {
 		RETURNING id_paiement
 	`, req.IDSenior, montantTTC, req.IDIntervention).Scan(&idPaiement)
 	if err != nil {
-		log.Printf("❌ CheckoutIntervention - Erreur INSERT paiement: %v", err)
+		log.Printf("CheckoutIntervention - Erreur INSERT paiement: %v", err)
 		http.Error(w, `{"erreur": "Erreur serveur"}`, 500)
 		return
 	}
@@ -85,7 +95,7 @@ func CheckoutIntervention(w http.ResponseWriter, r *http.Request) {
 
 	sessionURL, sessionID, err := createCheckoutSession(params)
 	if err != nil {
-		log.Printf("❌ CheckoutIntervention - Erreur Stripe: %v", err)
+		log.Printf("CheckoutIntervention - Erreur Stripe: %v", err)
 		database.DB.Exec(`DELETE FROM paiements WHERE id_paiement = $1`, idPaiement)
 		http.Error(w, `{"erreur": "Erreur service de paiement"}`, 500)
 		return
@@ -93,6 +103,7 @@ func CheckoutIntervention(w http.ResponseWriter, r *http.Request) {
 
 	database.DB.Exec(`UPDATE paiements SET stripe_session_id = $1 WHERE id_paiement = $2`, sessionID, idPaiement)
 
-	log.Printf("✅ Session Stripe intervention: senior=%d, devis=%d, intervention=%d, paiement=%d", req.IDSenior, req.IDDevis, req.IDIntervention, idPaiement)
+	log.Printf("Session Stripe intervention: senior=%d devis=%d intervention=%d montant=%.2f paiement=%d",
+		req.IDSenior, req.IDDevis, req.IDIntervention, montantTTC, idPaiement)
 	json.NewEncoder(w).Encode(map[string]string{"url": sessionURL})
 }

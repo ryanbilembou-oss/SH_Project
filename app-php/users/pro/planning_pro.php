@@ -105,6 +105,26 @@ echo $_SESSION['role'] ;
                         <input type="time" id="inputFin" class="w-full border-2 border-gray-200 rounded-[20px] px-4 py-3 font-fira focus:outline-none focus:border-[#7CABD3]">
                     </div>
                 </div>
+                <div class="grid grid-cols-2 gap-4">
+    <div>
+        <label class="block text-sm font-fira uppercase tracking-widest text-gray-400 mb-2">Duree intervention</label>
+        <select id="inputDuree" class="w-full border-2 border-gray-100 rounded-[15px] px-4 py-3 font-fira focus:outline-none focus:border-[#7CABD3] bg-white">
+            <option value="30">30 minutes</option>
+            <option value="45">45 minutes</option>
+            <option value="60" selected>1 heure</option>
+            <option value="90">1h30</option>
+            <option value="120">2 heures</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-fira uppercase tracking-widest text-gray-400 mb-2">Pause entre</label>
+        <select id="inputPause" class="w-full border-2 border-gray-100 rounded-[15px] px-4 py-3 font-fira focus:outline-none focus:border-[#7CABD3] bg-white">
+            <option value="0">Pas de pause</option>
+            <option value="15">15 minutes</option>
+            <option value="30">30 minutes</option>
+        </select>
+    </div>
+</div>
                 <div class="flex items-center gap-3">
                     <input type="checkbox" id="inputActif" checked class="w-5 h-5 accent-[#7CABD3]">
                     <label for="inputActif" class="font-fira text-[#1A2B49]">Créneau actif</label>
@@ -129,5 +149,10 @@ echo $_SESSION['role'] ;
     <?php include('../include/footer.php'); ?>
 
     <script src="/js/users/pro/planning_pro.js?v=<?php echo time(); ?>"></script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script src="/js/include/onesignal.js" defer></script>
+
+<script src="/js/include/notifications.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

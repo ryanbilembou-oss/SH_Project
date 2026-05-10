@@ -45,22 +45,56 @@ func AddPanier(w http.ResponseWriter, r *http.Request) {
 	if req.Quantite <= 0 {
 		req.Quantite = 1
 	}
- 
+
 	if req.TypeObjet == "evenement" {
 		req.Quantite = 1
 	}
- 
-	var exists bool
+
+	var dejaEnPanier int
+	database.DB.QueryRow(
+		`SELECT COALESCE(quantite, 0) FROM panier WHERE id_user = $1 AND type_objet = $2 AND id_objet = $3`,
+		req.IdUser, req.TypeObjet, req.IdObjet,
+	).Scan(&dejaEnPanier)
+
+	totalVoulu := dejaEnPanier + req.Quantite
+
 	if req.TypeObjet == "article" {
-		database.DB.QueryRow(`SELECT EXISTS(SELECT 1 FROM article WHERE id = $1)`, req.IdObjet).Scan(&exists)
+		var stock int
+		err := database.DB.QueryRow(`SELECT stock FROM article WHERE id = $1`, req.IdObjet).Scan(&stock)
+		if err != nil {
+			http.Error(w, `{"erreur": "Article introuvable"}`, http.StatusNotFound)
+			return
+		}
+		if stock <= 0 {
+			http.Error(w, `{"erreur": "Article épuisé"}`, http.StatusConflict)
+			return
+		}
+		if totalVoulu > stock {
+			w.WriteHeader(http.StatusConflict)
+			json.NewEncoder(w).Encode(map[string]interface{}{"erreur": "Stock insuffisant", "stock": stock, "max": stock - dejaEnPanier})
+			return
+		}
 	} else {
-		database.DB.QueryRow(`SELECT EXISTS(SELECT 1 FROM evenements WHERE id_evenement = $1)`, req.IdObjet).Scan(&exists)
+		var nbPlacesMax, nbInscrits int
+		err := database.DB.QueryRow(
+			`SELECT nb_places_max, nb_inscrits FROM evenements WHERE id_evenement = $1`,
+			req.IdObjet,
+		).Scan(&nbPlacesMax, &nbInscrits)
+		if err != nil {
+			http.Error(w, `{"erreur": "Événement introuvable"}`, http.StatusNotFound)
+			return
+		}
+		placesRestantes := nbPlacesMax - nbInscrits
+		if placesRestantes <= 0 {
+			http.Error(w, `{"erreur": "Événement complet"}`, http.StatusConflict)
+			return
+		}
+		if totalVoulu > placesRestantes {
+			http.Error(w, `{"erreur": "Places insuffisantes"}`, http.StatusConflict)
+			return
+		}
 	}
-	if !exists {
-		http.Error(w, `{"erreur": "Objet introuvable"}`, http.StatusNotFound)
-		return
-	}
- 
+
 	_, err := database.DB.Exec(
 		`INSERT INTO panier (id_user, type_objet, id_objet, quantite)
 		 VALUES ($1, $2, $3, $4)
@@ -69,12 +103,12 @@ func AddPanier(w http.ResponseWriter, r *http.Request) {
 		req.IdUser, req.TypeObjet, req.IdObjet, req.Quantite,
 	)
 	if err != nil {
-		log.Printf("❌ AddPanier - Erreur SQL: %v", err)
+		log.Printf("AddPanier - Erreur SQL: %v", err)
 		http.Error(w, `{"erreur": "Erreur serveur"}`, http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("✅ Panier: user=%d ajout %s id=%d qty=%d", req.IdUser, req.TypeObjet, req.IdObjet, req.Quantite)
+	log.Printf("Panier: user=%d ajout %s id=%d qty=%d", req.IdUser, req.TypeObjet, req.IdObjet, req.Quantite)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 }

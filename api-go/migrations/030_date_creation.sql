@@ -1,0 +1,1 @@
+ALTER TABLE notification ADD COLUMN IF NOT EXISTS date_creation timestamp with time zone DEFAULT CURRENT_TIMESTAMP;

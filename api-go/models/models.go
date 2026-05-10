@@ -12,6 +12,9 @@ type Users struct {
 	Token_session      *string    `json:"token_session"`
 	Date_inscription   *time.Time `json:"date_inscription"`
 	Accepte_newsletter bool       `json:"accepte_newsletter"`
+	Est_banni          bool       `json:"est_banni"`
+	Ban_jusqu_au       *time.Time `json:"ban_jusqu_au"`
+	Ban_raison         *string    `json:"ban_raison"`
 }
 
 type CategorieServices struct {
@@ -137,12 +140,14 @@ type CategorieDocument struct {
 	Nom_categorie string `json:"nom_categorie"`
 }
 type PlanningPro struct {
-	Id_planning  int    `json:"id_planning"`
-	Id_pro       int    `json:"id_pro"`
-	Jour_semaine *int   `json:"jour_semaine"`
-	Heure_debut  string `json:"heure_debut"`
-	Heure_fin    string `json:"heure_fin"`
-	Est_actif    bool   `json:"est_actif"`
+	Id_planning        int    `json:"id_planning"`
+	Id_pro             int    `json:"id_pro"`
+	Jour_semaine       *int   `json:"jour_semaine"`
+	Heure_debut        string `json:"heure_debut"`
+	Heure_fin          string `json:"heure_fin"`
+	Est_actif          bool   `json:"est_actif"`
+	Duree_intervention int    `json:"duree_intervention"`
+	Pause_entre        int    `json:"pause_entre"`
 }
 
 type Intervention struct {

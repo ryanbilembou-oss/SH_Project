@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"silver-happy-api/database"
-	"silver-happy-api/models"
 )
 
 func GetPlanningPro(w http.ResponseWriter, r *http.Request) {
@@ -14,10 +13,7 @@ func GetPlanningPro(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+	if r.Method == "OPTIONS" { w.WriteHeader(http.StatusOK); return }
 
 	id := r.URL.Query().Get("id")
 	if id == "" {
@@ -25,12 +21,14 @@ func GetPlanningPro(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var p models.PlanningPro
-	err := database.DB.QueryRow(
-		`SELECT id_planning, id_pro, jour_semaine, heure_debut, heure_fin, est_actif FROM planning_pro WHERE id_planning = $1`, id,
-	).Scan(&p.Id_planning, &p.Id_pro, &p.Jour_semaine, &p.Heure_debut, &p.Heure_fin, &p.Est_actif)
+	var p PlanningProDisplay
+	err := database.DB.QueryRow(`
+		SELECT id_planning, id_pro, jour_semaine, heure_debut, heure_fin, est_actif,
+		COALESCE(duree_intervention, 60), COALESCE(pause_entre, 0)
+		FROM planning_pro WHERE id_planning = $1
+	`, id).Scan(&p.Id_planning, &p.Id_pro, &p.Jour_semaine, &p.Heure_debut, &p.Heure_fin, &p.Est_actif, &p.Duree_intervention, &p.Pause_entre)
 	if err != nil {
-		log.Printf("❌ GetPlanningPro - ID %s introuvable: %v", id, err)
+		log.Printf("GetPlanningPro %s: %v", id, err)
 		http.Error(w, `{"erreur": "Planning introuvable"}`, http.StatusNotFound)
 		return
 	}

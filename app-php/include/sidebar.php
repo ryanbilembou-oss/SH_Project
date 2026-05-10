@@ -305,8 +305,14 @@
                 </button>
                 <ul id="communication-sub" class="hidden bg-gray-900 flex-col mt-1 rounded-r-lg border-l-2 border-indigo-600">
                     <li class="py-2 pl-8 hover:bg-gray-700 transition-colors">
-                        <a href="/admin/messagerie/admin_messagerie.php" class="text-xs md:text-sm text-gray-300 flex items-center">
+                        <a href="/admin/admin_messagerie.php" class="text-xs md:text-sm text-gray-300 flex items-center">
                             <i class="fas fa-comments mr-2 text-indigo-400"></i> Messagerie
+                        </a>
+
+                    </li>
+                    <li class="py-2 pl-8 hover:bg-gray-700 transition-colors">
+                          <a href="/admin/admin_support.php" class="text-xs md:text-sm text-gray-300 flex items-center">
+                            <i class="fas fa-headset mr-2 text-indigo-400"></i> Support
                         </a>
                     </li>
                     <li class="py-2 pl-8 hover:bg-gray-700 transition-colors">

@@ -5,56 +5,59 @@ import (
 	"log"
 	"net/http"
 	"silver-happy-api/database"
+	"silver-happy-api/jobs"
+	"time"
 )
+
+type UpdateLitigeRequest struct {
+	IdLitige int    `json:"id_litige"`
+	Statut   string `json:"statut"`
+	Decision string `json:"decision"`
+}
 
 func UpdateLitige(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "PUT, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
+	if r.Method == "OPTIONS" { w.WriteHeader(200); return }
+	if r.Method != "PUT" { w.WriteHeader(405); return }
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
-	if r.Method != http.MethodPut {
-		http.Error(w, `{"erreur": "Méthode non autorisée"}`, http.StatusMethodNotAllowed)
-		return
-	}
-
-	var req struct {
-		Id_litige int    `json:"id_litige"`
-		Motif     string `json:"motif"`
-		Statut    string `json:"statut"`
-	}
-
+	var req UpdateLitigeRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, `{"erreur": "Format de données invalide"}`, http.StatusBadRequest)
+		w.WriteHeader(400)
 		return
 	}
 
-	if req.Id_litige == 0 || req.Motif == "" || req.Statut == "" {
-		http.Error(w, `{"erreur": "id_litige, motif et statut sont obligatoires"}`, http.StatusBadRequest)
-		return
+	now := time.Now()
+
+	if req.Statut == "ferme" {
+		_, err := database.DB.Exec(`
+			UPDATE litiges SET statut = 'ferme', statut_detail = $1, decision = $2, date_fermeture = $3
+			WHERE id_litige = $4
+		`, req.Statut, req.Decision, now, req.IdLitige)
+		if err != nil {
+			log.Printf("UpdateLitige error: %v", err)
+			w.WriteHeader(500)
+			return
+		}
+
+		var idIntervention int
+		database.DB.QueryRow(`SELECT id_intervention FROM litiges WHERE id_litige = $1`, req.IdLitige).Scan(&idIntervention)
+
+		if idIntervention > 0 {
+			if req.Decision == "pro" {
+				go jobs.ProcesserVirementSingle(idIntervention, database.DB)
+			} else if req.Decision == "senior" {
+				go jobs.DeclencherRemboursement(idIntervention, database.DB)
+			}
+		}
+	} else {
+		database.DB.Exec(`
+			UPDATE litiges SET statut_detail = $1 WHERE id_litige = $2
+		`, req.Statut, req.IdLitige)
 	}
 
-	result, err := database.DB.Exec(
-		`UPDATE litiges SET motif = $1, statut = $2 WHERE id_litige = $3`,
-		req.Motif, req.Statut, req.Id_litige,
-	)
-	if err != nil {
-		log.Printf("❌ UpdateLitige - Erreur SQL: %v", err)
-		http.Error(w, `{"erreur": "Erreur lors de la mise à jour"}`, http.StatusInternalServerError)
-		return
-	}
-
-	rows, _ := result.RowsAffected()
-	if rows == 0 {
-		http.Error(w, `{"erreur": "Litige introuvable"}`, http.StatusNotFound)
-		return
-	}
-
-	log.Printf("✅ Litige %d mis à jour", req.Id_litige)
-	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
+	log.Printf("Litige %d mis a jour: statut=%s decision=%s", req.IdLitige, req.Statut, req.Decision)
+	json.NewEncoder(w).Encode(map[string]bool{"success": true})
 }

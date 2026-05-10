@@ -23,7 +23,7 @@ async function loadServices() {
     const idType = profil.id_type;
 
     if (!idType) {
-      select.innerHTML = `<option value="">Aucun type configuré — contactez l'admin</option>`;
+      select.innerHTML = `<option value="">Aucun type configure — contactez l'admin</option>`;
       return;
     }
 
@@ -74,7 +74,7 @@ function renderOffres() {
     container.innerHTML = `
       <div class="bg-white p-8 rounded-[40px] border-2 border-dashed border-gray-200 text-center col-span-2">
         <iconify-icon icon="mdi:briefcase-remove" class="text-4xl text-gray-300 mb-3 block"></iconify-icon>
-        <p class="text-gray-400 italic">Vous n'avez pas encore créé d'offre.</p>
+        <p class="text-gray-400 italic">Vous n'avez pas encore cree d'offre.</p>
       </div>`;
     return;
   }
@@ -92,12 +92,21 @@ function renderOffres() {
         </div>
         <div class="text-right ml-4">
           <p class="font-fira text-[#1A2B49] text-3xl font-bold">
-            ${o.prix_personnalise ? Number(o.prix_personnalise).toFixed(2) + " €" : "—"}
+            ${o.prix_personnalise ? Number(o.prix_personnalise).toFixed(2) + " €/h" : "—"}
           </p>
-          <p class="text-gray-300 text-sm font-fira">par séance</p>
+          <p class="text-gray-300 text-sm font-fira">tarif horaire</p>
         </div>
       </div>
       ${o.bio ? `<p class="text-gray-400 text-base leading-snug mb-4 italic">"${esc(o.bio)}"</p>` : ""}
+      <div class="bg-[#7CABD3]/5 rounded-[20px] p-4 mb-4">
+        <p class="font-fira uppercase text-xs tracking-widest text-gray-400 mb-1">Exemples de tarifs</p>
+        <div class="flex gap-4 flex-wrap">
+          <span class="font-fira text-[#1A2B49] text-sm">30 min → ${(Number(o.prix_personnalise) * 0.5).toFixed(2)} €</span>
+          <span class="font-fira text-[#1A2B49] text-sm">1h → ${Number(o.prix_personnalise).toFixed(2)} €</span>
+          <span class="font-fira text-[#1A2B49] text-sm">1h30 → ${(Number(o.prix_personnalise) * 1.5).toFixed(2)} €</span>
+          <span class="font-fira text-[#1A2B49] text-sm">2h → ${(Number(o.prix_personnalise) * 2).toFixed(2)} €</span>
+        </div>
+      </div>
       <div class="flex gap-3 mt-4">
         <button onclick="ouvrirModalEdition(${o.id_offre})"
           class="flex-1 flex items-center justify-center gap-2 py-2 rounded-full border-2 border-[#7CABD3] text-[#7CABD3] font-fira uppercase text-sm hover:bg-[#7CABD3] hover:text-white transition-all">
@@ -108,8 +117,7 @@ function renderOffres() {
           <iconify-icon icon="mdi:delete"></iconify-icon> Supprimer
         </button>
       </div>
-    </div>
-  `,
+    </div>`,
     )
     .join("");
 }
@@ -156,7 +164,7 @@ async function sauvegarderOffre() {
     return;
   }
   if (!prix || prix <= 0) {
-    showToast("Prix invalide.", "error");
+    showToast("Prix horaire invalide.", "error");
     return;
   }
 
@@ -192,7 +200,7 @@ async function sauvegarderOffre() {
     if (res.ok || res.status === 201) {
       fermerModal();
       showToast(
-        idOffre > 0 ? "Offre mise à jour !" : "Offre créée !",
+        idOffre > 0 ? "Offre mise a jour !" : "Offre creee !",
         "success",
       );
       await loadOffres();
@@ -201,7 +209,7 @@ async function sauvegarderOffre() {
       showToast(data.erreur || "Erreur lors de la sauvegarde.", "error");
     }
   } catch {
-    showToast("Erreur réseau.", "error");
+    showToast("Erreur reseau.", "error");
   }
 }
 
@@ -210,27 +218,24 @@ async function supprimerOffre(idOffre) {
   try {
     const res = await fetch(
       `${API_BASE}/admin/offre_prestataire/delete?id=${idOffre}`,
-      {
-        method: "DELETE",
-      },
+      { method: "DELETE" },
     );
     if (res.ok) {
-      showToast("Offre supprimée.", "success");
+      showToast("Offre supprimee.", "success");
       await loadOffres();
     } else {
       showToast("Erreur lors de la suppression.", "error");
     }
   } catch {
-    showToast("Erreur réseau.", "error");
+    showToast("Erreur reseau.", "error");
   }
 }
 
 function showToast(message, type = "info") {
   const toast = document.getElementById("toast");
-  const msg = document.getElementById("toastMsg");
-  const icon = document.getElementById("toastIcon");
-  msg.textContent = message;
-  icon.textContent = type === "success" ? "✓" : type === "error" ? "✗" : "i";
+  document.getElementById("toastMsg").textContent = message;
+  document.getElementById("toastIcon").textContent =
+    type === "success" ? "✓" : type === "error" ? "✗" : "i";
   toast.classList.remove("-translate-y-20", "opacity-0");
   toast.classList.add("translate-y-0", "opacity-100");
   clearTimeout(showToast._t);

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"silver-happy-api/database"
+	notification "silver-happy-api/handlers/admin/notification"
 )
 
 type UpdateStatutRequest struct {
@@ -40,11 +41,30 @@ func UpdateStatutValidation(w http.ResponseWriter, r *http.Request) {
 		req.Statut_validation, req.Id_user,
 	)
 	if err != nil {
-		log.Printf("❌ UpdateStatutValidation - Erreur SQL: %v", err)
+		log.Printf("UpdateStatutValidation error: %v", err)
 		http.Error(w, `{"erreur": "Erreur base de données"}`, http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("✅ ProfilePro %d → statut_validation: %s", req.Id_user, req.Statut_validation)
+	switch req.Statut_validation {
+	case "valide":
+		go notification.EnvoyerNotification(
+			req.Id_user,
+			"Compte valide !",
+			"Votre compte prestataire a ete valide. Vous pouvez maintenant proposer vos services.",
+			"success",
+			"/users/pro/accueil_pro.php",
+		)
+	case "refuse":
+		go notification.EnvoyerNotification(
+			req.Id_user,
+			"Compte refuse",
+			"Votre dossier a ete refuse. Contactez l'administration pour plus d'informations.",
+			"error",
+			"/users/pro/profil_pro.php",
+		)
+	}
+
+	log.Printf("ProfilePro %d → statut_validation: %s", req.Id_user, req.Statut_validation)
 	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 }

@@ -102,8 +102,42 @@ require_once('../../auth.php');
             </div>
         </div>
     </div>
+    <div id="modalLitige" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
+    <div class="bg-white rounded-[40px] shadow-2xl p-8 w-full max-w-md">
+        <h4 class="text-3xl font-fira uppercase text-[#1A2B49] mb-2">Signaler un probleme</h4>
+        <p class="text-gray-400 mb-6 text-base">Decrivez le probleme rencontre lors de cette intervention.</p>
+        <div class="mb-6">
+            <label class="font-fira uppercase text-sm text-gray-400 mb-1 block">Description du probleme</label>
+            <textarea id="modalLitigeMotif" rows="4" placeholder="Decrivez precisement le probleme..."
+                class="w-full border-2 border-gray-200 rounded-[20px] px-4 py-3 font-fira focus:outline-none focus:border-[#7CABD3] resize-none"></textarea>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="envoyerLitige()"
+                class="flex-1 bg-orange-500 text-white py-3 rounded-full font-fira uppercase hover:bg-orange-600 transition-all">
+                Envoyer
+            </button>
+            <button onclick="fermerModalLitige()"
+                class="flex-1 border-2 border-gray-200 text-gray-400 py-3 rounded-full font-fira uppercase hover:border-[#7CABD3] hover:text-[#7CABD3] transition-all">
+                Annuler
+            </button>
+        </div>
+    </div>
+</div>
 
     <?php include('../include/footer.php'); ?>
+    <script>
+(function() {
+    const z = localStorage.getItem("senior_zoom");
+    if (z) document.documentElement.style.zoom = z;
+})();
+</script>
     <script src="/js/users/senior/interventions_senior.js?v=<?php echo time(); ?>"></script>
+        <script src="/js/include/zoom_ihm.js?v=<?php echo time(); ?>"></script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script src="/js/include/onesignal.js" defer></script>
+
+<script src="/js/include/notifications.js?v=<?php echo time(); ?>"></script>
+
 </body>
 </html>

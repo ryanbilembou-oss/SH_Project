@@ -15,6 +15,7 @@ require_once('../auth.php');
         #users-sub, #services-sub, #events-sub { transition: all 0.3s ease-in-out; }
     </style>
 </head>
+
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
     
     <div id="deleteToast" class="fixed top-5 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 transition-all duration-500 ease-in-out">
@@ -91,6 +92,35 @@ require_once('../auth.php');
             </div>
         </div>
     </div>
+    <div id="banModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Bannir l'utilisateur</h3>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-bold text-gray-600 mb-1">Type</label>
+                <select id="banType" onchange="document.getElementById('banJoursGroup').classList.toggle('hidden', this.value === 'definitif')"
+                    class="w-full border rounded-lg px-3 py-2 text-sm">
+                    <option value="temporaire">Temporaire</option>
+                    <option value="definitif">Définitif</option>
+                </select>
+            </div>
+            <div id="banJoursGroup">
+                <label class="block text-sm font-bold text-gray-600 mb-1">Durée (jours)</label>
+                <input type="number" id="banJours" value="7" min="1"
+                    class="w-full border rounded-lg px-3 py-2 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-gray-600 mb-1">Raison</label>
+                <textarea id="banRaison" rows="3" placeholder="Motif du bannissement..."
+                    class="w-full border rounded-lg px-3 py-2 text-sm resize-none"></textarea>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button onclick="fermerModalBan()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Annuler</button>
+            <button onclick="confirmerBan()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">Bannir</button>
+        </div>
+    </div>
+</div>
     
     <script src="../js/admin/admin.js"></script>
     <script src="../js/admin/delete_users.js"></script>

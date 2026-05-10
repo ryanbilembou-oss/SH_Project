@@ -15,17 +15,57 @@ let intervalActualise = null;
 async function loadConversations() {
   const container = document.getElementById("listeConversations");
   try {
-    const [resMsgs, resInter, resSeniors] = await Promise.all([
+    const [resMsgs, resInter, resSeniors, resUsers] = await Promise.all([
       fetch(`${API_BASE}/admin/messagerie/get`),
       fetch(`${API_BASE}/admin/intervention/get`),
       fetch(`${API_BASE}/admin/profile_senior/get_with_users`),
+      fetch(`${API_BASE}/admin/users`),
     ]);
 
     allMessages = await resMsgs.json();
     const inter = await resInter.json();
     const seniors = await resSeniors.json();
+    const allUsers = await resUsers.json();
 
     if (!Array.isArray(allMessages)) allMessages = [];
+
+    const supportUser = Array.isArray(allUsers)
+      ? allUsers.find((u) => u.email === "support@silverhappy.fr")
+      : null;
+    const SUPPORT_ID = supportUser?.id_user;
+
+    const mesMsgs = allMessages.filter(
+      (m) => m.id_expediteur === userId || m.id_destinataire === userId,
+    );
+
+    const nbNonLusSup = SUPPORT_ID
+      ? mesMsgs.filter(
+          (m) =>
+            m.id_expediteur === SUPPORT_ID &&
+            m.id_destinataire === userId &&
+            !m.lu,
+        ).length
+      : 0;
+
+    const supportHtml = SUPPORT_ID
+      ? `
+    <div class="mb-4">
+      <p class="font-fira uppercase text-xs tracking-widest text-gray-400 mb-2 px-1">Support</p>
+      <div onclick="ouvrirConversation(${SUPPORT_ID}, 'Support Silver Happy')"
+        class="cursor-pointer p-3 rounded-[20px] flex items-center gap-3 hover:bg-[#FCE297]/10 transition-all mb-1
+               ${destinataireActuel === SUPPORT_ID ? "bg-[#FCE297]/20 border-2 border-[#FCE297]" : "border-2 border-transparent"}">
+        <div class="w-10 h-10 bg-[#FCE297]/20 rounded-full flex items-center justify-center flex-shrink-0">
+          <iconify-icon icon="mdi:shield-account" class="text-xl text-[#1A2B49]"></iconify-icon>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-fira text-[#1A2B49] text-sm font-bold">Support Silver Happy</p>
+          <p class="text-xs text-[#7CABD3]">Disponible pour vos questions</p>
+        </div>
+        ${nbNonLusSup > 0 ? `<span class="w-5 h-5 bg-[#FCE297] text-[#1A2B49] text-xs rounded-full flex items-center justify-center font-fira font-bold flex-shrink-0">${nbNonLusSup}</span>` : ""}
+      </div>
+      <p class="font-fira uppercase text-xs tracking-widest text-gray-400 mb-2 px-1 mt-4">Clients</p>
+    </div>`
+      : "";
 
     const idsSeniorsInter = [
       ...new Set(
@@ -34,44 +74,34 @@ async function loadConversations() {
           : [],
       ),
     ];
-
-    const mesMsgs = allMessages.filter(
-      (m) => m.id_expediteur === userId || m.id_destinataire === userId,
-    );
     const idsSeniorsMsg = [
       ...new Set(
-        mesMsgs.map((m) =>
-          m.id_expediteur === userId ? m.id_destinataire : m.id_expediteur,
-        ),
+        mesMsgs
+          .map((m) =>
+            m.id_expediteur === userId ? m.id_destinataire : m.id_expediteur,
+          )
+          .filter((id) => id !== SUPPORT_ID),
       ),
     ];
-
     const idsUnion = [...new Set([...idsSeniorsInter, ...idsSeniorsMsg])];
 
-    if (!Array.isArray(seniors) || !idsUnion.length) {
-      container.innerHTML = `<p class="text-gray-400 italic text-sm px-2">Aucun client pour le moment.</p>`;
-      return;
-    }
+    const seniorsFiltres = Array.isArray(seniors)
+      ? seniors.filter((s) => idsUnion.includes(s.id_user))
+      : [];
 
-    const seniorsFiltres = seniors.filter((s) => idsUnion.includes(s.id_user));
+    const seniorsHtml = seniorsFiltres.length
+      ? seniorsFiltres
+          .map((s) => {
+            const nbNonLus = mesMsgs.filter(
+              (m) =>
+                m.id_expediteur === s.id_user &&
+                m.id_destinataire === userId &&
+                !m.lu,
+            ).length;
 
-    if (!seniorsFiltres.length) {
-      container.innerHTML = `<p class="text-gray-400 italic text-sm px-2">Aucun client pour le moment.</p>`;
-      return;
-    }
-
-    container.innerHTML = seniorsFiltres
-      .map((s) => {
-        const nbNonLus = mesMsgs.filter(
-          (m) =>
-            m.id_expediteur === s.id_user &&
-            m.id_destinataire === userId &&
-            !m.lu,
-        ).length;
-
-        return `
+            return `
       <div onclick="ouvrirConversation(${s.id_user}, '${esc(s.prenom || "")} ${esc(s.nom || "")}')"
-        class="cursor-pointer p-3 rounded-[20px] flex items-center gap-3 hover:bg-[#FCE297]/10 transition-all
+        class="cursor-pointer p-3 rounded-[20px] flex items-center gap-3 hover:bg-[#FCE297]/10 transition-all mb-1
                ${destinataireActuel === s.id_user ? "bg-[#FCE297]/20 border-2 border-[#FCE297]" : "border-2 border-transparent"}">
         <div class="w-10 h-10 bg-[#FCE297]/20 rounded-full flex items-center justify-center flex-shrink-0">
           <iconify-icon icon="mdi:account" class="text-xl text-[#1A2B49]"></iconify-icon>
@@ -82,11 +112,13 @@ async function loadConversations() {
         </div>
         ${nbNonLus > 0 ? `<span class="w-5 h-5 bg-[#7CABD3] text-white text-xs rounded-full flex items-center justify-center font-fira">${nbNonLus}</span>` : ""}
       </div>`;
-      })
-      .join("");
+          })
+          .join("")
+      : `<p class="text-gray-400 italic text-sm px-2">Aucun client pour le moment.</p>`;
+
+    container.innerHTML = `${supportHtml}${seniorsHtml}`;
   } catch (e) {
     container.innerHTML = `<p class="text-red-400 italic text-sm px-2">Erreur de chargement.</p>`;
-    console.error(e);
   }
 }
 

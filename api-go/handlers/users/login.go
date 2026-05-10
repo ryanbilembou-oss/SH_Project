@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 	"silver-happy-api/database"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -57,7 +58,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "Utilisateur non trouvé"})
 		return
 	} else if err != nil {
-		log.Printf("❌ Erreur BDD login : %v", err)
+		log.Printf("Erreur BDD login : %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Erreur base de données"})
 		return
@@ -67,6 +68,27 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Mot de passe incorrect"})
 		return
+	}
+
+	var estBanni bool
+	var banJusquAu *time.Time
+	database.DB.QueryRow(
+		`SELECT est_banni, ban_jusqu_au FROM users WHERE id_user = $1`,
+		resp.Id_user,
+	).Scan(&estBanni, &banJusquAu)
+
+	if estBanni {
+		if banJusquAu == nil {
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Votre compte a été banni définitivement."})
+			return
+		}
+		if time.Now().Before(*banJusquAu) {
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Votre compte est suspendu jusqu'au " + banJusquAu.Format("02/01/2006") + "."})
+			return
+		}
+		database.DB.Exec(`UPDATE users SET est_banni = false, ban_jusqu_au = NULL WHERE id_user = $1`, resp.Id_user)
 	}
 
 	switch resp.Role {
@@ -85,7 +107,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		resp.Statut_validation = "valide"
 	}
 
-	log.Printf("✅ Connexion : %s (%s)", resp.Email, resp.Role)
+	log.Printf("Connexion : %s (%s)", resp.Email, resp.Role)
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(resp)
 }

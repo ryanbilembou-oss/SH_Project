@@ -49,5 +49,10 @@ echo $_SESSION['role'] ;
     <?php include('../include/footer.php'); ?>
 
     <script src="/js/users/pro/upload_documents.js?v=<?php echo time(); ?>"></script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script src="/js/include/onesignal.js" defer></script>
+
+<script src="/js/include/notifications.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

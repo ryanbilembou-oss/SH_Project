@@ -134,3 +134,17 @@
 .introjs-arrow.right {
   border-left-color: #7cabd3;
 }
+.introjs-skipbutton {
+  display: none !important;
+}
+.introjs-tooltip-header .introjs-skipbutton {
+  display: none !important;
+}
+
+.introjs-tooltip-header {
+  padding-right: 0 !important;
+}
+
+a.introjs-skipbutton {
+  display: none !important;
+}

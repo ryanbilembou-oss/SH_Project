@@ -59,7 +59,7 @@ require_once('../../auth.php');
                 Annulées
             </button>
         </div>
-
+            <div id="prixCalcule" class="mt-3 text-center font-fira text-[#1A2B49] text-base bg-[#7CABD3]/10 rounded-[15px] p-3"></div>
         <div id="demandesList" class="space-y-4">
             <div class="bg-white p-8 rounded-[40px] border-2 border-dashed border-gray-200 text-center">
                 <p class="text-gray-400 italic">Chargement...</p>
@@ -121,5 +121,10 @@ require_once('../../auth.php');
 
     <?php include('../include/footer.php'); ?>
     <script src="/js/users/pro/demandes_pro.js?v=<?php echo time(); ?>"></script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script src="/js/include/onesignal.js" defer></script>
+
+<script src="/js/include/notifications.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

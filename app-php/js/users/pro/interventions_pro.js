@@ -8,9 +8,12 @@ if (!userId || role !== "pro") {
 
 let interventions = [];
 let filtreCourant = "tous";
+let litigeInterventionId = null;
+let litigeSeniorId = null;
 
 (async () => {
   await Promise.all([loadInterventions(), loadBadgeDemandes()]);
+  if (typeof loadVirements === "function") loadVirements();
 })();
 
 async function loadBadgeDemandes() {
@@ -28,12 +31,18 @@ async function loadBadgeDemandes() {
     }
   } catch {}
 }
+let mesLitiges = [];
 
 async function loadInterventions() {
   const container = document.getElementById("interventionsList");
   try {
-    const res = await fetch(`${API_BASE}/admin/intervention/get`);
-    const all = await res.json();
+    const [resInter, resLitiges] = await Promise.all([
+      fetch(`${API_BASE}/admin/intervention/get`),
+      fetch(`${API_BASE}/admin/litiges/get_by_user?id_user=${userId}&role=pro`),
+    ]);
+    const all = await resInter.json();
+    const litiges = await resLitiges.json();
+    mesLitiges = Array.isArray(litiges) ? litiges : [];
     interventions = Array.isArray(all)
       ? all.filter((i) => i.id_pro === userId)
       : [];
@@ -50,25 +59,19 @@ async function loadInterventions() {
 async function mettreAJourStatutsAuto() {
   const now = new Date();
   const updates = [];
-
   for (const i of interventions) {
     if (i.statut === "annulee" || i.statut === "terminee") continue;
     const debut = new Date(i.date_heure_debut);
     const fin = new Date(i.date_heure_fin);
     let nouveauStatut = null;
-
-    if (fin < now) {
-      nouveauStatut = "terminee";
-    } else if (debut <= now && now <= fin && i.statut === "planifiee") {
+    if (fin < now) nouveauStatut = "terminee";
+    else if (debut <= now && now <= fin && i.statut === "planifiee")
       nouveauStatut = "en_cours";
-    }
-
     if (nouveauStatut) {
       i.statut = nouveauStatut;
       updates.push(updateStatutAPI(i, nouveauStatut));
     }
   }
-
   if (updates.length) await Promise.all(updates);
 }
 
@@ -113,17 +116,17 @@ function renderInterventions() {
 
   const mois = [
     "Jan",
-    "Fév",
+    "Fev",
     "Mar",
     "Avr",
     "Mai",
     "Jun",
     "Jul",
-    "Aoû",
+    "Aou",
     "Sep",
     "Oct",
     "Nov",
-    "Déc",
+    "Dec",
   ];
 
   container.innerHTML = filtrees
@@ -132,7 +135,7 @@ function renderInterventions() {
       const statutConfig = {
         planifiee: {
           css: "text-[#7CABD3] border-[#7CABD3]",
-          label: "Planifiée",
+          label: "Planifiee",
           bg: "bg-[#7CABD3] text-white",
         },
         en_cours: {
@@ -142,12 +145,12 @@ function renderInterventions() {
         },
         terminee: {
           css: "text-green-500 border-green-400",
-          label: "Terminée",
+          label: "Terminee",
           bg: "bg-green-400 text-white",
         },
         annulee: {
           css: "text-red-400 border-red-300",
-          label: "Annulée",
+          label: "Annulee",
           bg: "bg-red-300 text-white",
         },
       };
@@ -156,48 +159,64 @@ function renderInterventions() {
         label: i.statut,
         bg: "bg-gray-300 text-white",
       };
+      const litigeExistant = mesLitiges.find((l) => l.id_intervention === i.id);
+      const litigeBadge = litigeExistant
+        ? `
+<a href="/users/pro/litiges_pro.php" class="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-xs font-fira uppercase mt-1 hover:bg-orange-500 hover:text-white transition-all">
+  <iconify-icon icon="mdi:alert-circle"></iconify-icon>
+  Litige ${litigeExistant.statut_detail || litigeExistant.statut}
+</a>`
+        : "";
       const peutAnnuler = i.statut !== "annulee" && i.statut !== "terminee";
 
+      const litigeBtn =
+        i.statut === "terminee" && !litigeExistant
+          ? `
+    <button onclick="ouvrirModalLitige(${i.id}, ${i.id_senior})"
+      class="mt-1 px-4 py-2 rounded-full border-2 border-orange-300 text-orange-500 font-fira uppercase text-xs hover:bg-orange-500 hover:text-white transition-all">
+      <iconify-icon icon="mdi:alert-circle"></iconify-icon> Litige
+    </button>`
+          : "";
+
       return `
-      <div class="group bg-white p-6 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] hover:shadow-xl transition-all duration-300 flex items-center gap-5">
-
-        <div class="flex-shrink-0 ${st.bg} rounded-[20px] w-20 text-center py-3">
-          <p class="text-2xl font-fira leading-none">${debut.getDate()}</p>
-          <p class="text-xs uppercase tracking-widest opacity-90">${mois[debut.getMonth()]}</p>
-          <p class="text-xs mt-1 opacity-80">${debut.getFullYear()}</p>
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <p class="font-fira uppercase text-[#1A2B49] text-xl truncate">${esc(i.nom_service || "Intervention")}</p>
-          <p class="text-gray-400 text-base mt-1">
-            <iconify-icon icon="mdi:account" class="text-[#7CABD3]"></iconify-icon>
-            ${esc(i.prenom_senior || "")} ${esc(i.nom_senior || "")}
-          </p>
-          <p class="text-gray-400 text-base">
-            <iconify-icon icon="mdi:clock-outline" class="text-[#7CABD3]"></iconify-icon>
-            ${formatHeure(i.date_heure_debut)} → ${formatHeure(i.date_heure_fin)}
-          </p>
-          <p class="text-gray-400 text-base">
-            <iconify-icon icon="mdi:map-marker" class="text-[#7CABD3]"></iconify-icon>
-            ${esc(i.lieu)}
-          </p>
-          ${i.bio_intervention ? `<p class="text-gray-300 text-sm mt-1 italic">"${esc(i.bio_intervention)}"</p>` : ""}
-        </div>
-
-        <div class="flex-shrink-0 text-right flex flex-col items-end gap-2">
-          <p class="font-fira text-[#1A2B49] text-2xl font-bold">${Number(i.prix).toFixed(2)} €</p>
-          <span class="font-fira text-xs uppercase tracking-widest border-b-2 pb-0.5 ${st.css}">${st.label}</span>
-          ${
-            peutAnnuler
-              ? `
-          <button onclick="annulerIntervention(${i.id})"
-            class="mt-1 px-4 py-2 rounded-full border-2 border-red-300 text-red-400 font-fira uppercase text-xs hover:bg-red-400 hover:text-white transition-all">
-            <iconify-icon icon="mdi:close"></iconify-icon> Annuler
-          </button>`
-              : ""
-          }
-        </div>
-      </div>`;
+    <div class="group bg-white p-6 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] hover:shadow-xl transition-all duration-300 flex items-center gap-5">
+      <div class="flex-shrink-0 ${st.bg} rounded-[20px] w-20 text-center py-3">
+        <p class="text-2xl font-fira leading-none">${debut.getDate()}</p>
+        <p class="text-xs uppercase tracking-widest opacity-90">${mois[debut.getMonth()]}</p>
+        <p class="text-xs mt-1 opacity-80">${debut.getFullYear()}</p>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-fira uppercase text-[#1A2B49] text-xl truncate">${esc(i.nom_service || "Intervention")}</p>
+        <p class="text-gray-400 text-base mt-1">
+          <iconify-icon icon="mdi:account" class="text-[#7CABD3]"></iconify-icon>
+          ${esc(i.prenom_senior || "")} ${esc(i.nom_senior || "")}
+        </p>
+        <p class="text-gray-400 text-base">
+          <iconify-icon icon="mdi:clock-outline" class="text-[#7CABD3]"></iconify-icon>
+          ${formatHeure(i.date_heure_debut)} → ${formatHeure(i.date_heure_fin)}
+        </p>
+        <p class="text-gray-400 text-base">
+          <iconify-icon icon="mdi:map-marker" class="text-[#7CABD3]"></iconify-icon>
+          ${esc(i.lieu)}
+        </p>
+        ${i.bio_intervention ? `<p class="text-gray-300 text-sm mt-1 italic">"${esc(i.bio_intervention)}"</p>` : ""}
+      </div>
+      <div class="flex-shrink-0 text-right flex flex-col items-end gap-2">
+        <p class="font-fira text-[#1A2B49] text-2xl font-bold">${Number(i.prix).toFixed(2)} €</p>
+        <span class="font-fira text-xs uppercase tracking-widest border-b-2 pb-0.5 ${st.css}">${st.label}</span>
+        ${litigeBadge}
+        ${
+          peutAnnuler
+            ? `
+        <button onclick="annulerIntervention(${i.id})"
+          class="mt-1 px-4 py-2 rounded-full border-2 border-red-300 text-red-400 font-fira uppercase text-xs hover:bg-red-400 hover:text-white transition-all">
+          <iconify-icon icon="mdi:close"></iconify-icon> Annuler
+        </button>`
+            : ""
+        }
+        ${litigeBtn}
+      </div>
+    </div>`;
     })
     .join("");
 }
@@ -253,26 +272,67 @@ async function annulerIntervention(idIntervention) {
       }),
     });
     if (res.ok) {
-      showToast("Intervention annulée.", "success");
+      showToast("Intervention annulee.", "success");
       await loadInterventions();
-    } else {
-      showToast("Erreur lors de l'annulation.", "error");
-    }
+    } else showToast("Erreur lors de l'annulation.", "error");
   } catch {
-    showToast("Erreur réseau.", "error");
+    showToast("Erreur reseau.", "error");
+  }
+}
+
+function ouvrirModalLitige(idIntervention, idSenior) {
+  litigeInterventionId = idIntervention;
+  litigeSeniorId = idSenior;
+  document.getElementById("modalLitigeMotif").value = "";
+  document.getElementById("modalLitige").classList.remove("hidden");
+}
+
+function fermerModalLitige() {
+  document.getElementById("modalLitige").classList.add("hidden");
+  litigeInterventionId = null;
+  litigeSeniorId = null;
+}
+
+async function envoyerLitige() {
+  const motif = document.getElementById("modalLitigeMotif").value.trim();
+  if (!motif) {
+    showToast("Decrivez votre probleme.", "error");
+    return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/admin/litiges/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id_intervention: litigeInterventionId,
+        id_senior: litigeSeniorId,
+        id_pro: userId,
+        motif,
+        ouvert_par: "pro",
+      }),
+    });
+    if (res.status === 409) {
+      showToast("Un litige est deja ouvert pour cette intervention.", "error");
+      fermerModalLitige();
+      return;
+    }
+    if (!res.ok) throw new Error();
+    showToast("Litige ouvert. L'admin va vous contacter.", "success");
+    fermerModalLitige();
+  } catch {
+    showToast("Erreur lors de l'ouverture du litige.", "error");
   }
 }
 
 function formatHeure(str) {
   if (!str) return "—";
   const d = new Date(str);
-  if (!isNaN(d.getTime())) {
+  if (!isNaN(d.getTime()))
     return d.toLocaleTimeString("fr-FR", {
       hour: "2-digit",
       minute: "2-digit",
       timeZone: "Europe/Paris",
     });
-  }
   if (str.includes(" ")) return str.split(" ")[1].slice(0, 5);
   if (str.includes("T")) return str.split("T")[1].slice(0, 5);
   return str.slice(0, 5);

@@ -218,20 +218,23 @@ function renderDevis() {
         </div>`;
       } else if (d.statut === "paye") {
         actions = `
-        <div class="mt-6 bg-blue-50 border-2 border-blue-200 rounded-[20px] p-3">
-          <p class="font-fira text-sm text-blue-700">
-            <iconify-icon icon="mdi:check-circle" class="mr-1"></iconify-icon>
-            Paiement confirmé — votre intervention est planifiée.
-          </p>
-        </div>`;
-      } else if (d.statut === "annule") {
-        actions = `
-        <div class="mt-6 bg-gray-50 border-2 border-gray-200 rounded-[20px] p-3">
-          <p class="font-fira text-sm text-gray-500">
-            <iconify-icon icon="mdi:cancel" class="mr-1"></iconify-icon>
-            Devis annulé — délai de paiement dépassé.
-          </p>
-        </div>`;
+  <div class="mt-6 space-y-3">
+    <div class="bg-blue-50 border-2 border-blue-200 rounded-[20px] p-3">
+      <p class="font-fira text-sm text-blue-700">
+        <iconify-icon icon="mdi:check-circle" class="mr-1"></iconify-icon>
+        Paiement confirmé — votre intervention est planifiée.
+      </p>
+    </div>
+    ${
+      d.id_intervention
+        ? `
+    <button onclick="annulerEtRembourser(${d.id_intervention})"
+      class="w-full py-3 bg-red-50 text-red-500 rounded-full font-fira text-sm uppercase hover:bg-red-500 hover:text-white transition-all">
+      <iconify-icon icon="mdi:close-circle" class="mr-1"></iconify-icon> Annuler et se faire rembourser
+    </button>`
+        : ""
+    }
+  </div>`;
       }
 
       return `
@@ -399,7 +402,33 @@ function showTab(tab) {
   document.getElementById("tab-factures").className =
     `px-8 py-3 rounded-full font-fira uppercase text-sm transition-all ${tab === "factures" ? "bg-[#1A2B49] text-white" : "bg-white border-2 border-[#7CABD3] text-[#7CABD3]"}`;
 }
+async function annulerEtRembourser(idIntervention) {
+  if (
+    !confirm("Annuler cette intervention ? Vous serez remboursé intégralement.")
+  )
+    return;
 
+  try {
+    const res = await fetch(`${API_BASE}/admin/stripe/refund/intervention`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id_intervention: idIntervention,
+        id_senior: userId,
+      }),
+    });
+
+    if (res.ok) {
+      showToast("Intervention annulée. Remboursement en cours.", "success");
+      await loadDevis();
+    } else {
+      const data = await res.json();
+      showToast(data.erreur || "Erreur lors de l'annulation.", "error");
+    }
+  } catch {
+    showToast("Erreur réseau.", "error");
+  }
+}
 function showToast(message, type = "info") {
   const toast = document.getElementById("toast");
   document.getElementById("toastMsg").textContent = message;

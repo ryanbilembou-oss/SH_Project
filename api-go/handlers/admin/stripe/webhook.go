@@ -9,6 +9,7 @@ import (
 	"time"
 	"silver-happy-api/database"
 	"silver-happy-api/pdf"
+	notification "silver-happy-api/handlers/admin/notification"
 )
 
 func Webhook(w http.ResponseWriter, r *http.Request) {
@@ -114,7 +115,7 @@ func Webhook(w http.ResponseWriter, r *http.Request) {
 				}
 				database.DB.Exec(`UPDATE evenements SET nb_inscrits = nb_inscrits + $1 WHERE id_evenement = $2`, item.Quantite, item.IDObjet)
 			case "article":
-				database.DB.Exec(`UPDATE articles SET stock = stock - $1 WHERE id = $2 AND stock >= $1`, item.Quantite, item.IDObjet)
+				database.DB.Exec(`UPDATE article SET stock = stock - $1 WHERE id = $2 AND stock >= $1`, item.Quantite, item.IDObjet)
 			}
 		}
 		database.DB.Exec(`DELETE FROM panier WHERE id_user = $1`, idUser)
@@ -207,7 +208,7 @@ func Webhook(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Webhook referencement active: id=%d pro=%d", idRef, idUser)
 		}
 
-	case "intervention":
+		case "intervention":
 		idDevisStr, _ := metadata["id_devis"].(string)
 		idInterStr, _ := metadata["id_intervention"].(string)
 		idProStr, _   := metadata["id_pro"].(string)
@@ -232,6 +233,21 @@ func Webhook(w http.ResponseWriter, r *http.Request) {
 		if factureID > 0 {
 			go pdf.GenerateAndAttach(factureID, database.DB)
 		}
+
+		go notification.EnvoyerNotification(
+			idUser,
+			"Paiement confirme",
+			"Votre paiement a ete confirme. Votre intervention est planifiee.",
+			"paiement",
+			"/users/seniors/interventions_senior.php",
+		)
+		go notification.EnvoyerNotification(
+			idPro,
+			"Nouveau paiement recu",
+			"Un senior a paye votre devis. L'intervention est confirmee.",
+			"paiement",
+			"/users/pro/interventions_pro.php",
+		)
 
 		log.Printf("Webhook intervention: devis=%d inter=%d senior=%d pro=%d facture=%d", idDevis, idInter, idUser, idPro, factureID)
 	}

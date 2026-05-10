@@ -250,7 +250,9 @@ async function loadFinances() {
     const res = await fetch(`${API_BASE}/admin/facture/get`);
     const all = await res.json();
     const mesFactures = Array.isArray(all)
-      ? all.filter((f) => f.id_emetteur === userId)
+      ? all.filter(
+          (f) => f.id_emetteur === userId && f.type_achat === "intervention",
+        )
       : [];
 
     const totalEncaisse = mesFactures.reduce(
