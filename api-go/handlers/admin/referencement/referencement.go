@@ -202,7 +202,7 @@ func Checkout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	baseURL := "http://172.16.90.10:8080/users/pro/referencement_pro.php"
+	baseURL := "*/users/pro/referencement_pro.php"
 	params  := url.Values{}
 	params.Set("mode", "payment")
 	params.Set("success_url", fmt.Sprintf("%s?success=1&id_ref=%d", baseURL, newId))

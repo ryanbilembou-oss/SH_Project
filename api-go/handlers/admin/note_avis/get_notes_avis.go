@@ -16,7 +16,7 @@ type NoteAvisDisplay struct {
 }
 
 func GetAllNotesAvis(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://172.16.90.10:8080")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
 	rows, err := database.DB.Query(`SELECT id_avis, id_intervention, note, commentaire, date_publication FROM note_avis ORDER BY date_publication DESC`)

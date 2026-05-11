@@ -8,7 +8,7 @@ import (
 )
 
 func UpdateIntervention(w http.ResponseWriter, r *http.Request) {
-  w.Header().Set("Access-Control-Allow-Origin", "http://172.16.90.10:8080")
+  w.Header().Set("Access-Control-Allow-Origin", "*")
   w.Header().Set("Access-Control-Allow-Methods", "PUT, OPTIONS")
   w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
   w.Header().Set("Content-Type", "application/json")

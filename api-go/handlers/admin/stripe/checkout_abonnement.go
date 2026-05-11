@@ -40,7 +40,7 @@ func CheckoutAbonnement(w http.ResponseWriter, r *http.Request) {
  
 	baseURL := req.RedirectURL
 	if baseURL == "" {
-		baseURL = "http://172.16.90.10:8080/users/seniors/abonnement.php"  
+		baseURL = "*/users/seniors/abonnement.php"  
 	}
 
 	var idPaiement int

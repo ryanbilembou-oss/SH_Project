@@ -64,8 +64,8 @@ func CheckoutPanier(w http.ResponseWriter, r *http.Request) {
  
 	params := url.Values{}
 	params.Set("mode", "payment")
-	params.Set("success_url", fmt.Sprintf("http://172.16.90.10:8080/users/seniors/panier/panier.php?success=1&id_paiement=%d", idPaiement))
-	params.Set("cancel_url", "http://172.16.90.10:8080/users/seniors/panier/panier.php?cancelled=1")
+	params.Set("success_url", fmt.Sprintf("*/users/seniors/panier/panier.php?success=1&id_paiement=%d", idPaiement))
+	params.Set("cancel_url", "*/users/seniors/panier/panier.php?cancelled=1")
 	params.Set("metadata[id_user]", fmt.Sprintf("%d", req.IDUser))
 	params.Set("metadata[type]", "panier")
 	params.Set("metadata[id_paiement]", fmt.Sprintf("%d", idPaiement))
