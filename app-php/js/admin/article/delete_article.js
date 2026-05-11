@@ -1,4 +1,4 @@
-const API_BASE_DELETE = "http://172.16.90.10:8082";
+const API_BASE_DELETE = "http://144.76.74.130:8082";
 
 const DeleteArticleManager = {
   pendingId: null,

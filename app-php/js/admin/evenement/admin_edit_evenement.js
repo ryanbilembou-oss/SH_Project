@@ -1,4 +1,4 @@
-const API_BASE = "http://172.16.90.10:8082";
+const API_BASE = "http://144.76.74.130:8082";
 
 const urlParams = new URLSearchParams(window.location.search);
 const eventId = urlParams.get("id");
@@ -22,7 +22,7 @@ const submitBtn = document.getElementById("submitBtn");
 async function loadEvent(id) {
   try {
     const res = await fetch(
-      `http://172.16.90.10:8082/admin/evenement/getone?id=${id}`,
+      `http://144.76.74.130:8082/admin/evenement/getone?id=${id}`,
     );
     if (!res.ok) throw new Error(`Événement introuvable (${res.status})`);
 
@@ -51,7 +51,7 @@ async function loadEvent(id) {
 async function loadCategories() {
   try {
     const res = await fetch(
-      `http://172.16.90.10:8082/admin/evenement/categorie_evenement/get`,
+      `http://144.76.74.130:8082/admin/evenement/categorie_evenement/get`,
     );
     if (!res.ok) throw new Error("Impossible de charger les catégories.");
 
@@ -107,20 +107,23 @@ async function handleSubmit() {
   submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Enregistrement...`;
 
   try {
-    const res = await fetch(`http://172.16.90.10:8082/admin/evenement/update`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id_evenement,
-        id_categorie,
-        titre,
-        description,
-        date_heure,
-        lieu,
-        prix_ticket,
-        nb_places_max,
-      }),
-    });
+    const res = await fetch(
+      `http://144.76.74.130:8082/admin/evenement/update`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_evenement,
+          id_categorie,
+          titre,
+          description,
+          date_heure,
+          lieu,
+          prix_ticket,
+          nb_places_max,
+        }),
+      },
+    );
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Erreur serveur.");

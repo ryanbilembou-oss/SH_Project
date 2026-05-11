@@ -93,7 +93,7 @@
     </div>
 
     <script>
-    const API_BASE = "http://172.16.90.10:8082";
+    const API_BASE = "http://144.76.74.130:8082";
 
  
     document.getElementById("togglePassword").addEventListener("click", () => {

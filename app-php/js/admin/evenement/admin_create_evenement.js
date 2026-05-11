@@ -1,7 +1,7 @@
 async function loadCategories() {
   try {
     const res = await fetch(
-      `http://172.16.90.10:8082/admin/evenement/categorie_evenement/get`,
+      `http://144.76.74.130:8082/admin/evenement/categorie_evenement/get`,
     );
     const categories = await res.json();
     const select = document.getElementById("id_categorie");
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(
-        "http://172.16.90.10:8082/admin/evenement/create",
+        "http://144.76.74.130:8082/admin/evenement/create",
         {
           method: "POST",
           headers: {
