@@ -1,0 +1,2 @@
+ALTER TABLE paiements DROP CONSTRAINT IF EXISTS paiements_type_objet_check;
+ALTER TABLE paiements ADD CONSTRAINT paiements_type_objet_check CHECK (type_objet IN ('article', 'abonnement', 'evenement', 'intervention', 'panier'));

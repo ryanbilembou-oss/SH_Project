@@ -52,12 +52,12 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "La catégorie est obligatoire"})
 		return
 	}
-	if req.Prix < 0 {
+	if req.Prix <= 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Le prix ne peut pas être négatif"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "Le prix ne peut pas être négatif ou inferieur a 0"})
 		return
 	}
-	if req.Stock < 0 {
+	if req.Stock <= 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Le stock ne peut pas être négatif"})
 		return
@@ -77,13 +77,13 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	).Scan(&newId)
 
 	if err != nil {
-		log.Printf("❌ CreateArticle - Erreur SQL : %v", err)
+		log.Printf(" CreateArticle - Erreur SQL : %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Erreur base de données"})
 		return
 	}
 
-	log.Printf("✅ CreateArticle - Nouvel article ID %d créé", newId)
+	log.Printf("CreateArticle - Nouvel article ID %d créé", newId)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,

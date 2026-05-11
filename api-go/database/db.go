@@ -28,12 +28,12 @@ func Connect() {
 
 	DB, err = sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatal("❌ Erreur lors de l'ouverture de la connexion PostgreSQL :", err)
+		log.Fatal(" Erreur lors de l'ouverture de la connexion PostgreSQL :", err)
 	}
 
 	if err = DB.Ping(); err != nil {
-		log.Fatal("❌ Le conteneur PostgreSQL ne répond pas :", err)
+		log.Fatal(" Le conteneur PostgreSQL ne répond pas :", err)
 	}
 
-	log.Println("✅ Connexion PostgreSQL sécurisée réussie (SQL pur) !")
+	log.Println(" Connexion PostgreSQL sécurisée réussie (SQL pur) !")
 }

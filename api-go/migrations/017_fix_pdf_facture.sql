@@ -1,0 +1,1 @@
+ALTER TABLE facture ALTER COLUMN pdf_url DROP NOT NULL;

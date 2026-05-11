@@ -1,0 +1,1 @@
+ALTER TABLE profile_pro ADD COLUMN IF NOT EXISTS is_first_login BOOLEAN DEFAULT true;

@@ -24,6 +24,7 @@ type UserRequest struct {
 	Rib           string `json:"rib"`
 	Bio           string `json:"bio"`
 	TelephonePro  string `json:"telephone_pro"`
+	IdType        int    `json:"id_type"`
 }
 
 type ErrorResponse struct {
@@ -64,7 +65,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var lastID int
 	queryUser := "INSERT INTO users (email, password_hash, role, date_inscription) VALUES ($1, $2, $3, NOW()) RETURNING id_user"
 	err = tx.QueryRow(queryUser, req.Email, string(hash), req.Role).Scan(&lastID)
-	
+
 	if err != nil {
 		tx.Rollback()
 		if strings.Contains(err.Error(), "unique_email") || strings.Contains(err.Error(), "users_email_key") {
@@ -82,8 +83,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 			query := `INSERT INTO profile_senior (id_user, nom, prenom, genre, date_naissance, telephone) VALUES ($1, $2, $3, $4, NULLIF($5, '')::DATE, $6)`
 			_, errProfile = tx.Exec(query, lastID, req.Nom, req.Prenom, req.Genre, req.DateNaissance, req.Telephone)
 		case "pro":
-			query := `INSERT INTO profile_pro (id_user, nom, prenom, nom_entreprise, adresse_pro, date_naissance, genre, siret, bio, rib, telephone_pro) VALUES ($1, $2, $3, $4, $5, NULLIF($6, '')::DATE, $7, $8, $9, $10, $11)`
-			_, errProfile = tx.Exec(query, lastID, req.Nom, req.Prenom, req.NomSociete, req.AdressePro, req.DateNaissance, req.Genre, req.Siret, req.Bio, req.Rib, req.TelephonePro)
+			query := `INSERT INTO profile_pro (id_user, nom, prenom, nom_entreprise, adresse_pro, date_naissance, genre, siret, bio, rib, telephone_pro, id_type) VALUES ($1, $2, $3, $4, $5, NULLIF($6, '')::DATE, $7, $8, $9, $10, $11, NULLIF($12, 0))`
+			_, errProfile = tx.Exec(query, lastID, req.Nom, req.Prenom, req.NomSociete, req.AdressePro, req.DateNaissance, req.Genre, req.Siret, req.Bio, req.Rib, req.TelephonePro, req.IdType)
 		case "admin":
 			query := "INSERT INTO profile_admin (id_user, nom, prenom, genre) VALUES ($1, $2, $3, $4)"
 			_, errProfile = tx.Exec(query, lastID, req.Nom, req.Prenom, req.Genre)
@@ -102,5 +103,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	tx.Commit()
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
+
+	json.NewEncoder(w).Encode(map[string]interface{}{"status": "success", "id_user": lastID, "role": req.Role})
 }

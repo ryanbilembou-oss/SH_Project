@@ -1,3 +1,7 @@
+<?php
+require_once('../../auth.php');
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -84,7 +88,7 @@
         </div>
     </div>
     <script type="module" src="../../js/admin/evenement/evenement_delete.js"></script>
-    <script type="module" src="../../js/admin/evenement/evenement.js"></script>
+    <script src="../../js/admin/evenement/evenement.js"></script>
 
 </body>
 </html>

@@ -1,3 +1,7 @@
+<?php
+require_once('../../auth.php');
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -179,6 +183,6 @@
         </div>
     </div>
 
-    <script src="../../js/admin/evenement/admin_edit_evenement.js"></script>
+    <script src="../../js/admin/evenement/admin_edit_evenement.js?v=<?= time() ?>"></script>
 </body>
 </html>

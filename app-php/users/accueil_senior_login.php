@@ -22,7 +22,7 @@
             </a>
           </div>
         </div>
-        <div class="hidden md:flex justify-center space-x-12 font-bold uppercase text-xs tracking-widest pb-4">
+        <div class="hidden md:flex justify-center space-x-12 font-fira uppercase text-xs tracking-widest pb-4">
           <a href="catalogue.php" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Catalogue <i class="bi bi-grid-3x3-gap"></i></a>
           <a href="planning_senior.php" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Planning <i class="bi bi-calendar4"></i></a>
           <a href="gestion_devis_senior.php" class="hover:text-[#7CABD3] pb-2 border-b-2 border-transparent hover:border-[#FCE297] transition-all duration-300">Gestion devis <i class="bi bi-file-earmark-text"></i></a>
@@ -112,7 +112,7 @@
           <h4 class="text-2xl font-black text-[#fce297] uppercase tracking-wider">Silver Happy</h4>
           <p class="text-sm leading-relaxed opacity-90">
             Bien vivre après 60 ans. Société créée à Paris en 2018.<br>
-            <span class="font-bold">Siège :</span> 244, rue du Faubourg Saint Antoine, 75011.
+            <span class="font-fira">Siège :</span> 244, rue du Faubourg Saint Antoine, 75011.
           </p>
           <div class="text-xs opacity-75">
             Agences : Nice, Rouen, Moldavie, et plus.
@@ -120,7 +120,7 @@
         </div>
 
         <div class="space-y-4">
-          <h4 class="text-xl font-bold border-b-2 border-[#7cabd3] pb-2 text-[#7cabd3]">Nos Services</h4>
+          <h4 class="text-xl font-fira border-b-2 border-[#7cabd3] pb-2 text-[#7cabd3]">Nos Services</h4>
           <ul class="space-y-2 text-md">
             <li><a href="/services" class="hover:text-[#fce297] transition-custom">Aide à domicile & Repas</a></li>
             <li><a href="/evenements" class="hover:text-[#fce297] transition-custom">Événements & Loisirs</a></li>
@@ -130,7 +130,7 @@
         </div>
 
         <div class="space-y-4">
-          <h4 class="text-xl font-bold border-b-2 border-[#7cabd3] pb-2 text-[#7cabd3]">Espace Pro</h4>
+          <h4 class="text-xl font-fira border-b-2 border-[#7cabd3] pb-2 text-[#7cabd3]">Espace Pro</h4>
           <ul class="space-y-2 text-md">
             <li><a href="/pro/devenir-prestataire" class="hover:text-[#fce297] transition-custom">Devenir Prestataire</a></li>
             <li><a href="/pro/documents" class="hover:text-[#fce297] transition-custom">Dépôt d'habilitations</a></li>
@@ -140,12 +140,12 @@
         </div>
 
         <div class="space-y-4">
-          <h4 class="text-xl font-bold border-b-2 border-[#7cabd3] pb-2 text-[#7cabd3]">Informations</h4>
+          <h4 class="text-xl font-fira border-b-2 border-[#7cabd3] pb-2 text-[#7cabd3]">Informations</h4>
           <ul class="space-y-2 text-md">
             <li><a href="/faq" class="hover:text-[#fce297] transition-custom">FAQ & Aide</a></li>
             <li><a href="/mentions-legales" class="hover:text-[#fce297] transition-custom">Mentions Légales</a></li>
             <li><a href="/rgpd" class="hover:text-[#fce297] transition-custom">Protection des données</a></li>
-            <li><a href="/contact" class="hover:text-[#fce297] transition-custom font-bold">Nous contacter (24h/24)</a></li>
+            <li><a href="/contact" class="hover:text-[#fce297] transition-custom font-fira">Nous contacter (24h/24)</a></li>
           </ul>
         </div>
       </div>
@@ -154,7 +154,7 @@
         <p class="text-xs opacity-60">© 2026 Silver Happy. Projet réalisé par IngéNext.</p>
         
         <div class="flex items-center gap-3">
-          <span class="text-xs uppercase font-bold tracking-tighter">Langue :</span>
+          <span class="text-xs uppercase font-fira tracking-tighter">Langue :</span>
           <select class="bg-[#1a2b49] border border-[#7cabd3] text-sm p-1 rounded focus:outline-none focus:border-[#fce297]">
             <option value="fr">Français</option>
             <option value="en">English</option>

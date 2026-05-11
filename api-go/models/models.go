@@ -12,6 +12,9 @@ type Users struct {
 	Token_session      *string    `json:"token_session"`
 	Date_inscription   *time.Time `json:"date_inscription"`
 	Accepte_newsletter bool       `json:"accepte_newsletter"`
+	Est_banni          bool       `json:"est_banni"`
+	Ban_jusqu_au       *time.Time `json:"ban_jusqu_au"`
+	Ban_raison         *string    `json:"ban_raison"`
 }
 
 type CategorieServices struct {
@@ -70,6 +73,7 @@ type ProfilePro struct {
 	Siret                 *string    `json:"siret"`
 	Bio                   *string    `json:"bio"`
 	Rib                   *string    `json:"rib"`
+	Id_type               *int       `json:"id_type"`
 	Telephone_pro         *string    `json:"telephone_pro"`
 	Logo_url              *string    `json:"logo_url"`
 	Note_moyenne          float64    `json:"note_moyenne"`
@@ -85,6 +89,10 @@ type Service struct {
 	Image_url      *string `json:"image_url"`
 }
 
+type TypePrestataire struct {
+	Id_type  int    `json:"id_type"`
+	Nom_type string `json:"nom_type"`
+}
 type OffrePrestataire struct {
 	Id_offre          int     `json:"id_offre"`
 	Id_pro            *int    `json:"id_pro"`
@@ -117,22 +125,29 @@ type Evenements struct {
 	Nb_places_max int       `json:"nb_places_max"`
 	Nb_inscrits   int       `json:"nb_inscrits"`
 }
-
 type DocumentsPro struct {
 	Id_doc       int        `json:"id_doc"`
 	Id_user      int        `json:"id_user"`
 	Type_doc     string     `json:"type_doc"`
 	Url_document string     `json:"url_document"`
 	Date_upload  *time.Time `json:"date_upload"`
+	Id_categorie *int       `json:"id_categorie"`
+	Statut       string     `json:"statut"`
 }
-
+type CategorieDocument struct {
+	Id_categorie  int    `json:"id_categorie"`
+	Id_type       int    `json:"id_type"`
+	Nom_categorie string `json:"nom_categorie"`
+}
 type PlanningPro struct {
-	Id_planning  int    `json:"id_planning"`
-	Id_pro       int    `json:"id_pro"`
-	Jour_semaine *int   `json:"jour_semaine"`
-	Heure_debut  string `json:"heure_debut"`
-	Heure_fin    string `json:"heure_fin"`
-	Est_actif    bool   `json:"est_actif"`
+	Id_planning        int    `json:"id_planning"`
+	Id_pro             int    `json:"id_pro"`
+	Jour_semaine       *int   `json:"jour_semaine"`
+	Heure_debut        string `json:"heure_debut"`
+	Heure_fin          string `json:"heure_fin"`
+	Est_actif          bool   `json:"est_actif"`
+	Duree_intervention int    `json:"duree_intervention"`
+	Pause_entre        int    `json:"pause_entre"`
 }
 
 type Intervention struct {

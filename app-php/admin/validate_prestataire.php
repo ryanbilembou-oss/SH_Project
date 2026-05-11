@@ -1,10 +1,6 @@
 <?php
+require_once('../auth.php');
 
-// session_start();
-// if($_SESSION['role'] !== 'admin') { header('Location: login.php'); exit(); }
-
-//$id_pro = $_GET['id'] ?? null;
-//if (!$id_pro) { header('Location: admin_users.php'); exit(); 
 ?>
 <!DOCTYPE html>
 <html lang="fr">

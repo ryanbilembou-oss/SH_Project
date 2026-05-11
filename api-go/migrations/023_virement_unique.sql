@@ -1,0 +1,1 @@
+ALTER TABLE virement ADD CONSTRAINT virement_intervention_unique UNIQUE (id_intervention);

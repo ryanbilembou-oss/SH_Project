@@ -1,21 +1,15 @@
-/**
- * create_article.js
- * Chargement des catégories + création d'un article via POST
- */
-
-const API_BASE = "http://localhost:8082";
+var API_BASE = "http://localhost:8082";
 
 (async () => {
-  //await loadCategories();
+  await loadCategories();
   document.getElementById("submitBtn").addEventListener("click", handleSubmit);
 })();
 
-// ════════════════════════════════════════════════════════════
-//  CATÉGORIES
-// ════════════════════════════════════════════════════════════
-/*async function loadCategories() {
+async function loadCategories() {
   try {
-    const res = await fetch(`${API_BASE}/admin/article/categorie/get`);
+    const res = await fetch(
+      `http://localhost:8082/admin/article/categorie_article/get`,
+    );
     if (!res.ok) throw new Error("Impossible de charger les catégories.");
 
     const categories = await res.json();
@@ -34,29 +28,25 @@ const API_BASE = "http://localhost:8082";
     document.getElementById("id_categorie").innerHTML =
       `<option value="">Erreur chargement</option>`;
   }
-}*/
+}
 
-// ════════════════════════════════════════════════════════════
-//  SOUMISSION — POST
-// ════════════════════════════════════════════════════════════
 async function handleSubmit() {
   const nom = document.getElementById("nom").value.trim();
-  const id_categorie = 1;
+  const id_categorie = Number(document.getElementById("id_categorie").value);
   const prix = parseFloat(document.getElementById("prix").value);
   const stock = parseInt(document.getElementById("stock").value);
   const image_url = document.getElementById("image_url").value.trim() || null;
   const bio = document.getElementById("bio").value.trim() || null;
   const submitBtn = document.getElementById("submitBtn");
 
-  // Validation
   if (!nom) {
     showToast("Le nom est obligatoire.", "error");
     return;
   }
-  //if (!id_categorie) {
-  //showToast("Veuillez choisir une catégorie.", "error");
-  //return;
-  //}
+  if (!id_categorie) {
+    showToast("Veuillez choisir une catégorie.", "error");
+    return;
+  }
   if (isNaN(prix) || prix < 0) {
     showToast("Le prix ne peut pas être négatif.", "error");
     return;
@@ -70,7 +60,7 @@ async function handleSubmit() {
   submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Création...`;
 
   try {
-    const res = await fetch(`${API_BASE}/admin/article/create`, {
+    const res = await fetch(`http://localhost:8082/admin/article/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id_categorie, nom, prix, stock, image_url, bio }),
@@ -92,9 +82,6 @@ async function handleSubmit() {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  TOAST + HELPERS
-// ════════════════════════════════════════════════════════════
 function showToast(message, type = "info") {
   const container = document.getElementById("toastContainer");
   const msgSpan = document.getElementById("toastMessage");

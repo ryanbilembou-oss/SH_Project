@@ -1,3 +1,7 @@
+<?php
+require_once('../../auth.php');
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -25,6 +29,9 @@
             <div class="bg-gray-800 pt-3">
                 <div class="rounded-tl-3xl bg-gradient-to-r from-blue-900 to-gray-800 p-6 shadow text-2xl text-white flex justify-between items-center">
                     <h3 class="font-bold pl-2 uppercase tracking-wide">Nouvel Évenement</h3>
+                    <a href="admin_evenement.php" class="text-sm font-normal italic text-gray-300 hover:text-white transition flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Retour à la liste des évenements
+                    </a>
                 </div>
             </div>
 
@@ -37,10 +44,34 @@
                                 <i class="fas fa-calendar-plus text-[#7CABD3] mr-2"></i> Informations de l'événement
                             </h4>
                             
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Titre de l'événement</label>
-                                <input type="text" id="titre" required placeholder="Ex: Atelier Mémoire & Jeux de société" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#7CABD3] outline-none transition-all">
-                                <p id="error-titre" class="text-red-500 text-xs mt-1 hidden font-bold italic"></p>
+                            <div class="flex p-4 gap-20">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Titre de l'événement</label>
+                                    <input type="text" id="titre" required placeholder="Ex: Atelier Mémoire & Jeux de société" class="w-full px-6 py-2 border rounded-lg focus:ring-2 focus:ring-[#7CABD3] outline-none transition-all">
+                                    <p id="error-titre" class="text-red-500 text-xs mt-1 hidden font-bold italic"></p>
+
+                                </div>
+                                <div class="flex p-2 gap-10">
+                                    <div>
+                                        <label class="block text-sm font-f text-gray-700 mb-1">
+                                            <i class="fas fa-tag mr-1 text-purple-400"></i> Catégorie
+                                            <button onclick="@" id="add_categorie_evenement" class="fas fa-plus-circle mr-2 text-green-400">
+                                                
+
+                                            </button>
+
+                                        </label>
+                                        <select id="id_categorie"class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition bg-white">
+                                            <option value="">Chargement...</option>
+                                        </select>
+
+
+
+
+                                    </div>
+
+                                </div>
+
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -89,6 +120,7 @@
             </div>
         </div>
     </div>    
-    <script src ="../../js/admin/evenement/admin_create_evenement.js"></script>
+    <script src ="../../js/admin/evenement/admin_create_evenement.js?v=2"></script>
+
 </body>
 </html>

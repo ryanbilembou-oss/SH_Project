@@ -1,0 +1,1 @@
+ALTER TABLE documents_pro ADD COLUMN IF NOT EXISTS statut VARCHAR(50) DEFAULT 'en_attente';

@@ -1,4 +1,27 @@
+async function loadCategories() {
+  try {
+    const res = await fetch(
+      `http://localhost:8082/admin/evenement/categorie_evenement/get`,
+    );
+    const categories = await res.json();
+    const select = document.getElementById("id_categorie");
+    select.innerHTML =
+      `<option value="">-- Choisir une catégorie --</option>` +
+      categories
+        .map(
+          (c) =>
+            `<option value="${c.id_categorie}">${c.nom_categorie}</option>`,
+        )
+        .join("");
+  } catch (err) {
+    console.error("[loadCategories] Erreur:", err);
+    document.getElementById("id_categorie").innerHTML =
+      `<option value="">Erreur chargement</option>`;
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {
+  loadCategories();
+
   const form = document.getElementById("createFullEvenementForm");
   const successToast = document.getElementById("successToast");
   const btnSubmit = form.querySelector('button[type="submit"]');
@@ -18,11 +41,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dateVal = document.getElementById("date").value;
     const heureVal = document.getElementById("heure").value;
-
     const dateHeureSQL = `${dateVal} ${heureVal}:00`;
 
     const eventData = {
-      id_categorie: 1,
+      id_categorie: Number(document.getElementById("id_categorie").value),
       titre: document.getElementById("titre").value,
       description: "",
       date_heure: dateHeureSQL,
@@ -60,17 +82,15 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(result.message || "Le serveur a refusé la création.");
       }
     } catch (error) {
-      console.error("Détails de l'erreur :", error);
-
       let errorMsg = "Impossible de joindre l'API.";
       if (error.message.includes("Failed to fetch")) {
         errorMsg =
-          "Connexion refusée. Vérifie que l'API Go tourne sur le port 8081 et que le CORS est activé.";
+          "Connexion refusée. Vérifie que l'API Go tourne sur le port 8082 et que le CORS est activé.";
       } else {
         errorMsg = error.message;
       }
 
-      alert(`❌ Erreur : ${errorMsg}`);
+      alert(` Erreur : ${errorMsg}`);
 
       btnSubmit.disabled = false;
       btnSubmit.innerHTML = originalBtnText;

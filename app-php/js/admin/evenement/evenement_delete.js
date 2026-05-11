@@ -21,7 +21,6 @@ const EventDeleteManager = {
       return;
     }
 
-
     if (this.tableBody) {
       this.tableBody.addEventListener("click", (e) => {
         const btn = e.target.closest(".btn-delete-trigger");
@@ -29,11 +28,9 @@ const EventDeleteManager = {
       });
     }
 
-    
     this.confirmBtn.addEventListener("click", () => this.executeDeletion());
     this.cancelBtn.addEventListener("click", () => this.close());
 
-  
     this.modal.addEventListener("click", (e) => {
       if (e.target === this.modal) this.close();
     });
@@ -60,7 +57,6 @@ const EventDeleteManager = {
     });
   },
 
-
   close() {
     if (this.isDeleting) return;
 
@@ -71,14 +67,12 @@ const EventDeleteManager = {
       this.modalContent.classList.add("scale-95");
     }
 
-    
     setTimeout(() => {
       this.modal.classList.add("hidden");
       this.modal.classList.remove("flex");
       this.currentId = null;
     }, 300);
   },
-
 
   async executeDeletion() {
     if (!this.currentId || this.isDeleting) return;
@@ -108,7 +102,6 @@ const EventDeleteManager = {
     }
   },
 
-
   setLoading(state) {
     this.isDeleting = state;
     if (!this.confirmBtn) return;
@@ -119,7 +112,6 @@ const EventDeleteManager = {
       : `Confirmer la suppression`;
   },
 
-  // ─── Retrait fluide de la ligne dans le tableau ───────────────────────────
   removeRowFromUI(id) {
     const row = document.getElementById(`event-row-${id}`);
     if (!row) return;
@@ -149,10 +141,8 @@ function showToast(message, type = "info") {
     icon.className = `${iconClass} ${color} text-xl`;
   }
 
-
   container.classList.remove("-translate-y-20", "opacity-0");
   container.classList.add("translate-y-0", "opacity-100");
-
 
   clearTimeout(showToast._timer);
   showToast._timer = setTimeout(() => {
