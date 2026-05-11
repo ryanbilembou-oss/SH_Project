@@ -29,7 +29,7 @@ async function accepterDevis() {
           id_senior: userId,
           id_devis: selectedDevisId,
           id_intervention: devisSelectionnee.id_intervention,
-          redirect_url: "http://172.16.90.10:8080/users/seniors/devis.php",
+          redirect_url: "http://144.76.74.130:8888/users/seniors/devis.php",
         }),
       },
     );

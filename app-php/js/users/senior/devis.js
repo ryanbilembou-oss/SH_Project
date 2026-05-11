@@ -351,7 +351,7 @@ async function payerDevis(idDevis) {
         id_senior: userId,
         id_devis: idDevis,
         id_intervention: devis.id_intervention,
-        redirect_url: "http://172.16.90.10:8080/users/seniors/devis.php",
+        redirect_url: "http://144.76.74.130:8888/users/seniors/devis.php",
       }),
     });
     if (!res.ok) {

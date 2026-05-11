@@ -136,7 +136,7 @@ function carteDocument(cat, docExistant) {
          ${esc(nomFichier(docExistant.url_document))}
       </p>
       <div class="flex items-center gap-4">
-        <a href="http://172.16.90.10:8080${esc(docExistant.url_document)}" target="_blank"
+        <a href="http://144.76.74.130:8888${esc(docExistant.url_document)}" target="_blank"
            class="text-sm text-[#7CABD3] underline font-fira hover:text-[#1A2B49] transition-all">
           Voir le document
         </a>

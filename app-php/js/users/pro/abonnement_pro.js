@@ -149,7 +149,7 @@ async function souscrire(type) {
         id_user: userId,
         type_abonnement: type,
         prix,
-        redirect_url: "http://172.16.90.10:8080/users/pro/abonnement_pro.php",
+        redirect_url: "http://144.76.74.130:8888/users/pro/abonnement_pro.php",
       }),
     });
 
