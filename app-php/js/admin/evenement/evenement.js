@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8082/admin/evenement/get";
+const API_URL = "http://172.16.90.10:8082/admin/evenement/get";
 
 const tableBody = document.getElementById("eventTableBody");
 const searchInput = document.getElementById("searchInput");

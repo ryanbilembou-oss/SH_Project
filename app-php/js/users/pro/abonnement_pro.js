@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8082";
+const API_BASE = "http://172.16.90.10:8082";
 const userId = Number(localStorage.getItem("id_user"));
 const role = localStorage.getItem("role");
 
@@ -149,7 +149,7 @@ async function souscrire(type) {
         id_user: userId,
         type_abonnement: type,
         prix,
-        redirect_url: "http://localhost:8080/users/pro/abonnement_pro.php",
+        redirect_url: "http://172.16.90.10:8080/users/pro/abonnement_pro.php",
       }),
     });
 

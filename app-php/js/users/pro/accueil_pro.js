@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8082";
+const API_BASE = "http://172.16.90.10:8082";
 const userId = Number(localStorage.getItem("id_user"));
 const email = localStorage.getItem("email") || "";
 const role = localStorage.getItem("role");

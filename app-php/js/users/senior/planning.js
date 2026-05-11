@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8082";
+const API_BASE = "http://172.16.90.10:8082";
 const userId = Number(localStorage.getItem("id_user"));
 const role = localStorage.getItem("role");
 
@@ -163,7 +163,6 @@ function renderCalendar() {
     </div>`;
   });
 
-
   evenements.forEach((e) => {
     if (!e.date_heure) return;
     const jourIndex = days.findIndex(
@@ -183,7 +182,6 @@ function renderCalendar() {
       <div style="color: white; font-size: 11px; margin-top: 2px; font-family: 'Fira Sans Condensed', sans-serif;"> ${esc(e.titre_evenement)}</div>
     </div>`;
   });
-
 
   plannings.forEach((p) => {
     if (!p.rappel_notification) return;

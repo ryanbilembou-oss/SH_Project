@@ -1,4 +1,4 @@
-var API_BASE = "http://localhost:8082";
+var API_BASE = "http://172.16.90.10:8082";
 
 (async () => {
   await loadCategories();
@@ -8,7 +8,7 @@ var API_BASE = "http://localhost:8082";
 async function loadCategories() {
   try {
     const res = await fetch(
-      `http://localhost:8082/admin/article/categorie_article/get`,
+      `http://172.16.90.10:8082/admin/article/categorie_article/get`,
     );
     if (!res.ok) throw new Error("Impossible de charger les catégories.");
 
@@ -60,7 +60,7 @@ async function handleSubmit() {
   submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Création...`;
 
   try {
-    const res = await fetch(`http://localhost:8082/admin/article/create`, {
+    const res = await fetch(`http://172.16.90.10:8082/admin/article/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id_categorie, nom, prix, stock, image_url, bio }),

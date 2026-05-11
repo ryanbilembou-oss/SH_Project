@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8082";
+const API_BASE = "http://172.16.90.10:8082";
 
 async function loadCategories() {
   const res = await fetch(
@@ -64,7 +64,7 @@ document
   .addEventListener("click", async () => {
     try {
       const res = await fetch(
-        `http://localhost:8082/admin/evenement/categorie_evenement/delete`,
+        `http://172.16.90.10:8082/admin/evenement/categorie_evenement/delete`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },

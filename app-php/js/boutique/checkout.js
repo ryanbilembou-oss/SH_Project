@@ -6,7 +6,7 @@ async function acheterArticle(event, articleId) {
   btn.disabled = true;
 
   try {
-    const response = await fetch("http://localhost:8082/payments/article", {
+    const response = await fetch("http://172.16.90.10:8082/payments/article", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

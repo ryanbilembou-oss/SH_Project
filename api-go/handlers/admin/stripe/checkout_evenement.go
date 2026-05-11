@@ -57,8 +57,8 @@ func CheckoutEvenement(w http.ResponseWriter, r *http.Request) {
 
 	params := url.Values{}
 	params.Set("mode", "payment")
-	params.Set("success_url", fmt.Sprintf("http://localhost:8080/users/seniors/panier/panier.php?success=1&id_paiement=%d", idPaiement))
-	params.Set("cancel_url", "http://localhost:8080/users/seniors/panier/panier.php?cancelled=1")
+	params.Set("success_url", fmt.Sprintf("http://172.16.90.10:8080/users/seniors/panier/panier.php?success=1&id_paiement=%d", idPaiement))
+	params.Set("cancel_url", "http://172.16.90.10:8080/users/seniors/panier/panier.php?cancelled=1")
 	params.Set("line_items[0][price_data][currency]", "eur")
 	params.Set("line_items[0][price_data][product_data][name]", req.Titre)
 	params.Set("line_items[0][price_data][unit_amount]", fmt.Sprintf("%d", req.Prix))

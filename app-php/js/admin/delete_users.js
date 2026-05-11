@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         const response = await fetch(
-          `http://localhost:8082/admin/users/delete?id=${idEnAttente}`,
+          `http://172.16.90.10:8082/admin/users/delete?id=${idEnAttente}`,
           {
             method: "DELETE",
           },

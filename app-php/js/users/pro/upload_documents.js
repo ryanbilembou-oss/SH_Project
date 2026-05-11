@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8082";
+const API_BASE = "http://172.16.90.10:8082";
 const userId = Number(localStorage.getItem("id_user"));
 const role = localStorage.getItem("role");
 
@@ -136,7 +136,7 @@ function carteDocument(cat, docExistant) {
          ${esc(nomFichier(docExistant.url_document))}
       </p>
       <div class="flex items-center gap-4">
-        <a href="http://localhost:8080${esc(docExistant.url_document)}" target="_blank"
+        <a href="http://172.16.90.10:8080${esc(docExistant.url_document)}" target="_blank"
            class="text-sm text-[#7CABD3] underline font-fira hover:text-[#1A2B49] transition-all">
           Voir le document
         </a>

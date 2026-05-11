@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const response = await fetch(
-      `http://localhost:8082/admin/users/get?id=${userId}`,
+      `http://172.16.90.10:8082/admin/users/get?id=${userId}`,
     );
     if (!response.ok)
       throw new Error("Erreur lors de la récupération de l'utilisateur");
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
 
       try {
-        const res = await fetch("http://localhost:8082/admin/users/update", {
+        const res = await fetch("http://172.16.90.10:8082/admin/users/update", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedData),

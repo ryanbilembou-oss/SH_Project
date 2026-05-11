@@ -1,4 +1,4 @@
-const API_BASE_NOTIF = "http://localhost:8082";
+const API_BASE_NOTIF = "http://172.16.90.10:8082";
 
 async function chargerNotifications() {
   const userId = Number(localStorage.getItem("id_user"));

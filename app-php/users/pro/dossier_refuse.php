@@ -64,7 +64,7 @@ require_once('../../auth.php');
     <?php include('../include/footer.php'); ?>
 
     <script>
-        const API_BASE = "http://localhost:8082";
+        const API_BASE = "http://172.16.90.10:8082";
         const userId = Number(localStorage.getItem("id_user"));
 
         (async () => {

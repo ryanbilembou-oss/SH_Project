@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tableBody = document.getElementById("userTableBody");
 
   try {
-    const response = await fetch("http://localhost:8082/admin/users");
+    const response = await fetch("http://172.16.90.10:8082/admin/users");
     if (!response.ok) throw new Error("Erreur lors de la récupération");
 
     const users = await response.json();
@@ -121,7 +121,7 @@ async function confirmerBan() {
   const raison = document.getElementById("banRaison").value.trim();
 
   try {
-    const res = await fetch("http://localhost:8082/admin/users/ban", {
+    const res = await fetch("http://172.16.90.10:8082/admin/users/ban", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id_user: banUserId, type, jours, raison }),
@@ -137,7 +137,7 @@ async function confirmerBan() {
 async function unbanUser(idUser) {
   if (!confirm("Débannir cet utilisateur ?")) return;
   try {
-    const res = await fetch("http://localhost:8082/admin/users/unban", {
+    const res = await fetch("http://172.16.90.10:8082/admin/users/unban", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id_user: idUser }),

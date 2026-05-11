@@ -81,7 +81,7 @@ const EventDeleteManager = {
 
     try {
       const response = await fetch(
-        `http://localhost:8082/admin/evenement/delete?id=${this.currentId}`,
+        `http://172.16.90.10:8082/admin/evenement/delete?id=${this.currentId}`,
         { method: "DELETE" },
       );
 

@@ -75,7 +75,7 @@ func CheckoutIntervention(w http.ResponseWriter, r *http.Request) {
 
 	baseURL := req.RedirectURL
 	if baseURL == "" {
-		baseURL = "http://localhost:8080/users/seniors/devis.php"
+		baseURL = "http://172.16.90.10:8080/users/seniors/devis.php"
 	}
 
 	params := url.Values{}

@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8082";
+const API_BASE = "http://172.16.90.10:8082";
 const userId = Number(localStorage.getItem("id_user"));
 const role = localStorage.getItem("role");
 
@@ -351,7 +351,7 @@ async function payerDevis(idDevis) {
         id_senior: userId,
         id_devis: idDevis,
         id_intervention: devis.id_intervention,
-        redirect_url: "http://localhost:8080/users/seniors/devis.php",
+        redirect_url: "http://172.16.90.10:8080/users/seniors/devis.php",
       }),
     });
     if (!res.ok) {

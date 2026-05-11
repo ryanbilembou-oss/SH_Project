@@ -114,7 +114,7 @@ func EnvoyerNotification(idUser int, titre, message, typeNotif, lien string) {
 		"include_player_ids": []string{playerID.String},
 		"headings":           map[string]string{"en": titre, "fr": titre},
 		"contents":           map[string]string{"en": message, "fr": message},
-		"url":                fmt.Sprintf("http://localhost:8080%s", lien),
+		"url":                fmt.Sprintf("http://172.16.90.10:8080%s", lien),
 	}
 
 	body, _ := json.Marshal(payload)
