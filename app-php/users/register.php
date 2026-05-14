@@ -21,7 +21,7 @@
 
     <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 -translate-y-20 opacity-0 z-50 transition-all duration-500 pointer-events-none">
         <div class="bg-[#1A2B49] text-white px-8 py-4 rounded-full shadow-2xl flex items-center gap-3">
-            <span id="toastIcon" class="text-lg">✅</span>
+            <span id="toastIcon" class="text-lg">V</span>
             <span id="toastMsg" class="font-bold uppercase text-xs tracking-widest">Message</span>
         </div>
     </div>
@@ -37,7 +37,7 @@
 
             <div class="mb-8">
                 <h2 class="text-3xl font-black uppercase tracking-tighter text-[#1A2B49] mb-2">
-                    Créer un <span class="text-[#7CABD3]">compte</span>
+                    Creer un <span class="text-[#7CABD3]">compte</span>
                 </h2>
                 <p class="text-gray-400 text-sm font-medium italic">Rejoignez l'aventure Silver Happy.</p>
             </div>
@@ -58,8 +58,8 @@
                         <input type="text" id="nom" placeholder="Nom" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
                     </div>
                     <div class="w-1/2">
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Prénom</label>
-                        <input type="text" id="prenom" placeholder="Prénom" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Prenom</label>
+                        <input type="text" id="prenom" placeholder="Prenom" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
                     </div>
                 </div>
 
@@ -68,13 +68,13 @@
                         <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Genre</label>
                         <select id="genre" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium text-[#1A2B49]">
                             <option value="Masculin">Homme</option>
-                            <option value="Féminin">Femme</option>
+                            <option value="Feminin">Femme</option>
                             <option value="Autre">Autre</option>
                         </select>
                     </div>
                     <div class="w-1/2">
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Téléphone</label>
-                        <input type="tel" id="telephone" placeholder="06..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Telephone</label>
+                        <input type="tel" id="telephone" placeholder="06..." maxlength="10" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
                     </div>
                 </div>
 
@@ -96,46 +96,48 @@
                         </button>
                     </div>
                     <div class="mt-3 ml-4 space-y-1">
-                        <p id="crit-length" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">8 caractères</p>
+                        <p id="crit-length" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">8 caracteres</p>
                         <p id="crit-number" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">Un chiffre</p>
-                        <p id="crit-special" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">Un caractère spécial</p>
+                        <p id="crit-special" class="text-[9px] critere-invalid font-bold uppercase tracking-widest italic">Un caractere special</p>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Date de naissance</label>
                     <input type="date" id="date_naissance" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium text-[#1A2B49]">
-                    <p id="ageError" class="hidden text-[9px] text-red-500 font-bold uppercase mt-1 ml-4 tracking-widest italic">Vous devez être majeur.</p>
+                    <p id="ageError" class="hidden text-[9px] text-red-500 font-bold uppercase mt-1 ml-4 tracking-widest italic">Vous devez avoir au moins 50 ans.</p>
                 </div>
 
-     
                 <div id="seniorFields" class="space-y-5">
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Adresse complète</label>
-                        <input type="text" id="adresse" placeholder="Votre adresse..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Rue</label>
+                        <input type="text" id="rue" placeholder="12 rue de la Paix..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Ville</label>
+                        <input type="text" id="ville" placeholder="Paris..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
                     </div>
                 </div>
 
-               
                 <div id="proFields" class="hidden space-y-5">
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Type de prestataire</label>
                         <select id="id_type" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium text-[#1A2B49]">
                             <option value="">Chargement...</option>
                         </select>
-                        <p class="text-[9px] text-gray-400 mt-1 ml-4 italic">Détermine les documents obligatoires à fournir</p>
+                        <p class="text-[9px] text-gray-400 mt-1 ml-4 italic">Determine les documents obligatoires a fournir</p>
                     </div>
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Nom de l'entreprise</label>
                         <input type="text" id="nom_entreprise" placeholder="Silver Pro SARL" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">N° SIRET</label>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">N SIRET</label>
                         <input type="text" id="siret" placeholder="14 chiffres" maxlength="14" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Téléphone professionnel</label>
-                        <input type="tel" id="telephone_pro" placeholder="01..." class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Telephone professionnel</label>
+                        <input type="tel" id="telephone_pro" placeholder="01..." maxlength="10" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49]">
                     </div>
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Adresse professionnelle</label>
@@ -152,12 +154,11 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Bio / Présentation</label>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-4">Bio / Presentation</label>
                         <textarea id="bio" placeholder="Votre parcours..." rows="3" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#7CABD3] rounded-2xl outline-none transition-all font-medium placeholder:text-gray-300 text-[#1A2B49] resize-none"></textarea>
                     </div>
                 </div>
 
-                
                 <div class="flex justify-center">
                     <div class="g-recaptcha" data-sitekey="6LcmXpwsAAAAANacd5JK7B-M9MxUCSmnQBF_6LB8"></div>
                 </div>
@@ -171,13 +172,13 @@
 
             <div class="mt-8 pt-6 border-t border-gray-100 text-center">
                 <p class="text-gray-500 text-xs font-medium">
-                    Déjà inscrit ?
+                    Deja inscrit ?
                     <a href="login.php" class="text-[#1A2B49] font-black uppercase ml-1 hover:text-[#7CABD3] transition-colors">Se connecter</a>
                 </p>
             </div>
         </div>
     </div>
 
-    <script src="../js/users/register.js?v=<?php echo time(); ?>"defer ></script>
+    <script src="../js/users/register.js?v=<?php echo time(); ?>" defer></script>
 </body>
 </html>

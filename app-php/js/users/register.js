@@ -7,12 +7,19 @@ const passwordInput = document.getElementById("password");
 const dateInput = document.getElementById("date_naissance");
 
 const today = new Date();
-const eighteenYearsAgo = new Date(
-  today.getFullYear() - 18,
+const fiftyYearsAgo = new Date(
+  today.getFullYear() - 50,
   today.getMonth(),
   today.getDate(),
 );
-dateInput.max = eighteenYearsAgo.toISOString().split("T")[0];
+const hundredYearsAgo = new Date(
+  today.getFullYear() - 100,
+  today.getMonth(),
+  today.getDate(),
+);
+
+dateInput.max = fiftyYearsAgo.toISOString().split("T")[0];
+dateInput.min = hundredYearsAgo.toISOString().split("T")[0];
 
 async function loadTypes() {
   try {
@@ -41,6 +48,18 @@ document.getElementById("togglePassword").addEventListener("click", () => {
   input.type = input.type === "password" ? "text" : "password";
 });
 
+document.getElementById("telephone").addEventListener("input", function () {
+  this.value = this.value.replace(/\D/g, "").slice(0, 10);
+});
+
+document.getElementById("telephone_pro").addEventListener("input", function () {
+  this.value = this.value.replace(/\D/g, "").slice(0, 10);
+});
+
+document.getElementById("siret").addEventListener("input", function () {
+  this.value = this.value.replace(/\D/g, "").slice(0, 14);
+});
+
 passwordInput.addEventListener("input", validatePassword);
 dateInput.addEventListener("change", validateAge);
 
@@ -49,23 +68,26 @@ function validatePassword() {
   const isLongEnough = mdp.length >= 8;
   const hasNumber = /\d/.test(mdp);
   const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(mdp);
-  updateCritere("crit-length", isLongEnough, "8 caractères");
+  updateCritere("crit-length", isLongEnough, "8 caracteres");
   updateCritere("crit-number", hasNumber, "Un chiffre");
-  updateCritere("crit-special", hasSpecial, "Un caractère spécial");
+  updateCritere("crit-special", hasSpecial, "Un caractere special");
   return isLongEnough && hasNumber && hasSpecial;
 }
 
 function validateAge() {
   if (!dateInput.value) return false;
-  const isMajeur = new Date(dateInput.value) <= eighteenYearsAgo;
-  document.getElementById("ageError").classList.toggle("hidden", isMajeur);
-  return isMajeur;
+  const birthDate = new Date(dateInput.value);
+  const isOldEnough = birthDate <= fiftyYearsAgo;
+  const isNotTooOld = birthDate >= hundredYearsAgo;
+  const valid = isOldEnough && isNotTooOld;
+  document.getElementById("ageError").classList.toggle("hidden", valid);
+  return valid;
 }
 
 function updateCritere(id, valid, text) {
   const el = document.getElementById(id);
   el.innerHTML = (valid ? "V " : "X ") + text;
-  el.className = `text-[9px] font-fira uppercase tracking-widest italic ${valid ? "critere-valid" : "critere-invalid"}`;
+  el.className = `text-[9px] font-bold uppercase tracking-widest italic ${valid ? "critere-valid" : "critere-invalid"}`;
 }
 
 document
@@ -81,7 +103,30 @@ document
       return;
     }
     if (!validateAge()) {
-      showToast("Vous devez être majeur.", "error");
+      showToast(
+        "Vous devez avoir entre 50 et 100 ans pour vous inscrire.",
+        "error",
+      );
+      return;
+    }
+
+    const role = roleSelect.value;
+
+    if (role === "senior") {
+      const rue = document.getElementById("rue").value.trim();
+      const ville = document.getElementById("ville").value.trim();
+      if (!rue || !ville) {
+        showToast("Veuillez renseigner la rue et la ville.", "error");
+        return;
+      }
+    }
+
+    const tel = document.getElementById("telephone").value.trim();
+    if (tel && !/^\d+$/.test(tel)) {
+      showToast(
+        "Le numero de telephone ne doit contenir que des chiffres.",
+        "error",
+      );
       return;
     }
 
@@ -105,7 +150,6 @@ document
       return;
     }
 
-    const role = roleSelect.value;
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.disabled = true;
     submitBtn.textContent = "Inscription...";
@@ -117,21 +161,31 @@ document
       nom: document.getElementById("nom").value.trim(),
       prenom: document.getElementById("prenom").value.trim(),
       genre: document.getElementById("genre").value,
-      telephone: document.getElementById("telephone").value.trim(),
+      telephone: tel,
       date_naissance: dateInput.value,
     };
 
     if (role === "senior") {
-      payload.adresse = document.getElementById("adresse").value.trim();
+      const rue = document.getElementById("rue").value.trim();
+      const ville = document.getElementById("ville").value.trim();
+      payload.adresse = rue + ", " + ville;
     } else if (role === "pro") {
+      const telPro = document.getElementById("telephone_pro").value.trim();
+      if (telPro && !/^\d+$/.test(telPro)) {
+        showToast(
+          "Le telephone professionnel ne doit contenir que des chiffres.",
+          "error",
+        );
+        submitBtn.disabled = false;
+        submitBtn.textContent = "S'inscrire";
+        return;
+      }
       payload.id_type = Number(document.getElementById("id_type").value);
       payload.nom_entreprise = document
         .getElementById("nom_entreprise")
         .value.trim();
       payload.siret = document.getElementById("siret").value.trim();
-      payload.telephone_pro = document
-        .getElementById("telephone_pro")
-        .value.trim();
+      payload.telephone_pro = telPro;
       payload.adresse_pro = document.getElementById("adresse_pro").value.trim();
       payload.statut_juridique =
         document.getElementById("statut_juridique").value;
@@ -167,7 +221,7 @@ document
       }
 
       showToast(
-        "Compte créé ! Connectez-vous pour compléter votre dossier.",
+        "Compte cree. Connectez-vous pour completer votre dossier.",
         "success",
       );
       setTimeout(() => {
