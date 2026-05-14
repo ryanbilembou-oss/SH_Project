@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"silver-happy-api/database"
 )
 
@@ -61,11 +62,15 @@ func CheckoutPanier(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"erreur": "Erreur serveur"}`, 500)
 		return
 	}
+
+	appURL := os.Getenv("APP_URL")
+	if appURL == "" { appURL = "http://localhost:8080" }
+
  
 	params := url.Values{}
 	params.Set("mode", "payment")
-	params.Set("success_url", fmt.Sprintf("*/users/seniors/panier/panier.php?success=1&id_paiement=%d", idPaiement))
-	params.Set("cancel_url", "*/users/seniors/panier/panier.php?cancelled=1")
+	params.Set("success_url", fmt.Sprintf("%s/users/seniors/panier/panier.php?success=1&id_paiement=%d", appURL, idPaiement))
+	params.Set("cancel_url", fmt.Sprintf("%s/users/seniors/panier/panier.php?cancelled=1", appURL))
 	params.Set("metadata[id_user]", fmt.Sprintf("%d", req.IDUser))
 	params.Set("metadata[type]", "panier")
 	params.Set("metadata[id_paiement]", fmt.Sprintf("%d", idPaiement))
