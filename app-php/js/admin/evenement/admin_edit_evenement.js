@@ -68,7 +68,39 @@ async function loadCategories() {
     console.warn("[loadCategories]", err);
   }
 }
+async function loadInscrits(idEvenement) {
+  try {
+    const res = await fetch(
+      `${API_BASE}/admin/inscription_evenement/get_by_event?id=${idEvenement}`,
+    );
 
+    const data = await res.json();
+    const inscrits = Array.isArray(data) ? data : [];
+
+    const modal = document.createElement("div");
+    modal.id = "modalInscrits";
+    modal.innerHTML = `
+      <div>
+        <div>
+          <div>
+            ${inscrits
+              .map((i) => {
+                return `
+                <tr>
+                  <td>${i.nom}</td>
+                </tr>
+              `;
+              })
+              .join("")}
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  } catch (error) {
+    console.error("Erreur inscrits :", error);
+  }
+}
 async function handleSubmit() {
   const titre = document.getElementById("titre").value.trim();
   const lieu = document.getElementById("lieu").value.trim();
