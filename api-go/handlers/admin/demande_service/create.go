@@ -106,32 +106,43 @@ func GetDemandesBySenior(w http.ResponseWriter, r *http.Request) {
 		SELECT ds.id_demande, ds.id_senior, ds.id_offre,
 			op.id_pro, op.id_service, s.nom,
 			pp.nom, pp.prenom, op.prix_personnalise,
-			ds.date_souhaitee::text, ds.message, ds.statut, ds.date_creation::text
+			to_char(ds.date_souhaitee, 'YYYY-MM-DD"T"HH24:MI:SS'),
+			ds.message, ds.statut,
+			to_char(ds.date_creation, 'YYYY-MM-DD"T"HH24:MI:SS'),
+			COALESCE(ps.nom, ''), COALESCE(ps.prenom, '')
 		FROM demande_service ds
 		INNER JOIN offre_prestataire op ON ds.id_offre = op.id_offre
 		INNER JOIN service s ON op.id_service = s.id
 		LEFT JOIN profile_pro pp ON op.id_pro = pp.id_user
+		LEFT JOIN profile_senior ps ON ds.id_senior = ps.id_user
 		WHERE ds.id_senior = $1
 		ORDER BY ds.date_creation DESC
 	`
 
 	rows, err := database.DB.Query(query, id)
 	if err != nil {
-		log.Printf("❌ GetDemandesBySenior - Erreur SQL: %v", err)
+		log.Printf("GetDemandesBySenior error: %v", err)
 		http.Error(w, `{"erreur": "Erreur serveur"}`, http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	demandes := []DemandeDisplay{}
+	type DemandeExt struct {
+		DemandeDisplay
+		NomSenior    string `json:"nom_senior"`
+		PrenomSenior string `json:"prenom_senior"`
+	}
+
+	demandes := []DemandeExt{}
 	for rows.Next() {
-		var d DemandeDisplay
+		var d DemandeExt
 		err := rows.Scan(&d.IdDemande, &d.IdSenior, &d.IdOffre,
 			&d.IdPro, &d.IdService, &d.NomService,
 			&d.NomPro, &d.PrenomPro, &d.PrixPerso,
-			&d.DateSouhaitee, &d.Message, &d.Statut, &d.DateCreation)
+			&d.DateSouhaitee, &d.Message, &d.Statut, &d.DateCreation,
+			&d.NomSenior, &d.PrenomSenior)
 		if err != nil {
-			log.Printf("⚠️ GetDemandesBySenior - Erreur Scan: %v", err)
+			log.Printf("GetDemandesBySenior scan error: %v", err)
 			continue
 		}
 		demandes = append(demandes, d)
@@ -152,31 +163,42 @@ func GetAllDemandes(w http.ResponseWriter, r *http.Request) {
 		SELECT ds.id_demande, ds.id_senior, ds.id_offre,
 			op.id_pro, op.id_service, s.nom,
 			pp.nom, pp.prenom, op.prix_personnalise,
-			ds.date_souhaitee::text, ds.message, ds.statut, ds.date_creation::text
+			to_char(ds.date_souhaitee, 'YYYY-MM-DD"T"HH24:MI:SS'),
+			ds.message, ds.statut,
+			to_char(ds.date_creation, 'YYYY-MM-DD"T"HH24:MI:SS'),
+			COALESCE(ps.nom, ''), COALESCE(ps.prenom, '')
 		FROM demande_service ds
 		INNER JOIN offre_prestataire op ON ds.id_offre = op.id_offre
 		INNER JOIN service s ON op.id_service = s.id
 		LEFT JOIN profile_pro pp ON op.id_pro = pp.id_user
+		LEFT JOIN profile_senior ps ON ds.id_senior = ps.id_user
 		ORDER BY ds.date_creation DESC
 	`
 
 	rows, err := database.DB.Query(query)
 	if err != nil {
-		log.Printf("❌ GetAllDemandes - Erreur SQL: %v", err)
+		log.Printf("GetAllDemandes error: %v", err)
 		http.Error(w, `{"erreur": "Erreur serveur"}`, http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	demandes := []DemandeDisplay{}
+	type DemandeExt struct {
+		DemandeDisplay
+		NomSenior    string `json:"nom_senior"`
+		PrenomSenior string `json:"prenom_senior"`
+	}
+
+	demandes := []DemandeExt{}
 	for rows.Next() {
-		var d DemandeDisplay
+		var d DemandeExt
 		err := rows.Scan(&d.IdDemande, &d.IdSenior, &d.IdOffre,
 			&d.IdPro, &d.IdService, &d.NomService,
 			&d.NomPro, &d.PrenomPro, &d.PrixPerso,
-			&d.DateSouhaitee, &d.Message, &d.Statut, &d.DateCreation)
+			&d.DateSouhaitee, &d.Message, &d.Statut, &d.DateCreation,
+			&d.NomSenior, &d.PrenomSenior)
 		if err != nil {
-			log.Printf("⚠️ GetAllDemandes - Erreur Scan: %v", err)
+			log.Printf("GetAllDemandes scan error: %v", err)
 			continue
 		}
 		demandes = append(demandes, d)
@@ -184,6 +206,7 @@ func GetAllDemandes(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(demandes)
 }
+
 
 func UpdateStatutDemande(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")

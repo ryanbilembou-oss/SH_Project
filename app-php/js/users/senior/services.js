@@ -218,7 +218,7 @@ function renderServices(services) {
           <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-sm font-fira px-3 py-1 rounded-full">${esc(s.nom_categorie || "Service")}</span>
           ${badge}
         </div>
-        <span class="font-fira text-[#1A2B49] text-lg">${s.prix_reference ? s.prix_reference + " €/h" : "Sur devis"}</span>
+        <span class="font-fira text-[#1A2B49] text-lg">${s.prix_reference ? s.prix_reference + " EUR/h" : "Sur devis"}</span>
       </div>
       <h4 class="font-fira text-[#1A2B49] text-2xl mb-3">${esc(s.nom)}</h4>
       <p class="text-base text-gray-400 mb-6 leading-relaxed line-clamp-2">${esc(s.description || "")}</p>
@@ -322,13 +322,13 @@ function renderPrestataires() {
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <p class="font-fira text-[#1A2B49] text-base">${esc(o.prenom_pro)} ${esc(o.nom_pro)}</p>
-            ${isSponsored ? `<span class="text-xs bg-[#FCE297] text-[#1A2B49] px-2 py-0.5 rounded-full font-fira"><iconify-icon icon="mdi:star-circle"></iconify-icon> Sponsorise</span>` : ""}
+            ${isSponsored ? `<span class="text-xs bg-[#FCE297] text-[#1A2B49] px-2 py-0.5 rounded-full font-fira">Sponsorise</span>` : ""}
             ${demandeActive ? `<span class="text-xs font-fira text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">En cours</span>` : ""}
           </div>
           <p class="text-sm text-gray-400">${esc(o.nom_entreprise || "Independant")}</p>
           <div class="flex items-center justify-between mt-1">
             <span class="text-yellow-400 text-sm">${noteStars}</span>
-            <span class="font-fira text-[#1A2B49] text-sm">${Number(o.prix_personnalise).toFixed(2)} €/h</span>
+            <span class="font-fira text-[#1A2B49] text-sm">${Number(o.prix_personnalise).toFixed(2)} EUR/h</span>
           </div>
         </div>
       </div>
@@ -425,7 +425,7 @@ async function selectionnerPro(idOffre) {
           <div>
             <div class="flex items-center gap-2 flex-wrap">
               <h4 class="font-fira text-[#1A2B49] text-2xl">${esc(o.prenom_pro)} ${esc(o.nom_pro)}</h4>
-              ${isSponsored ? `<span class="text-xs bg-[#FCE297] text-[#1A2B49] px-2 py-1 rounded-full font-fira"><iconify-icon icon="mdi:star-circle"></iconify-icon> Sponsorise</span>` : ""}
+              ${isSponsored ? `<span class="text-xs bg-[#FCE297] text-[#1A2B49] px-2 py-1 rounded-full font-fira">Sponsorise</span>` : ""}
             </div>
             <p class="text-gray-400 text-sm">${esc(o.nom_entreprise || "Independant")}</p>
             <p class="text-yellow-400 text-base mt-1">${noteAffichee}</p>
@@ -433,7 +433,7 @@ async function selectionnerPro(idOffre) {
         </div>
         <div class="bg-[#1A2B49] text-white px-6 py-4 rounded-[20px]">
           <p class="font-fira uppercase text-xs tracking-widest opacity-70">Tarif</p>
-          <p class="font-fira text-3xl mt-1">${Number(o.prix_personnalise).toFixed(2)} €/h</p>
+          <p class="font-fira text-3xl mt-1">${Number(o.prix_personnalise).toFixed(2)} EUR/h</p>
         </div>
         ${o.bio ? `<div><p class="font-fira uppercase text-xs tracking-widest text-gray-400 mb-2">A propos</p><p class="text-gray-500 text-base leading-relaxed">${esc(o.bio)}</p></div>` : ""}
         <div>
@@ -450,7 +450,7 @@ async function selectionnerPro(idOffre) {
           Faire une demande
         </button>
       </div>`;
-  } catch (e) {
+  } catch {
     panel.innerHTML = `<p class="text-red-400 text-center">Erreur de chargement.</p>`;
   }
 }
@@ -463,7 +463,7 @@ async function choisirPrestataire(idOffre, nomPro, prix) {
     "Demande de service";
   document.getElementById("modalDemandePro").textContent = nomPro;
   document.getElementById("modalDemandePrix").textContent =
-    Number(prix).toFixed(2) + " €/h";
+    Number(prix).toFixed(2) + " EUR/h";
   document.getElementById("messageDemande").value = "";
   dateSelectionnee = null;
   creneauSelectionne = null;
@@ -596,7 +596,9 @@ function afficherCreneaux() {
   planning.forEach((p) => {
     const debut = parseHeureToMin(p.heure_debut);
     const fin = parseHeureToMin(p.heure_fin);
-    for (let t = debut; t + 60 <= fin; t += 60) slots.push(t);
+    const duree = p.duree_intervention || 60;
+    const pause = p.pause_entre || 0;
+    for (let t = debut; t + duree <= fin; t += duree + pause) slots.push(t);
   });
 
   const dateStr = dateSelectionnee.toLocaleDateString("fr-FR", {
@@ -668,8 +670,7 @@ function parseHeureToMin(str) {
   if (!str) return 0;
   let h, m;
   if (str.includes("T")) {
-    const time = str.split("T")[1];
-    [h, m] = time.split(":").map(Number);
+    [h, m] = str.split("T")[1].split(":").map(Number);
   } else if (str.includes(" ")) {
     [h, m] = str.split(" ")[1].split(":").map(Number);
   } else {
@@ -694,9 +695,8 @@ async function envoyerDemande() {
   }
 
   const [hh, mm] = creneauSelectionne.split(":").map(Number);
-  const dateHeure = new Date(dateSelectionnee);
-  dateHeure.setHours(hh, mm, 0, 0);
-  const dateISO = dateHeure.toISOString();
+  const d = dateSelectionnee;
+  const dateISO = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:00`;
 
   const btn = document.getElementById("btnEnvoyerDemande");
   btn.disabled = true;
@@ -715,7 +715,7 @@ async function envoyerDemande() {
     });
 
     if (res.status === 409) {
-      showToast("Vous avez deja une demande pour cette date.", "error");
+      showToast("Vous avez deja une demande pour cette offre.", "error");
       fermerModalDemande();
       return;
     }
@@ -736,6 +736,21 @@ async function envoyerDemande() {
 
 function renderDemandes(demandes) {
   const container = document.getElementById("servicesList");
+  const mois = [
+    "Jan",
+    "Fev",
+    "Mar",
+    "Avr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Aou",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
   if (!demandes.length) {
     const msg =
       vueActuelle === "en_cours"
@@ -789,6 +804,22 @@ function renderDemandes(demandes) {
         icon: "mdi:help",
       };
       const isTermine = ["termine", "refuse", "annulee"].includes(d.statut);
+
+      const rawStr = d.date_souhaitee || "";
+      let dateAffichee = rawStr;
+      let heureAffichee = "";
+      if (rawStr.includes("T")) {
+        const [datePart, timePart] = rawStr.split("T");
+        const [year, month, day] = datePart.split("-").map(Number);
+        heureAffichee = timePart ? timePart.slice(0, 5) : "";
+        dateAffichee = `${day} ${mois[month - 1]} ${year}${heureAffichee ? " a " + heureAffichee : ""}`;
+      } else if (rawStr.includes(" ")) {
+        const [datePart, timePart] = rawStr.split(" ");
+        const [year, month, day] = datePart.split("-").map(Number);
+        heureAffichee = timePart ? timePart.slice(0, 5) : "";
+        dateAffichee = `${day} ${mois[month - 1]} ${year}${heureAffichee ? " a " + heureAffichee : ""}`;
+      }
+
       const actions =
         d.statut === "en_attente"
           ? `
@@ -796,10 +827,6 @@ function renderDemandes(demandes) {
         class="px-4 py-2 bg-red-100 text-red-600 rounded-full font-fira text-sm uppercase hover:bg-red-600 hover:text-white transition-all">
         Annuler
       </button>`
-          : "";
-      const msgAnnulee =
-        d.statut === "annulee"
-          ? `<p class="text-gray-400 text-sm italic mt-2"><iconify-icon icon="mdi:information" class="mr-1"></iconify-icon>Demande expiree.</p>`
           : "";
 
       return `
@@ -813,10 +840,9 @@ function renderDemandes(demandes) {
       <h4 class="font-fira text-[#1A2B49] text-2xl mb-3">${esc(d.nom_service)}</h4>
       <div class="space-y-1 mb-4">
         <p class="text-base text-gray-500"><iconify-icon icon="mdi:account" class="mr-1 text-[#7CABD3]"></iconify-icon>${esc(d.prenom_pro || "")} ${esc(d.nom_pro || "")}</p>
-        <p class="text-base text-gray-500"><iconify-icon icon="mdi:calendar" class="mr-1 text-[#7CABD3]"></iconify-icon>Date souhaitee : ${esc((d.date_souhaitee || "").split("T")[0])}</p>
-        <p class="text-base text-gray-500"><iconify-icon icon="mdi:currency-eur" class="mr-1 text-[#7CABD3]"></iconify-icon>${Number(d.prix_personnalise).toFixed(2)} €/h</p>
+        <p class="text-base text-gray-500"><iconify-icon icon="mdi:calendar" class="mr-1 text-[#7CABD3]"></iconify-icon>${dateAffichee}</p>
+        <p class="text-base text-gray-500"><iconify-icon icon="mdi:currency-eur" class="mr-1 text-[#7CABD3]"></iconify-icon>${Number(d.prix_personnalise).toFixed(2)} EUR/h</p>
       </div>
-      ${msgAnnulee}
       <div class="flex justify-end">${actions}</div>
     </div>`;
     })

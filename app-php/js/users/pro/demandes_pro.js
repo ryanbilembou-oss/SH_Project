@@ -2,9 +2,7 @@ const API_BASE = "http://144.76.74.130:8082";
 const userId = Number(localStorage.getItem("id_user"));
 const role = localStorage.getItem("role");
 
-if (!userId || role !== "pro") {
-  window.location.href = "/users/login.php";
-}
+if (!userId || role !== "pro") window.location.href = "/users/login.php";
 
 let demandes = [];
 let toutesLesDemandes = [];
@@ -12,6 +10,21 @@ let filtreCourant = "en_attente";
 let demandeSelectionnee = null;
 let monPlanning = [];
 let maCommission = 15;
+
+const mois = [
+  "Jan",
+  "Fev",
+  "Mar",
+  "Avr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Aou",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 (async () => {
   await Promise.all([loadDemandes(), loadMonPlanning()]);
@@ -28,9 +41,7 @@ async function loadMonPlanning() {
       ? all.filter((p) => p.id_pro === userId && p.est_actif)
       : [];
     const profil = await resProfil.json();
-    if (profil && profil.commission) {
-      maCommission = Number(profil.commission);
-    }
+    if (profil && profil.commission) maCommission = Number(profil.commission);
   } catch {
     monPlanning = [];
   }
@@ -79,6 +90,25 @@ async function annulerDemandesExpirees(demandes) {
   return true;
 }
 
+function extraireDateHeure(raw) {
+  if (!raw) return { dateBase: "", heureAffichee: "" };
+  if (raw.includes("T")) {
+    const [datePart, timePart] = raw.split("T");
+    return {
+      dateBase: datePart,
+      heureAffichee: timePart ? timePart.slice(0, 5) : "",
+    };
+  }
+  if (raw.includes(" ")) {
+    const [datePart, timePart] = raw.split(" ");
+    return {
+      dateBase: datePart,
+      heureAffichee: timePart ? timePart.slice(0, 5) : "",
+    };
+  }
+  return { dateBase: raw, heureAffichee: "" };
+}
+
 function filtrer(statut) {
   filtreCourant = statut;
   document.querySelectorAll(".filtre-btn").forEach((btn) => {
@@ -108,20 +138,6 @@ function filtrer(statut) {
 
 function renderDemandes() {
   const container = document.getElementById("demandesList");
-  const mois = [
-    "Jan",
-    "Fev",
-    "Mar",
-    "Avr",
-    "Mai",
-    "Jun",
-    "Jul",
-    "Aou",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
 
   if (!demandes.length) {
     const labels = {
@@ -140,17 +156,14 @@ function renderDemandes() {
 
   container.innerHTML = demandes
     .map((d) => {
-      const date = new Date(d.date_souhaitee);
-      const heure = !isNaN(date)
-        ? date.toLocaleTimeString("fr-FR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        : "";
-      const dateStr = isNaN(date)
-        ? d.date_souhaitee
-        : `${date.getDate()} ${mois[date.getMonth()]} ${date.getFullYear()} ${heure ? "a " + heure : ""}`;
-      const datePassee = date < new Date();
+      const { dateBase, heureAffichee } = extraireDateHeure(d.date_souhaitee);
+      const [year, month, day] = dateBase
+        ? dateBase.split("-").map(Number)
+        : [0, 0, 0];
+      const dateStr = dateBase
+        ? `${day} ${mois[month - 1]} ${year}${heureAffichee ? " a " + heureAffichee : ""}`
+        : "—";
+      const datePassee = dateBase && new Date(d.date_souhaitee) < new Date();
 
       const statutConfig = {
         en_attente: {
@@ -193,12 +206,12 @@ function renderDemandes() {
         </p>
         <p class="${datePassee && d.statut === "en_attente" ? "text-red-400" : "text-gray-400"} text-base">
           <iconify-icon icon="mdi:calendar" class="text-[#7CABD3]"></iconify-icon>
-          ${esc(dateStr)} ${datePassee && d.statut === "en_attente" ? "⚠️" : ""}
+          ${esc(dateStr)} ${datePassee && d.statut === "en_attente" ? "⚠" : ""}
         </p>
         ${d.message ? `<p class="text-gray-300 text-sm mt-1 italic">"${esc(d.message)}"</p>` : ""}
       </div>
       <div class="flex-shrink-0 text-right flex flex-col items-end gap-3">
-        <p class="font-fira text-[#1A2B49] text-lg">${Number(d.prix_personnalise).toFixed(2)} €/h</p>
+        <p class="font-fira text-[#1A2B49] text-lg">${Number(d.prix_personnalise).toFixed(2)} EUR/h</p>
         ${sc.label ? `<span class="font-fira text-xs uppercase tracking-widest ${sc.labelCss}">${sc.label}</span>` : ""}
         ${
           d.statut === "en_attente"
@@ -245,7 +258,7 @@ function calculerPrixModal() {
   const prix = demandeSelectionnee?.prix_personnalise || 0;
   const montantHT = prix * duree;
   const montantTTC = montantHT * 1.2;
-  el.textContent = `${duree.toFixed(1)}h — HT : ${montantHT.toFixed(2)} € — TTC : ${montantTTC.toFixed(2)} €`;
+  el.textContent = `${duree.toFixed(1)}h — HT : ${montantHT.toFixed(2)} EUR — TTC : ${montantTTC.toFixed(2)} EUR`;
 }
 
 function ouvrirModalAccepter(idDemande) {
@@ -253,26 +266,42 @@ function ouvrirModalAccepter(idDemande) {
   if (!demandeSelectionnee) return;
   const d = demandeSelectionnee;
 
+  const { dateBase, heureAffichee } = extraireDateHeure(d.date_souhaitee);
+  const [year, month, day] = dateBase
+    ? dateBase.split("-").map(Number)
+    : [0, 0, 0];
+  const dateLabel = dateBase
+    ? `${day} ${mois[month - 1]} ${year}${heureAffichee ? " a " + heureAffichee : ""}`
+    : "—";
+
   document.getElementById("modalAccepterSous").textContent =
-    `${d.nom_service} — ${d.prenom_senior || ""} ${d.nom_senior || ""} — ${(d.date_souhaitee || "").split("T")[0]}`;
+    `${d.nom_service} — ${d.prenom_senior || ""} ${d.nom_senior || ""} — ${dateLabel}`;
   document.getElementById("inputIdDemande").value = idDemande;
   document.getElementById("inputLieu").value = "";
   document.getElementById("inputBioIntervention").value = d.message || "";
 
   const jourDemande = getJourSemaine(d.date_souhaitee);
   const creneauJour = monPlanning.find((p) => p.jour_semaine === jourDemande);
+  const duree = creneauJour?.duree_intervention || 60;
 
-  if (creneauJour) {
+  if (heureAffichee) {
+    const [hd, md] = heureAffichee.split(":").map(Number);
+    const finMin = hd * 60 + md + duree;
+    const heureFin = `${String(Math.floor(finMin / 60)).padStart(2, "0")}:${String(finMin % 60).padStart(2, "0")}`;
+    document.getElementById("inputHeureDebut").value = heureAffichee;
+    document.getElementById("inputHeureFin").value = heureFin;
+    document.getElementById("infoPlanning").textContent =
+      `Creneau demande : ${heureAffichee} → ${heureFin} (${duree} min)`;
+    document.getElementById("infoPlanning").classList.remove("hidden");
+  } else if (creneauJour) {
     const heureDebut = parseHeure(creneauJour.heure_debut) || "09:00";
-    const duree = creneauJour.duree_intervention || 60;
     const [hd, md] = heureDebut.split(":").map(Number);
     const finMin = hd * 60 + md + duree;
     const heureFin = `${String(Math.floor(finMin / 60)).padStart(2, "0")}:${String(finMin % 60).padStart(2, "0")}`;
-
     document.getElementById("inputHeureDebut").value = heureDebut;
     document.getElementById("inputHeureFin").value = heureFin;
     document.getElementById("infoPlanning").textContent =
-      `Creneau : ${heureDebut} → ${heureFin} (${duree} min)`;
+      `Creneau habituel : ${heureDebut} → ${heureFin} (${duree} min)`;
     document.getElementById("infoPlanning").classList.remove("hidden");
   } else {
     document.getElementById("inputHeureDebut").value = "09:00";
@@ -314,14 +343,13 @@ async function confirmerAcceptation() {
     return;
   }
 
-  const dateBase = (d.date_souhaitee || "").split("T")[0].split(" ")[0];
+  const { dateBase } = extraireDateHeure(d.date_souhaitee);
   const dateHeureDebut = `${dateBase}T${heureDebut}:00`;
   const dateHeureFin = `${dateBase}T${heureFin}:00`;
 
   const [hd, md] = heureDebut.split(":").map(Number);
   const [hf, mf] = heureFin.split(":").map(Number);
   const dureeHeures = (hf * 60 + mf - (hd * 60 + md)) / 60;
-
   const montantHT = d.prix_personnalise * dureeHeures;
   const montantTTC = montantHT * 1.2;
   const commissionMontant = (montantHT * maCommission) / 100;
@@ -410,7 +438,7 @@ function showToast(message, type = "info") {
   const toast = document.getElementById("toast");
   document.getElementById("toastMsg").textContent = message;
   document.getElementById("toastIcon").textContent =
-    type === "success" ? "✓" : type === "error" ? "✗" : "i";
+    type === "success" ? "V" : type === "error" ? "X" : "i";
   toast.classList.remove("-translate-y-20", "opacity-0");
   toast.classList.add("translate-y-0", "opacity-100");
   clearTimeout(showToast._t);
