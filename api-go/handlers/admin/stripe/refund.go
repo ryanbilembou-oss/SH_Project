@@ -116,6 +116,8 @@ func getPaymentIntentFromSession(sessionID string) (string, error) {
 		return "", err
 	}
 
+	log.Printf("Stripe session response: %s", string(body))
+
 	var result struct {
 		PaymentIntent string `json:"payment_intent"`
 		PaymentStatus string `json:"payment_status"`
