@@ -203,8 +203,8 @@ func Checkout(w http.ResponseWriter, r *http.Request) {
 	}
 
 
- appURL := os.Getenv("APP_URL")
-baseURL := appURL + "/users/pro/referencement_pro.php"
+	appURL := os.Getenv("APP_URL")
+	baseURL := appURL + "/users/pro/referencement_pro.php"
 	params  := url.Values{}
 	params.Set("mode", "payment")
 	params.Set("success_url", fmt.Sprintf("%s?success=1&id_ref=%d", baseURL, newId))
