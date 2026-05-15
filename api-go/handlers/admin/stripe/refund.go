@@ -87,6 +87,10 @@ func RefundIntervention(w http.ResponseWriter, r *http.Request) {
 		`UPDATE devis SET statut = 'annule' WHERE id_intervention = $1`,
 		req.IDIntervention,
 	)
+	database.DB.Exec(
+    `UPDATE facture SET statut = 'rembourse' WHERE id_intervention = $1`,
+    req.IDIntervention,
+)
 
 	log.Printf("Remboursement effectue: intervention=%d senior=%d", req.IDIntervention, req.IDSenior)
 	json.NewEncoder(w).Encode(map[string]interface{}{

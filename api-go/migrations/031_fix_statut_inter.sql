@@ -1,0 +1,1 @@
+ALTER TABLE facture ADD COLUMN IF NOT EXISTS statut varchar(50) DEFAULT 'payee';
