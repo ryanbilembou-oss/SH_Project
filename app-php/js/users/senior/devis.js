@@ -42,7 +42,7 @@ async function loadDevis() {
     const twoMonthsAgo = new Date();
     twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
     const filteredDevis = mesDevis.filter(
-      (d) => new Date(d.date_creation) >= twoMonthsAgo,
+      (d) => new Date(d.date_validite) >= twoMonthsAgo,
     );
 
     if (!filteredDevis.length) {
