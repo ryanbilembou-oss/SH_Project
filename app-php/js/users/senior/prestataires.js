@@ -176,7 +176,7 @@ function renderPros(pros) {
           <div>
             <p class="font-fira text-[#1A2B49] text-xl">${esc(p.prenom || "")} ${esc(p.nom || "")}</p>
             <p class="text-gray-400 text-sm">${esc(p.nom_entreprise || "Independant")}</p>
-            ${typeLabel ? `<span class="text-xs bg-[#7CABD3]/10 text-[#7CABD3] px-2 py-0.5 rounded-full font-fira mt-1 inline-block">${esc(typeLabel)}</span>` : ""}
+            ${typeLabel ? `<p class="text-xs text-[#7CABD3] font-fira mt-0.5">Categorie : <span class="font-bold">${esc(typeLabel)}</span></p>` : ""}
           </div>
         </div>
         ${ref ? `<span class="bg-[#FCE297] text-[#1A2B49] text-xs px-3 py-1 rounded-full font-fira uppercase font-bold flex-shrink-0">Sponsorise</span>` : ""}
