@@ -139,15 +139,13 @@ async function loadFactures() {
         )
       : [];
 
-    if (!mesFactures.length) {
-      container.innerHTML = `
+    container.innerHTML = `
         <div class="bg-white p-8 rounded-[40px] border-2 border-dashed border-gray-200 text-center">
           <iconify-icon icon="mdi:receipt" class="text-5xl text-gray-300 mb-3 block"></iconify-icon>
           <p class="text-gray-400 italic text-lg">Aucune facture recente (moins de 2 mois).</p>
           <p class="text-sm text-gray-400 mt-2">Retrouvez vos anciennes factures dans vos archives.</p>
         </div>`;
-      return;
-    }
+    return;
 
     container.innerHTML = mesFactures
       .map((f) => renderFactureDetaille(f, "senior"))
@@ -479,4 +477,3 @@ function esc(str) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
-const a = 0;
