@@ -12,8 +12,7 @@ import (
 	"strings"
 	"time"
 )
- appURL := os.Getenv("APP_URL")
-baseURL := appURL + "/users/pro/referencement_pro.php"
+
 func GetActifs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
@@ -203,7 +202,9 @@ func Checkout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	baseURL := "*/users/pro/referencement_pro.php"
+
+ appURL := os.Getenv("APP_URL")
+baseURL := appURL + "/users/pro/referencement_pro.php"
 	params  := url.Values{}
 	params.Set("mode", "payment")
 	params.Set("success_url", fmt.Sprintf("%s?success=1&id_ref=%d", baseURL, newId))
