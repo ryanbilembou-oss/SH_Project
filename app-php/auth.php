@@ -47,13 +47,23 @@ function checkSeniorAccess() {
         }
     }
 }
-
 function checkProAccess() {
-    // Vérifie abonnement actif
+    $page = basename($_SERVER['PHP_SELF']);
+    $pagesLibresDocuments = ['upload_documents.php', 'dossier_refuse.php', 'logout.php'];
+    $pagesLibresAbonnement = ['abonnement_pro.php', 'profil_pro.php', 'upload_documents.php', 'dossier_refuse.php', 'logout.php'];
+
+    $statut = $_SESSION['statut_validation'] ?? null;
+
+    if ($statut === 'en_attente' || $statut === 'refuse' || $statut === null) {
+        if (!in_array($page, $pagesLibresDocuments)) {
+            header('Location: /users/pro/upload_documents.php');
+            exit;
+        }
+        return;
+    }
+
     if (isset($_SESSION['is_subscription_valid']) && !$_SESSION['is_subscription_valid']) {
-        $page = basename($_SERVER['PHP_SELF']);
-        $pagesLibres = ['abonnement_pro.php', 'profil_pro.php', 'upload_documents.php', 'dossier_refuse.php', 'logout.php'];
-        if (!in_array($page, $pagesLibres)) {
+        if (!in_array($page, $pagesLibresAbonnement)) {
             header('Location: /users/pro/abonnement_pro.php');
             exit;
         }

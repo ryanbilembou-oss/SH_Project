@@ -14,13 +14,13 @@ type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
-
 type LoginResponse struct {
-	Id_user           int    `json:"id_user"`
-	Email             string `json:"email"`
-	Role              string `json:"role"`
-	Is_first_login    bool   `json:"is_first_login"`
-	Statut_validation string `json:"statut_validation"`
+    Id_user              int    `json:"id_user"`
+    Email                string `json:"email"`
+    Role                 string `json:"role"`
+    Is_first_login       bool   `json:"is_first_login"`
+    Statut_validation    string `json:"statut_validation"`
+    IsSubscriptionValid  bool   `json:"is_subscription_valid"`
 }
 
 func LoginUser(w http.ResponseWriter, r *http.Request) {
@@ -92,17 +92,31 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch resp.Role {
-	case "senior":
-		database.DB.QueryRow(
-			`SELECT COALESCE(is_first_login, true) FROM profile_senior WHERE id_user = $1`,
-			resp.Id_user,
-		).Scan(&resp.Is_first_login)
-		resp.Statut_validation = "valide"
-	case "pro":
-		database.DB.QueryRow(
-			`SELECT COALESCE(is_first_login, true), COALESCE(statut_validation, 'en_attente') FROM profile_pro WHERE id_user = $1`,
-			resp.Id_user,
-		).Scan(&resp.Is_first_login, &resp.Statut_validation)
+		case "senior":
+			database.DB.QueryRow(
+					`SELECT COALESCE(is_first_login, true) FROM profile_senior WHERE id_user = $1`,
+					resp.Id_user,
+			).Scan(&resp.Is_first_login)
+			resp.Statut_validation = "valide"
+
+			var count int
+			database.DB.QueryRow(
+					`SELECT COUNT(*) FROM abonnements WHERE id_user = $1 AND statut = 'actif' AND date_fin > NOW()`,
+					resp.Id_user,
+			).Scan(&count)
+			resp.IsSubscriptionValid = count > 0
+		case "pro":
+    database.DB.QueryRow(
+        `SELECT COALESCE(is_first_login, true), COALESCE(statut_validation, 'en_attente') FROM profile_pro WHERE id_user = $1`,
+        resp.Id_user,
+    ).Scan(&resp.Is_first_login, &resp.Statut_validation)
+
+    var count int
+    database.DB.QueryRow(
+        `SELECT COUNT(*) FROM abonnements WHERE id_user = $1 AND statut = 'actif' AND date_fin > NOW()`,
+        resp.Id_user,
+    ).Scan(&count)
+    resp.IsSubscriptionValid = count > 0
 	case "admin":
 		resp.Statut_validation = "valide"
 	}
