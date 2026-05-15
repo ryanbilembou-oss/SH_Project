@@ -1,9 +1,9 @@
 const API_BASE = "http://144.76.74.130:8082";
 const userId = Number(localStorage.getItem("id_user"));
-
 const email = localStorage.getItem("email") || "";
 const role = localStorage.getItem("role");
-if (!userId || role != "senior") {
+
+if (!userId || role !== "senior") {
   window.location.href = "/users/login.php";
 }
 
@@ -16,8 +16,6 @@ document.getElementById("prenomUser").textContent = email.split("@")[0] || "—"
     loadPlanning(),
     loadStats(),
   ]);
-
-  lancerIntro();
 })();
 
 async function loadProfil() {
@@ -31,8 +29,17 @@ async function loadProfil() {
     document.getElementById("prenomUser").textContent = prenom;
     localStorage.setItem("prenom", prenom);
 
-    const is_first_login = p.is_first_login || null;
-    localStorage.setItem("is_first_login", is_first_login);
+    const isFirstLogin = p.is_first_login;
+    localStorage.setItem("is_first_login", isFirstLogin);
+
+    if (isFirstLogin) {
+      await fetch(`${API_BASE}/admin/profile_senior/update`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_user: userId, is_first_login: false }),
+      });
+      lancerIntro();
+    }
   } catch {}
 }
 
@@ -63,7 +70,7 @@ async function loadStats() {
 
     const allFactures = await resFactures.json();
     const mesFactures = Array.isArray(allFactures)
-      ? allFactures.filter((f) => f.id_senior === userId)
+      ? allFactures.filter((f) => f.id_recepteur === userId)
       : [];
     document.getElementById("nbFactures").textContent = mesFactures.length;
 
@@ -79,39 +86,77 @@ async function loadStats() {
 async function loadPlanning() {
   const container = document.getElementById("planningList");
   try {
-    const res = await fetch(`${API_BASE}/admin/planning_senior/get`);
-    const all = await res.json();
-    const monPlanning = Array.isArray(all)
-      ? all.filter((p) => p.id_senior === userId)
+    const [resInter, resEvenements] = await Promise.all([
+      fetch(`${API_BASE}/admin/intervention/get`),
+      fetch(`${API_BASE}/admin/inscription_evenement/get_by_user?id=${userId}`),
+    ]);
+
+    const allInter = await resInter.json();
+    const allEven = await resEvenements.json();
+    const now = new Date();
+
+    const interventions = Array.isArray(allInter)
+      ? allInter
+          .filter(
+            (i) =>
+              i.id_senior === userId &&
+              new Date(i.date_heure_debut) >= now &&
+              i.statut !== "annulee",
+          )
+          .map((i) => ({
+            date: new Date(i.date_heure_debut),
+            titre: i.nom_service || "Intervention",
+            lieu: i.lieu || "A domicile",
+            type: "intervention",
+          }))
       : [];
 
-    if (!monPlanning.length) {
+    const evenements = Array.isArray(allEven)
+      ? allEven
+          .filter(
+            (e) =>
+              e.statut !== "annule" &&
+              e.date_heure &&
+              new Date(e.date_heure) >= now,
+          )
+          .map((e) => ({
+            date: new Date(e.date_heure),
+            titre: e.titre_evenement || "Evenement",
+            lieu: e.lieu || "",
+            type: "evenement",
+          }))
+      : [];
+
+    const tous = [...interventions, ...evenements]
+      .sort((a, b) => a.date - b.date)
+      .slice(0, 3);
+
+    if (!tous.length) {
       container.innerHTML = `
         <div class="bg-white p-6 rounded-[40px] border-2 border-dashed border-gray-200 text-center">
-          <p class="text-gray-400 italic text-lg">Aucune activité planifiée pour le moment.</p>
+          <p class="text-gray-400 italic text-lg">Aucune activite planifiee pour le moment.</p>
         </div>`;
       return;
     }
 
     const mois = [
       "Jan",
-      "Fév",
+      "Fev",
       "Mar",
       "Avr",
       "Mai",
       "Jun",
       "Jul",
-      "Aoû",
+      "Aou",
       "Sep",
       "Oct",
       "Nov",
-      "Déc",
+      "Dec",
     ];
-    container.innerHTML = monPlanning
-      .slice(0, 3)
-      .map((p) => {
-        const date = new Date(p.date_debut || p.created_at);
-        const isEvenement = p.type === "evenement";
+
+    container.innerHTML = tous
+      .map((item) => {
+        const isEvenement = item.type === "evenement";
         const bg = isEvenement
           ? "bg-[#7CABD3] text-white"
           : "bg-[#FCE297] text-[#1A2B49]";
@@ -122,21 +167,26 @@ async function loadPlanning() {
         const borderLabel = isEvenement
           ? "border-[#7CABD3]"
           : "border-[#FCE297]";
+        const heure = item.date.toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
         return `
-        <div class="group bg-white p-6 rounded-[40px] border-2 border-transparent ${border} hover:shadow-xl transition-all duration-500 flex items-center gap-4">
-          <div class="${bg} rounded-[20px] p-4 text-center min-w-[70px]">
-            <p class="text-sm font-fira uppercase">${mois[date.getMonth()]}</p>
-            <p class="text-3xl font-fira">${date.getDate()}</p>
-          </div>
-          <div class="flex-1">
-            <p class="font-fira text-[#1A2B49] text-lg">${esc(p.titre || p.description || "—")}</p>
-            <p class="text-base text-gray-400">${p.heure_debut || ""} — ${esc(p.lieu || "À domicile")}</p>
-          </div>
-          <span class="${textColor} font-fira uppercase text-xs tracking-widest border-b-2 ${borderLabel} pb-1">${p.type || "Activité"}</span>
-        </div>`;
+      <div class="group bg-white p-6 rounded-[40px] border-2 border-transparent ${border} hover:shadow-xl transition-all duration-500 flex items-center gap-4">
+        <div class="${bg} rounded-[20px] p-4 text-center min-w-[70px]">
+          <p class="text-sm font-fira uppercase">${mois[item.date.getMonth()]}</p>
+          <p class="text-3xl font-fira">${item.date.getDate()}</p>
+        </div>
+        <div class="flex-1">
+          <p class="font-fira text-[#1A2B49] text-lg">${esc(item.titre)}</p>
+          <p class="text-base text-gray-400">${heure} — ${esc(item.lieu)}</p>
+        </div>
+        <span class="${textColor} font-fira uppercase text-xs tracking-widest border-b-2 ${borderLabel} pb-1">${item.type}</span>
+      </div>`;
       })
       .join("");
-  } catch (e) {
+  } catch {
     container.innerHTML = `<p class="text-red-400 text-center">Erreur chargement planning.</p>`;
   }
 }
@@ -146,35 +196,54 @@ async function loadEvenements() {
   try {
     const res = await fetch(`${API_BASE}/admin/evenement/get`);
     const events = await res.json();
+    const now = new Date();
 
-    if (!Array.isArray(events) || !events.length) {
-      container.innerHTML = `<p class="text-gray-400 italic text-center py-10">Aucun événement disponible.</p>`;
+    const prochains = Array.isArray(events)
+      ? events
+          .filter((e) => e.date_heure && new Date(e.date_heure) >= now)
+          .sort((a, b) => new Date(a.date_heure) - new Date(b.date_heure))
+          .slice(0, 3)
+      : [];
+
+    if (!prochains.length) {
+      container.innerHTML = `<p class="text-gray-400 italic text-center py-10">Aucun evenement a venir.</p>`;
       return;
     }
 
-    container.innerHTML = events
-      .slice(0, 3)
+    container.innerHTML = prochains
       .map((e) => {
-        const date = e.date_heure
-          ? new Date(e.date_heure).toLocaleDateString("fr-FR")
-          : "—";
+        const date = new Date(e.date_heure).toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+        const heure = new Date(e.date_heure).toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const placesRestantes = Math.max(
+          0,
+          (e.nb_places_max || 0) - (e.nb_inscrits || 0),
+        );
+
         return `
-        <div class="group bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] hover:shadow-xl transition-all duration-500 w-80">
-          <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-sm font-fira px-3 py-1 rounded-full">${esc(e.nom_categorie || "Événement")}</span>
-          <h4 class="font-fira text-[#1A2B49] mt-4 mb-2 text-xl">${esc(e.titre)}</h4>
-          <p class="text-base text-gray-400 mb-1"> ${esc(e.lieu || "—")}</p>
-          <p class="text-base text-gray-400 mb-4"> ${date}</p>
-          <div class="flex justify-between items-center mt-4">
-            <span class="font-fira text-[#1A2B49] text-lg">${e.prix_ticket == 0 ? "Gratuit" : e.prix_ticket + " €"}</span>
-            <a href="/users/seniors/evenements.php?id=${e.id_evenement}" class="bg-[#1A2B49] text-white text-sm font-fira uppercase px-5 py-2 rounded-full hover:bg-[#7CABD3] transition-all">
-              Réserver
-            </a>
-          </div>
-        </div>`;
+      <div class="group bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] hover:shadow-xl transition-all duration-500 w-80">
+        <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-sm font-fira px-3 py-1 rounded-full">${esc(e.nom_categorie || "Evenement")}</span>
+        <h4 class="font-fira text-[#1A2B49] mt-4 mb-2 text-xl">${esc(e.titre)}</h4>
+        <p class="text-base text-gray-400 mb-1">${esc(e.lieu || "—")}</p>
+        <p class="text-base text-gray-400 mb-1">${date} a ${heure}</p>
+        <p class="text-sm text-gray-300 mb-4">${placesRestantes} place${placesRestantes > 1 ? "s" : ""} restante${placesRestantes > 1 ? "s" : ""}</p>
+        <div class="flex justify-between items-center mt-4">
+          <span class="font-fira text-[#1A2B49] text-lg">${e.prix_ticket == 0 ? "Gratuit" : e.prix_ticket + " EUR"}</span>
+          <a href="/users/seniors/evenements.php" class="bg-[#1A2B49] text-white text-sm font-fira uppercase px-5 py-2 rounded-full hover:bg-[#7CABD3] transition-all">
+            Voir
+          </a>
+        </div>
+      </div>`;
       })
       .join("");
-  } catch (e) {
-    container.innerHTML = `<p class="text-red-400 text-center">Erreur chargement événements.</p>`;
+  } catch {
+    container.innerHTML = `<p class="text-red-400 text-center">Erreur chargement evenements.</p>`;
   }
 }
 
@@ -187,6 +256,7 @@ function esc(str) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+
 function lancerIntro() {
   const intro = introJs();
   intro.setOptions({
@@ -201,37 +271,37 @@ function lancerIntro() {
       {
         title: "Bienvenue " + (localStorage.getItem("prenom") || "") + " !",
         intro:
-          "Silver Happy est votre plateforme de services à domicile. En quelques secondes, découvrez tout ce que vous pouvez faire ici.",
+          "Silver Happy est votre plateforme de services a domicile. En quelques secondes, decouvrez tout ce que vous pouvez faire ici.",
       },
       {
         element: document.getElementById("tab-bord"),
         title: "Tableau de bord",
         intro:
-          "Votre point de départ. Retrouvez vos interventions à venir, vos avis reçus et vos statistiques en un coup d'œil.",
+          "Votre point de depart. Retrouvez vos interventions a venir, vos avis recus et vos statistiques en un coup d'oeil.",
       },
       {
         element: document.getElementById("services"),
-        title: "Services à domicile",
+        title: "Services a domicile",
         intro:
-          "Recherchez un prestataire selon vos besoins : ménage, santé, sport, aide administrative... Faites une demande en quelques clics.",
+          "Recherchez un prestataire selon vos besoins : menage, sante, sport, aide administrative... Faites une demande en quelques clics.",
       },
       {
         element: document.getElementById("event"),
-        title: "Événements",
+        title: "Evenements",
         intro:
-          "Découvrez et inscrivez-vous aux événements organisés près de chez vous.",
+          "Decouvrez et inscrivez-vous aux evenements organises pres de chez vous.",
       },
       {
         element: document.getElementById("boutique"),
         title: "Boutique",
         intro:
-          "Achetez des articles sélectionnés pour votre bien-être et votre quotidien.",
+          "Achetez des articles selectionnes pour votre bien-etre et votre quotidien.",
       },
       {
         element: document.getElementById("panier"),
         title: "Panier",
         intro:
-          "Retrouvez vos articles et événements sélectionnés avant de passer au paiement.",
+          "Retrouvez vos articles et evenements selectionnes avant de passer au paiement.",
       },
       {
         element: document.getElementById("devisfacture"),
@@ -243,31 +313,31 @@ function lancerIntro() {
         element: document.getElementById("interventions"),
         title: "Mes Interventions",
         intro:
-          "Suivez l'état de vos interventions en temps réel et laissez un avis une fois terminées.",
+          "Suivez l'etat de vos interventions en temps reel et laissez un avis une fois terminees.",
       },
       {
         element: document.getElementById("conseils"),
         title: "Conseils",
         intro:
-          "Notre équipe vous partage des conseils personnalisés pour votre bien-être au quotidien.",
+          "Notre equipe vous partage des conseils personalises pour votre bien-etre au quotidien.",
       },
       {
         element: document.getElementById("messagerie"),
         title: "Messagerie",
         intro:
-          "Échangez directement avec vos prestataires pour organiser vos interventions.",
+          "Echangez directement avec vos prestataires pour organiser vos interventions.",
       },
       {
         element: document.getElementById("profil"),
         title: "Mon Profil",
         intro:
-          "Complétez votre profil pour une meilleure expérience. Plus votre profil est complet, mieux nos prestataires pourront vous accompagner.",
+          "Completez votre profil pour une meilleure experience. Plus votre profil est complet, mieux nos prestataires pourront vous accompagner.",
       },
       {
         element: document.getElementById("deconnexion"),
         title: "Deconnexion securisee",
         intro:
-          "Pensez à vous déconnecter après chaque session pour protéger vos données personnelles. Bonne navigation sur Silver Happy !",
+          "Pensez a vous deconnecter apres chaque session pour proteger vos donnees personnelles. Bonne navigation sur Silver Happy !",
       },
     ],
   });
