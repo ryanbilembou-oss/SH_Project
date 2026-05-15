@@ -6,11 +6,12 @@ if (!userId || role !== "pro") window.location.href = "/users/login.php";
 
 let profil = null;
 let modeEdition = false;
-let mesDocuments = [];
-let monAbonnement = null;
+let documents = [];
+let categoriesCache = [];
 
 (async () => {
-  await Promise.all([loadProfil(), loadDocuments(), loadAbonnement()]);
+  await loadProfil();
+  await loadDocuments();
 })();
 
 async function loadProfil() {
@@ -32,26 +33,21 @@ async function loadProfil() {
 
 async function loadDocuments() {
   try {
-    const res = await fetch(`${API_BASE}/admin/documents_pro/get?id=${userId}`);
-    const data = await res.json();
-    mesDocuments = Array.isArray(data) ? data : [];
-  } catch {
-    mesDocuments = [];
-  }
-}
-
-async function loadAbonnement() {
-  try {
-    const res = await fetch(
-      `${API_BASE}/admin/abonnement/get_by_user?id=${userId}`,
-    );
-    const data = await res.json();
-    monAbonnement = Array.isArray(data)
-      ? data.find((a) => a.statut === "actif") || null
-      : null;
-  } catch {
-    monAbonnement = null;
-  }
+    const [resCats, resDocs] = await Promise.all([
+      fetch(`${API_BASE}/admin/categorie_document/get`),
+      fetch(`${API_BASE}/admin/documents_pro/get`),
+    ]);
+    const allCats = await resCats.json();
+    const allDocs = await resDocs.json();
+    documents = Array.isArray(allDocs)
+      ? allDocs.filter((d) => d.id_user === userId)
+      : [];
+    if (!profil || !profil.id_type) return;
+    categoriesCache = Array.isArray(allCats)
+      ? allCats.filter((c) => Number(c.id_type) === Number(profil.id_type))
+      : [];
+    renderDocuments();
+  } catch {}
 }
 
 function renderProfil() {
@@ -86,39 +82,8 @@ function renderProfil() {
       ? `${"★".repeat(Math.round(p.note_moyenne))}${"☆".repeat(5 - Math.round(p.note_moyenne))} (${Number(p.note_moyenne).toFixed(1)})`
       : "Pas encore note";
 
-  const docsHtml = mesDocuments.length
-    ? mesDocuments
-        .map((d) => {
-          const statutDoc = {
-            valide: "bg-green-100 text-green-700",
-            refuse: "bg-red-100 text-red-700",
-            en_attente: "bg-yellow-100 text-yellow-700",
-          };
-          const css = statutDoc[d.statut] || "bg-gray-100 text-gray-500";
-          return `
-        <div class="flex items-center justify-between p-4 rounded-[20px] bg-gray-50 border-2 border-transparent hover:border-[#7CABD3] transition-all">
-          <div class="flex items-center gap-3">
-            <iconify-icon icon="mdi:file-document-outline" class="text-2xl text-[#7CABD3]"></iconify-icon>
-            <div>
-              <p class="font-fira text-[#1A2B49]">${esc(d.nom_document || d.type_document || "Document")}</p>
-              <p class="text-xs text-gray-400">${d.date_depot ? new Date(d.date_depot).toLocaleDateString("fr-FR") : "—"}</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="text-xs font-fira px-3 py-1 rounded-full ${css}">${esc(d.statut)}</span>
-            ${d.url_document ? `<a href="${esc(d.url_document)}" target="_blank" class="text-xs text-[#7CABD3] hover:underline font-fira">Voir</a>` : ""}
-          </div>
-        </div>`;
-        })
-        .join("")
-    : `<p class="text-gray-400 italic text-sm">Aucun document depose.</p>`;
-
-  const abonnementHtml = monAbonnement
-    ? `<span class="text-green-500 font-fira"><iconify-icon icon="mdi:check-circle"></iconify-icon> Actif — expire le ${new Date(monAbonnement.date_fin).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>`
-    : `<span class="text-red-400 font-fira"><iconify-icon icon="mdi:close-circle"></iconify-icon> Inactif</span>`;
-
   container.innerHTML = `
-    <div class="bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] transition-all">
+    <div class="bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] transition-all shadow-sm">
       <div class="flex items-center gap-6 flex-wrap">
         <div class="w-24 h-24 bg-[#7CABD3]/10 rounded-full flex items-center justify-center flex-shrink-0">
           ${p.logo_url ? `<img src="${esc(p.logo_url)}" class="w-24 h-24 rounded-full object-cover" alt="Logo">` : `<iconify-icon icon="mdi:account" class="text-5xl text-[#7CABD3]"></iconify-icon>`}
@@ -132,34 +97,34 @@ function renderProfil() {
           <span class="font-fira text-sm px-4 py-2 rounded-full ${st.css}">
             <iconify-icon icon="${st.icon}" class="mr-1"></iconify-icon>${st.label}
           </span>
-          <button onclick="basculerEdition()"
-            class="flex items-center gap-2 px-6 py-3 bg-[#1A2B49] text-white rounded-full font-fira uppercase text-sm hover:bg-[#7CABD3] transition-all">
-            <iconify-icon icon="mdi:pencil"></iconify-icon> Modifier
+          <button onclick="basculerEdition()" class="flex items-center gap-2 px-6 py-3 bg-[#1A2B49] text-white rounded-full font-fira uppercase text-sm hover:bg-[#7CABD3] transition-all shadow-md">
+            <iconify-icon icon="mdi:pencil"></iconify-icon> Modifier le profil
           </button>
         </div>
       </div>
     </div>
 
-    <div class="bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] transition-all">
-      <h4 class="font-fira uppercase text-[#1A2B49] text-xl mb-6 flex items-center gap-2">
-        <iconify-icon icon="mdi:account-details" class="text-[#7CABD3]"></iconify-icon>
-        Informations personnelles
-      </h4>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    ${renderAccordionSection(
+      "informations-personnelles",
+      "Informations personnelles",
+      "mdi:account-details",
+      `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
         ${champInfo("Prenom", p.prenom, "prenom")}
         ${champInfo("Nom", p.nom, "nom")}
         ${champInfo("Date de naissance", p.date_naissance?.split("T")[0], "date_naissance", "date")}
         ${champInfo("Genre", p.genre, "genre", "select", ["Masculin", "Feminin", "Autre"])}
         ${champInfo("Telephone", p.telephone_pro, "telephone_pro", "tel")}
       </div>
-    </div>
+    `,
+    )}
 
-    <div class="bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] transition-all">
-      <h4 class="font-fira uppercase text-[#1A2B49] text-xl mb-6 flex items-center gap-2">
-        <iconify-icon icon="mdi:briefcase" class="text-[#7CABD3]"></iconify-icon>
-        Informations professionnelles
-      </h4>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    ${renderAccordionSection(
+      "informations-professionnelles",
+      "Informations professionnelles",
+      "mdi:briefcase",
+      `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
         ${champInfo("Nom d'entreprise", p.nom_entreprise, "nom_entreprise")}
         ${champInfo("Adresse pro", p.adresse_pro, "adresse_pro")}
         ${champInfo("Statut juridique", p.statut_juridique, "statut_juridique")}
@@ -169,65 +134,180 @@ function renderProfil() {
       <div class="mt-6">
         ${champTextarea("Presentation / Bio", p.bio, "bio")}
       </div>
-    </div>
+    `,
+    )}
 
-    <div class="bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] transition-all">
-      <h4 class="font-fira uppercase text-[#1A2B49] text-xl mb-6 flex items-center gap-2">
-        <iconify-icon icon="mdi:credit-card" class="text-[#7CABD3]"></iconify-icon>
-        Abonnement & Commission
-      </h4>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="p-5 rounded-[20px] bg-gray-50">
-          <p class="font-fira uppercase text-xs tracking-widest text-gray-400 mb-2">Abonnement</p>
-          <p class="font-fira text-[#1A2B49] text-lg">${abonnementHtml}</p>
-          <a href="/users/pro/abonnement_pro.php" class="text-xs text-[#7CABD3] hover:underline font-fira mt-2 block">Gerer mon abonnement</a>
+    ${renderAccordionSection(
+      "abonnement-commission",
+      "Abonnement & Commission",
+      "mdi:credit-card",
+      `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+        <div class="p-5 rounded-[20px] bg-gray-50 border border-gray-100">
+          <p class="font-fira uppercase text-xs tracking-widest text-gray-400 mb-1">Abonnement</p>
+          <p class="font-fira text-[#1A2B49] text-xl">
+            ${
+              p.is_subscription_valid
+                ? `<span class="text-green-500"><iconify-icon icon="mdi:check-circle"></iconify-icon> Actif</span>`
+                : `<span class="text-red-400"><iconify-icon icon="mdi:close-circle"></iconify-icon> Inactif</span>`
+            }
+          </p>
+          <a href="/users/pro/abonnement_pro.php" class="text-[#7CABD3] text-xs underline mt-2 inline-block">Gerer mon abonnement</a>
         </div>
-        <div class="p-5 rounded-[20px] bg-gray-50">
-          <p class="font-fira uppercase text-xs tracking-widest text-gray-400 mb-2">Commission Silver Happy</p>
+        <div class="p-5 rounded-[20px] bg-gray-50 border border-gray-100">
+          <p class="font-fira uppercase text-xs tracking-widest text-gray-400 mb-1">Commission Silver Happy</p>
           <p class="font-fira text-[#1A2B49] text-2xl font-bold">${p.commission != null ? Number(p.commission).toFixed(1) + " %" : "15 %"}</p>
           <p class="text-xs text-gray-400 mt-1">Prelevee sur chaque intervention</p>
         </div>
       </div>
-    </div>
+    `,
+    )}
 
-    <div class="bg-white p-8 rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] transition-all">
-      <h4 class="font-fira uppercase text-[#1A2B49] text-xl mb-6 flex items-center gap-2">
-        <iconify-icon icon="mdi:file-document-multiple" class="text-[#7CABD3]"></iconify-icon>
-        Mes documents
-      </h4>
-      <div class="space-y-3 mb-6">
-        ${docsHtml}
+    ${renderAccordionSection(
+      "mes-documents",
+      "Mes documents justificatifs",
+      "mdi:file-document-multiple",
+      `
+      <div id="documentsList" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+        <p class="text-gray-400 italic text-sm">Chargement des documents...</p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <a href="/users/pro/upload_documents.php" class="p-5 bg-gray-50 rounded-[20px] border-2 border-transparent hover:border-[#7CABD3] transition-all flex items-center gap-3 group">
-          <iconify-icon icon="mdi:upload" class="text-2xl text-[#7CABD3] group-hover:scale-110 transition-transform"></iconify-icon>
-          <div>
-            <p class="font-fira text-[#1A2B49] uppercase text-sm">Deposer des documents</p>
-            <p class="text-xs text-gray-400">Ajouter ou mettre a jour vos documents</p>
-          </div>
-        </a>
-        <a href="/users/pro/archives_pro.php" class="p-5 bg-gray-50 rounded-[20px] border-2 border-transparent hover:border-[#7CABD3] transition-all flex items-center gap-3 group">
-          <iconify-icon icon="mdi:archive-clock-outline" class="text-2xl text-[#7CABD3] group-hover:scale-110 transition-transform"></iconify-icon>
-          <div>
-            <p class="font-fira text-[#1A2B49] uppercase text-sm">Archives devis & factures</p>
-            <p class="text-xs text-gray-400">Historique de plus de 2 mois</p>
-          </div>
+      <div class="mt-6">
+        <a href="/users/pro/upload_documents.php" class="inline-flex items-center gap-2 px-6 py-3 bg-[#7CABD3] text-white rounded-full font-fira uppercase text-sm hover:bg-[#1A2B49] transition-all">
+          <iconify-icon icon="mdi:upload"></iconify-icon> Deposer des documents
         </a>
       </div>
-    </div>
+    `,
+    )}
 
-    <div id="btnSauvegarder" class="hidden">
+    ${renderAccordionSection(
+      "historique-archives",
+      "Archives devis & factures",
+      "mdi:history",
+      `
+      <div class="pt-4">
+        <p class="text-gray-400 text-sm mb-6">Accedez a l'integralite de vos devis et factures archives.</p>
+        <a href="/users/pro/archives_pro.php" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1A2B49] text-white rounded-full font-fira uppercase text-sm hover:bg-[#7CABD3] transition-all shadow-lg">
+          <iconify-icon icon="mdi:file-find" class="text-lg"></iconify-icon>
+          Acceder aux archives
+        </a>
+      </div>
+    `,
+    )}
+
+    <div id="btnSauvegarder" class="hidden mt-8">
       <div class="flex gap-4">
-        <button onclick="sauvegarderProfil()"
-          class="flex-1 py-4 bg-[#7CABD3] text-white rounded-full font-fira uppercase hover:bg-[#1A2B49] transition-all">
-          <iconify-icon icon="mdi:content-save" class="mr-2"></iconify-icon> Sauvegarder
+        <button onclick="sauvegarderProfil()" class="flex-1 py-4 bg-[#7CABD3] text-white rounded-full font-fira uppercase hover:bg-[#1A2B49] transition-all shadow-lg">
+          <iconify-icon icon="mdi:content-save" class="mr-2"></iconify-icon> Sauvegarder les modifications
         </button>
-        <button onclick="annulerEdition()"
-          class="flex-1 py-4 border-2 border-gray-200 text-gray-400 rounded-full font-fira uppercase hover:border-red-300 hover:text-red-400 transition-all">
+        <button onclick="annulerEdition()" class="flex-1 py-4 border-2 border-gray-200 text-gray-400 rounded-full font-fira uppercase hover:border-red-300 hover:text-red-400 transition-all">
           Annuler
         </button>
       </div>
     </div>`;
+
+  loadDocuments();
+}
+
+function renderAccordionSection(id, title, icon, content) {
+  return `
+    <div class="bg-white rounded-[40px] border-2 border-transparent hover:border-[#7CABD3] transition-all shadow-sm overflow-hidden">
+      <button onclick="toggleAccordion('${id}')" class="w-full px-8 py-6 flex justify-between items-center bg-white hover:bg-gray-50 transition-all outline-none">
+        <h4 class="font-fira uppercase text-[#1A2B49] text-xl flex items-center gap-3">
+          <iconify-icon icon="${icon}" class="text-[#7CABD3] text-2xl"></iconify-icon>
+          ${title}
+        </h4>
+        <iconify-icon id="icon-${id}" icon="mdi:chevron-down" class="text-2xl text-[#7CABD3] transition-transform duration-300"></iconify-icon>
+      </button>
+      <div id="content-${id}" class="hidden px-8 pb-8 border-t border-gray-50">
+        ${content}
+      </div>
+    </div>`;
+}
+
+function toggleAccordion(id) {
+  const content = document.getElementById(`content-${id}`);
+  const icon = document.getElementById(`icon-${id}`);
+  const isOpen = !content.classList.contains("hidden");
+  if (isOpen) {
+    content.classList.add("hidden");
+    icon.style.transform = "rotate(0deg)";
+  } else {
+    content.classList.remove("hidden");
+    icon.style.transform = "rotate(180deg)";
+  }
+}
+
+function renderDocuments() {
+  const container = document.getElementById("documentsList");
+  if (!container) return;
+
+  if (!categoriesCache.length) {
+    container.innerHTML = `<p class="text-gray-400 italic text-sm">Aucun document requis pour votre profil.</p>`;
+    return;
+  }
+
+  container.innerHTML = categoriesCache
+    .map((cat) => {
+      const doc = documents.find((d) => d.id_categorie === cat.id_categorie);
+      const statut = doc?.statut ?? null;
+
+      const config = {
+        valide: {
+          border: "border-green-300",
+          bg: "bg-green-50",
+          icon: "mdi:check-circle",
+          iconColor: "text-green-400",
+          label: "Valide",
+        },
+        en_attente: {
+          border: "border-[#FCE297]",
+          bg: "bg-yellow-50",
+          icon: "mdi:clock-outline",
+          iconColor: "text-yellow-400",
+          label: "En attente",
+        },
+        refuse: {
+          border: "border-red-300",
+          bg: "bg-red-50",
+          icon: "mdi:close-circle",
+          iconColor: "text-red-400",
+          label: "Refuse",
+        },
+      };
+      const c = config[statut] || {
+        border: "border-gray-100",
+        bg: "bg-gray-50",
+        icon: "mdi:file-alert-outline",
+        iconColor: "text-gray-300",
+        label: "Non depose",
+      };
+
+      return `
+    <div class="${c.bg} p-6 rounded-[30px] border-2 ${c.border} transition-all">
+      <div class="flex justify-between items-start mb-3">
+        <div class="flex items-center gap-2">
+          <iconify-icon icon="${c.icon}" class="text-2xl ${c.iconColor}"></iconify-icon>
+          <span class="font-fira uppercase text-[#1A2B49] text-sm font-bold">${esc(cat.nom_categorie)}</span>
+        </div>
+        <span class="text-xs font-fira uppercase tracking-widest ${c.iconColor}">${c.label}</span>
+      </div>
+      ${
+        doc
+          ? `
+        <div class="mt-4">
+          <a href="http://144.76.74.130:8888${esc(doc.url_document)}" target="_blank"
+            class="w-full p-4 bg-white rounded-2xl border border-gray-100 flex items-center justify-center gap-2 text-sm text-[#1A2B49] hover:bg-[#7CABD3] hover:text-white transition-all font-fira uppercase tracking-widest">
+            <iconify-icon icon="mdi:eye" class="text-xl"></iconify-icon> Visualiser
+          </a>
+        </div>`
+          : `
+        <div class="mt-4 p-4 bg-white/30 rounded-2xl border border-dashed border-gray-200 text-center">
+          <span class="text-xs text-gray-400 italic">Aucun fichier disponible</span>
+        </div>`
+      }
+    </div>`;
+    })
+    .join("");
 }
 
 function champInfo(label, value, field, type = "text", options = []) {
