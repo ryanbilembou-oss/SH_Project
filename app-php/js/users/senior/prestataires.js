@@ -10,6 +10,7 @@ let toutesOffres = [];
 let tousAvis = [];
 let tousPlanning = [];
 let toutesCategories = [];
+let tousTypes = [];
 
 (async () => {
   await chargerDonnees();
@@ -18,15 +19,23 @@ let toutesCategories = [];
 
 async function chargerDonnees() {
   try {
-    const [resPros, resRef, resOffres, resAvis, resPlanning, resCats] =
-      await Promise.all([
-        fetch(`${API_BASE}/admin/profile_pro/get_with_users`),
-        fetch(`${API_BASE}/admin/referencement/get_actifs`),
-        fetch(`${API_BASE}/admin/offre_prestataire/get`),
-        fetch(`${API_BASE}/admin/note_avis/get`),
-        fetch(`${API_BASE}/admin/planning_pro/get`),
-        fetch(`${API_BASE}/admin/service/categorie_service/get`),
-      ]);
+    const [
+      resPros,
+      resRef,
+      resOffres,
+      resAvis,
+      resPlanning,
+      resCats,
+      resTypes,
+    ] = await Promise.all([
+      fetch(`${API_BASE}/admin/profile_pro/get_with_users`),
+      fetch(`${API_BASE}/admin/referencement/get_actifs`),
+      fetch(`${API_BASE}/admin/offre_prestataire/get`),
+      fetch(`${API_BASE}/admin/note_avis/get`),
+      fetch(`${API_BASE}/admin/planning_pro/get`),
+      fetch(`${API_BASE}/admin/service/categorie_service/get`),
+      fetch(`${API_BASE}/admin/type_prestataire/get`),
+    ]);
 
     const pros = await resPros.json();
     prosReferencies = await resRef.json();
@@ -34,15 +43,16 @@ async function chargerDonnees() {
     tousAvis = await resAvis.json();
     tousPlanning = await resPlanning.json();
     toutesCategories = await resCats.json();
+    tousTypes = await resTypes.json();
 
     tousLesPros = Array.isArray(pros)
       ? pros.filter((p) => p.statut_validation === "valide")
       : [];
-
     if (!Array.isArray(prosReferencies)) prosReferencies = [];
     if (!Array.isArray(toutesOffres)) toutesOffres = [];
     if (!Array.isArray(tousAvis)) tousAvis = [];
     if (!Array.isArray(tousPlanning)) tousPlanning = [];
+    if (!Array.isArray(tousTypes)) tousTypes = [];
 
     remplirCategories();
   } catch (e) {
@@ -63,6 +73,12 @@ function remplirCategories() {
   });
 }
 
+function getTypeLabel(idType) {
+  if (!idType) return null;
+  const t = tousTypes.find((t) => t.id_type === idType);
+  return t ? t.nom_type : null;
+}
+
 function getPrixMin(idPro) {
   const offres = toutesOffres.filter((o) => o.id_pro === idPro);
   if (!offres.length) return null;
@@ -76,18 +92,6 @@ function getNoteCalculee(idPro) {
 
 function estReference(idPro) {
   return prosReferencies.some((r) => r.id_pro === idPro);
-}
-
-function getOffresParCategorie(idPro) {
-  const offres = toutesOffres.filter((o) => o.id_pro === idPro);
-  const cats = new Set();
-  offres.forEach((o) => {
-    const cat = toutesCategories.find((c) => {
-      const servicesRef = toutesOffres.filter((off) => off.id_pro === idPro);
-      return false;
-    });
-  });
-  return offres;
 }
 
 function appliquerFiltres() {
@@ -105,20 +109,15 @@ function appliquerFiltres() {
     const nom =
       `${p.prenom || ""} ${p.nom || ""} ${p.nom_entreprise || ""}`.toLowerCase();
     if (recherche && !nom.includes(recherche)) return false;
-
     const note = getNoteCalculee(p.id_user);
     if (note < noteMin) return false;
-
     const prixMin = getPrixMin(p.id_user);
     if (prixMin !== null && prixMin > prixMax) return false;
-
     if (refOnly && !estReference(p.id_user)) return false;
-
     if (categorieId) {
       const offres = toutesOffres.filter((o) => o.id_pro === p.id_user);
       if (!offres.length) return false;
     }
-
     return true;
   });
 
@@ -164,6 +163,7 @@ function renderPros(pros) {
       const etoiles = renderEtoiles(note);
       const offres = toutesOffres.filter((o) => o.id_pro === p.id_user);
       const nbOffres = offres.length;
+      const typeLabel = getTypeLabel(p.id_type);
 
       return `
     <div onclick="ouvrirProfil(${p.id_user})"
@@ -176,15 +176,10 @@ function renderPros(pros) {
           <div>
             <p class="font-fira text-[#1A2B49] text-xl">${esc(p.prenom || "")} ${esc(p.nom || "")}</p>
             <p class="text-gray-400 text-sm">${esc(p.nom_entreprise || "Independant")}</p>
+            ${typeLabel ? `<span class="text-xs bg-[#7CABD3]/10 text-[#7CABD3] px-2 py-0.5 rounded-full font-fira mt-1 inline-block">${esc(typeLabel)}</span>` : ""}
           </div>
         </div>
-        ${
-          ref
-            ? `<span class="bg-[#FCE297] text-[#1A2B49] text-xs px-3 py-1 rounded-full font-fira uppercase font-bold flex-shrink-0">
-          <iconify-icon icon="mdi:star-circle"></iconify-icon> Sponsorisé
-        </span>`
-            : ""
-        }
+        ${ref ? `<span class="bg-[#FCE297] text-[#1A2B49] text-xs px-3 py-1 rounded-full font-fira uppercase font-bold flex-shrink-0">Sponsorise</span>` : ""}
       </div>
 
       <div class="flex items-center gap-2 mb-3">
@@ -249,6 +244,7 @@ async function ouvrirProfil(idPro) {
     );
     const ref = estReference(idPro);
     const note = getNoteCalculee(idPro);
+    const typeLabel = getTypeLabel(profil.id_type);
 
     const joursLabels = {
       1: "Lundi",
@@ -268,18 +264,13 @@ async function ouvrirProfil(idPro) {
         <div>
           <h4 class="font-fira text-[#1A2B49] text-3xl">${esc(profil.prenom || "")} ${esc(profil.nom || "")}</h4>
           <p class="text-gray-400">${esc(profil.nom_entreprise || "Independant")}</p>
+          ${typeLabel ? `<span class="text-xs bg-[#7CABD3]/10 text-[#7CABD3] px-2 py-0.5 rounded-full font-fira mt-1 inline-block">${esc(typeLabel)}</span>` : ""}
           <div class="flex items-center gap-2 mt-1">
             <span class="text-[#FCE297]">${renderEtoiles(note)}</span>
             <span class="font-fira text-sm text-[#1A2B49]">${note > 0 ? note.toFixed(1) + " / 5" : "Nouveau"}</span>
             <span class="text-gray-300 text-sm">(${avisPro.length} avis)</span>
           </div>
-          ${
-            ref
-              ? `<span class="inline-flex items-center gap-1 mt-1 bg-[#FCE297] text-[#1A2B49] text-xs px-3 py-1 rounded-full font-fira uppercase font-bold">
-            <iconify-icon icon="mdi:star-circle"></iconify-icon> Sponsorisé
-          </span>`
-              : ""
-          }
+          ${ref ? `<span class="inline-flex items-center gap-1 mt-1 bg-[#FCE297] text-[#1A2B49] text-xs px-3 py-1 rounded-full font-fira uppercase font-bold">Sponsorise</span>` : ""}
         </div>
       </div>
 
@@ -311,21 +302,21 @@ async function ouvrirProfil(idPro) {
             ? offres
                 .map(
                   (o) => `
-<div class="bg-white border-2 border-gray-100 rounded-[20px] p-4 mb-3 hover:border-[#7CABD3] transition-all cursor-pointer"
-  onclick="demanderService(${idPro}, ${o.id_service || "null"})">
-  <div class="flex justify-between items-start">
-    <div class="flex-1">
-      <p class="font-fira text-[#1A2B49]">${esc(o.titre || "Offre")}</p>
-      ${o.bio ? `<p class="text-gray-400 text-sm mt-1">${esc(o.bio)}</p>` : ""}
-    </div>
-    <div class="flex items-center gap-3 ml-4 flex-shrink-0">
-      <p class="font-fira text-[#1A2B49] font-bold">${Number(o.prix_personnalise).toFixed(2)} EUR</p>
-      <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-xs px-3 py-1 rounded-full font-fira uppercase hover:bg-[#7CABD3] hover:text-white transition-all">
-        Demander
-      </span>
-    </div>
-  </div>
-</div>`,
+        <div class="bg-white border-2 border-gray-100 rounded-[20px] p-4 mb-3 hover:border-[#7CABD3] transition-all cursor-pointer"
+          onclick="demanderService(${idPro}, ${o.id_service || "null"})">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <p class="font-fira text-[#1A2B49]">${esc(o.titre || "Offre")}</p>
+              ${o.bio ? `<p class="text-gray-400 text-sm mt-1">${esc(o.bio)}</p>` : ""}
+            </div>
+            <div class="flex items-center gap-3 ml-4 flex-shrink-0">
+              <p class="font-fira text-[#1A2B49] font-bold">${Number(o.prix_personnalise).toFixed(2)} EUR/h</p>
+              <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-xs px-3 py-1 rounded-full font-fira uppercase hover:bg-[#7CABD3] hover:text-white transition-all">
+                Demander
+              </span>
+            </div>
+          </div>
+        </div>`,
                 )
                 .join("")
             : `<p class="text-gray-400 italic">Aucune offre disponible.</p>`
@@ -359,14 +350,14 @@ async function ouvrirProfil(idPro) {
             ? avisPro
                 .slice(0, 5)
                 .map((a) => {
-                  const note = a.note || 0;
+                  const noteA = a.note || 0;
                   const date = a.date_publication
                     ? new Date(a.date_publication).toLocaleDateString("fr-FR")
                     : "—";
                   return `
           <div class="bg-white border-2 border-gray-100 rounded-[20px] p-4 mb-3">
             <div class="flex items-center gap-2 mb-2">
-              <span class="text-[#FCE297]">${renderEtoiles(note)}</span>
+              <span class="text-[#FCE297]">${renderEtoiles(noteA)}</span>
               <span class="text-gray-300 text-xs font-fira">${date}</span>
             </div>
             ${a.commentaire ? `<p class="text-gray-600 text-sm italic">"${esc(a.commentaire)}"</p>` : ""}
@@ -394,13 +385,19 @@ function contacterPro(idPro, nom) {
   window.location.href = "/users/seniors/messagerie_senior.php";
 }
 
+function demanderService(idPro, idService) {
+  localStorage.setItem("demande_id_pro", idPro);
+  if (idService) localStorage.setItem("demande_id_service", idService);
+  window.location.href = "/users/seniors/services.php";
+}
+
 function resetFiltres() {
   document.getElementById("filtreRecherche").value = "";
   document.getElementById("filtreCategorie").value = "";
   document.getElementById("filtreNote").value = 0;
   document.getElementById("noteVal").textContent = "0";
   document.getElementById("filtrePrix").value = 200;
-  document.getElementById("prixVal").textContent = "200€";
+  document.getElementById("prixVal").textContent = "200EUR";
   document.getElementById("filtreRef").checked = false;
   document.getElementById("filtreTri").value = "ref_note";
   appliquerFiltres();
@@ -442,9 +439,4 @@ function esc(str) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
-}
-function demanderService(idPro, idService) {
-  localStorage.setItem("demande_id_pro", idPro);
-  if (idService) localStorage.setItem("demande_id_service", idService);
-  window.location.href = "/users/seniors/services.php";
 }
