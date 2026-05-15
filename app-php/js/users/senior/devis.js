@@ -128,24 +128,18 @@ async function loadFactures() {
     const res = await fetch(`${API_BASE}/admin/facture/get`);
     const all = await res.json();
 
-    const twoMonthsAgo = new Date();
-    twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
-
     const mesFactures = Array.isArray(all)
-      ? all.filter(
-          (f) =>
-            f.id_recepteur === userId &&
-            new Date(f.date_creation) >= twoMonthsAgo,
-        )
+      ? all.filter((f) => f.id_recepteur === userId)
       : [];
 
-    container.innerHTML = `
+    if (!mesFactures.length) {
+      container.innerHTML = `
         <div class="bg-white p-8 rounded-[40px] border-2 border-dashed border-gray-200 text-center">
           <iconify-icon icon="mdi:receipt" class="text-5xl text-gray-300 mb-3 block"></iconify-icon>
-          <p class="text-gray-400 italic text-lg">Aucune facture recente (moins de 2 mois).</p>
-          <p class="text-sm text-gray-400 mt-2">Retrouvez vos anciennes factures dans vos archives.</p>
+          <p class="text-gray-400 italic text-lg">Aucune facture pour le moment.</p>
         </div>`;
-    return;
+      return;
+    }
 
     container.innerHTML = mesFactures
       .map((f) => renderFactureDetaille(f, "senior"))
@@ -154,7 +148,6 @@ async function loadFactures() {
     console.error("Erreur factures");
   }
 }
-
 function renderDevis(liste) {
   const container = document.getElementById("section-devis");
   const devisToShow = liste || mesDevis;

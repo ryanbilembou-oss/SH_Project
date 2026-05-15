@@ -32,14 +32,14 @@ async function fetchArchives() {
       ...(Array.isArray(devis) ? devis : []).map((d) => ({
         ...d,
         type: "devis",
-        date_tri: new Date(d.date_creation),
+        date_tri: new Date(d.date_validite),
       })),
       ...factures.map((f) => ({
         ...f,
         type: "facture",
-        date_tri: new Date(f.date_creation),
+        date_tri: new Date(f.date_heure_debut || "2000-01-01"),
       })),
-    ].filter((item) => item.date_tri < twoMonthsAgo);
+    ].filter((item) => !isNaN(item.date_tri) && item.date_tri < twoMonthsAgo);
   } catch (e) {
     console.error(e);
   }
