@@ -47,11 +47,10 @@ func RefundIntervention(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"erreur": "Intervention introuvable"}`, 404)
 		return
 	}
-	if statut != "planifiee" {
-		http.Error(w, `{"erreur": "Remboursement impossible : intervention non planifiee"}`, 400)
-		return
+	if statut != "planifiee" && statut != "en_cours" {
+			http.Error(w, `{"erreur": "Remboursement impossible : intervention deja terminee ou annulee"}`, 400)
+			return
 	}
-
 	var sessionID string
 	err = database.DB.QueryRow(
 		`SELECT stripe_session_id FROM paiements WHERE type_objet = 'intervention' AND id_objet = $1 AND statut = 'paye'`,
