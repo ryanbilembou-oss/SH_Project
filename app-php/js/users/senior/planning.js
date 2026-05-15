@@ -34,11 +34,13 @@ async function loadInterventions() {
     const res = await fetch(`${API_BASE}/admin/intervention/get`);
     const all = await res.json();
     interventions = Array.isArray(all)
-      ? all.filter((i) => i.id_senior === userId)
+      ? all.filter(
+          (i) =>
+            i.id_senior === userId &&
+            i.statut !== "annulee" &&
+            i.statut !== "rembourse",
+        )
       : [];
-    console.log("Interventions:", interventions);
-    console.log("Test date:", getDayFR(interventions[0]?.date_heure_debut));
-    console.log("Test formatDate lundi:", formatDate(currentMonday));
   } catch {
     interventions = [];
   }
@@ -51,7 +53,7 @@ async function loadEvenements() {
     );
     const all = await res.json();
     evenements = Array.isArray(all)
-      ? all.filter((e) => e.statut !== "annule")
+      ? all.filter((e) => e.statut !== "annule" && e.statut !== "annulee")
       : [];
   } catch {
     evenements = [];
