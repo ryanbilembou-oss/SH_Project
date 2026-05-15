@@ -12,7 +12,8 @@ import (
 	"strings"
 	"time"
 )
- 
+ appURL := os.Getenv("APP_URL")
+baseURL := appURL + "/users/pro/referencement_pro.php"
 func GetActifs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
