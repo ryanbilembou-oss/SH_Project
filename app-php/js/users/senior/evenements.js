@@ -8,6 +8,7 @@ if (!userId || role !== "senior") {
 
 let tousEvenements = [];
 let inscriptions = [];
+let interventions = [];
 let selectedEventId = null;
 let selectedAnnulationId = null;
 let vueActuelle = "tous";
@@ -15,7 +16,11 @@ let categorieActuelle = null;
 let quantitesEvent = {};
 
 (async () => {
-  await Promise.all([loadEvenements(), loadInscriptions()]);
+  await Promise.all([
+    loadEvenements(),
+    loadInscriptions(),
+    loadInterventions(),
+  ]);
   renderCategories();
   appliquerFiltres();
   initModal();
@@ -44,6 +49,46 @@ async function loadInscriptions() {
   } catch {
     inscriptions = [];
   }
+}
+
+async function loadInterventions() {
+  try {
+    const res = await fetch(`${API_BASE}/admin/intervention/get`);
+    const all = await res.json();
+    interventions = Array.isArray(all)
+      ? all.filter((i) => i.id_senior === userId && i.statut !== "annulee")
+      : [];
+  } catch {
+    interventions = [];
+  }
+}
+
+function verifierConflitHoraire(dateHeure) {
+  if (!dateHeure) return null;
+  const dateEven = new Date(dateHeure);
+  const finEven = new Date(dateEven.getTime() + 60 * 60 * 1000);
+
+  for (const inter of interventions) {
+    const debut = new Date(inter.date_heure_debut);
+    const fin = new Date(inter.date_heure_fin);
+    if (dateEven < fin && finEven > debut) {
+      return "Vous avez deja une intervention a cette heure.";
+    }
+  }
+
+  for (const insc of inscriptions) {
+    const evenExistant = tousEvenements.find(
+      (e) => e.id_evenement === insc.id_evenement,
+    );
+    if (!evenExistant || !evenExistant.date_heure) continue;
+    const debut = new Date(evenExistant.date_heure);
+    const fin = new Date(debut.getTime() + 60 * 60 * 1000);
+    if (dateEven < fin && finEven > debut) {
+      return `Vous etes deja inscrit a un evenement a cette heure (${esc(evenExistant.titre)}).`;
+    }
+  }
+
+  return null;
 }
 
 function changerVue(vue) {
@@ -90,10 +135,9 @@ function appliquerFiltres() {
         new Date(e.date_heure) < now,
     );
   } else {
-    filtered = filtered.filter((e) => {
-      const isPasse = e.date_heure && new Date(e.date_heure) < now;
-      return !isPasse;
-    });
+    filtered = filtered.filter(
+      (e) => !e.date_heure || new Date(e.date_heure) >= now,
+    );
   }
   if (categorieActuelle) {
     filtered = filtered.filter((e) => e.nom_categorie === categorieActuelle);
@@ -106,11 +150,9 @@ function changerQteEvent(id, delta, maxPlaces) {
   const newQty = quantitesEvent[id] + delta;
   if (newQty < 1 || newQty > maxPlaces) return;
   quantitesEvent[id] = newQty;
-
   const qtyEl = document.getElementById(`qty-evt-${id}`);
   const btnMoins = document.getElementById(`btn-moins-evt-${id}`);
   const btnPlus = document.getElementById(`btn-plus-evt-${id}`);
-
   if (qtyEl) qtyEl.textContent = newQty;
   if (btnMoins) {
     btnMoins.classList.toggle("opacity-30", newQty <= 1);
@@ -123,6 +165,14 @@ function changerQteEvent(id, delta, maxPlaces) {
 }
 
 async function ajouterEventAuPanier(id) {
+  const e = tousEvenements.find((ev) => ev.id_evenement === id);
+  if (e) {
+    const conflit = verifierConflitHoraire(e.date_heure);
+    if (conflit) {
+      showToast(conflit, "error");
+      return;
+    }
+  }
   const qty = quantitesEvent[id] || 1;
   await ajouterAuPanier("evenement", id, qty);
 }
@@ -147,11 +197,10 @@ function renderEvenements(events) {
   const container = document.getElementById("evenementsList");
 
   if (!events.length) {
-    let msgVide = "Aucun événement disponible.";
+    let msgVide = "Aucun evenement disponible.";
     if (vueActuelle === "mes")
-      msgVide = "Vous n'êtes inscrit à aucun événement à venir.";
-    if (vueActuelle === "passes") msgVide = "Aucun événement passé.";
-
+      msgVide = "Vous n'etes inscrit a aucun evenement a venir.";
+    if (vueActuelle === "passes") msgVide = "Aucun evenement passe.";
     container.innerHTML = `
       <div class="text-center col-span-3 py-16">
         <iconify-icon icon="${vueActuelle === "passes" ? "mdi:history" : "mdi:calendar-blank"}" class="text-5xl text-gray-300 mb-3 block"></iconify-icon>
@@ -189,60 +238,58 @@ function renderEvenements(events) {
       const placesLabel = isComplet
         ? "Complet"
         : `${placesRestantes} place(s) restante(s)`;
-
       const qty = quantitesEvent[e.id_evenement] || 1;
+      const conflit = verifierConflitHoraire(e.date_heure);
 
       let bouton = "";
       if (isInscrit && !isPasse) {
         bouton = `
-        <div class="flex items-center gap-2">
-          <span class="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-full font-fira text-sm uppercase">Inscrit</span>
-          <button onclick="annulerInscription(${e.id_evenement})"
-            class="px-4 py-2 bg-red-100 text-red-600 rounded-full font-fira text-sm uppercase hover:bg-red-600 hover:text-white transition-all">
-            Annuler
-          </button>
-        </div>`;
+      <div class="flex items-center gap-2">
+        <span class="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-full font-fira text-sm uppercase">Inscrit</span>
+        <button onclick="annulerInscription(${e.id_evenement})"
+          class="px-4 py-2 bg-red-100 text-red-600 rounded-full font-fira text-sm uppercase hover:bg-red-600 hover:text-white transition-all">
+          Annuler
+        </button>
+      </div>`;
       } else if (isPasse) {
-        bouton = `<span class="px-6 py-3 bg-gray-100 text-gray-500 rounded-full font-fira text-sm uppercase">Terminé</span>`;
+        bouton = `<span class="px-6 py-3 bg-gray-100 text-gray-500 rounded-full font-fira text-sm uppercase">Termine</span>`;
       } else if (isComplet) {
         bouton = `<span class="px-6 py-3 bg-red-100 text-red-600 rounded-full font-fira text-sm uppercase">Complet</span>`;
+      } else if (conflit) {
+        bouton = `<span class="px-4 py-2 bg-orange-100 text-orange-600 rounded-full font-fira text-xs uppercase">Conflit horaire</span>`;
       } else {
         bouton = `
-        <div class="flex items-center gap-2">
-          <button id="btn-moins-evt-${e.id_evenement}" onclick="changerQteEvent(${e.id_evenement}, -1, ${placesRestantes})"
-            class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-fira text-base transition-all opacity-30 pointer-events-none">−</button>
-          <span id="qty-evt-${e.id_evenement}" class="font-fira text-[#1A2B49] text-base w-6 text-center">${qty}</span>
-          <button id="btn-plus-evt-${e.id_evenement}" onclick="changerQteEvent(${e.id_evenement}, 1, ${placesRestantes})"
-            class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-fira text-base transition-all ${placesRestantes <= 1 ? "opacity-30 pointer-events-none" : ""}">+</button>
-          <button onclick="ajouterEventAuPanier(${e.id_evenement})"
-            class="px-3 py-1.5 bg-[#7CABD3]/10 text-[#7CABD3] rounded-full font-fira text-sm hover:bg-[#7CABD3] hover:text-white transition-all">
-            <iconify-icon icon="mdi:cart-plus"></iconify-icon>
-          </button>
-          <button onclick="ouvrirModal(${e.id_evenement})"
-            class="px-4 py-1.5 bg-[#1A2B49] text-white rounded-full font-fira text-xs uppercase hover:bg-[#7CABD3] transition-all">
-            Réserver
-          </button>
-        </div>`;
+      <div class="flex items-center gap-2">
+        <button id="btn-moins-evt-${e.id_evenement}" onclick="changerQteEvent(${e.id_evenement}, -1, ${placesRestantes})"
+          class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-fira text-base transition-all opacity-30 pointer-events-none">−</button>
+        <span id="qty-evt-${e.id_evenement}" class="font-fira text-[#1A2B49] text-base w-6 text-center">${qty}</span>
+        <button id="btn-plus-evt-${e.id_evenement}" onclick="changerQteEvent(${e.id_evenement}, 1, ${placesRestantes})"
+          class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-fira text-base transition-all ${placesRestantes <= 1 ? "opacity-30 pointer-events-none" : ""}">+</button>
+        <button onclick="ajouterEventAuPanier(${e.id_evenement})"
+          class="px-4 py-2 bg-[#7CABD3]/10 text-[#7CABD3] rounded-full font-fira text-sm hover:bg-[#7CABD3] hover:text-white transition-all">
+          Ajouter au panier
+        </button>
+      </div>`;
       }
 
       return `
-      <div class="group bg-white p-8 rounded-[40px] border-2 ${isPasse ? "opacity-60 border-gray-200" : "border-transparent hover:border-[#7CABD3] hover:shadow-xl"} transition-all duration-500">
-        <div class="flex justify-between items-start mb-4">
-          <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-sm font-fira px-3 py-1 rounded-full">${esc(e.nom_categorie || "Événement")}</span>
-          <span class="font-fira text-[#1A2B49] text-lg">${e.prix_ticket == 0 ? "Gratuit" : e.prix_ticket + " €"}</span>
-        </div>
-        <h4 class="font-fira text-[#1A2B49] text-2xl mb-3">${esc(e.titre)}</h4>
-        <p class="text-base text-gray-500 mb-2"> ${date} à ${heure}</p>
-        <p class="text-base text-gray-500 mb-2"> ${esc(e.lieu || "—")}</p>
-        <p class="text-base text-gray-400 mb-6 leading-relaxed">${esc(e.description || "")}</p>
-        <div class="flex items-center justify-between mt-auto">
-          <span class="text-sm font-fira ${placesColor}">
-            <iconify-icon icon="mdi:account-group"></iconify-icon>
-            ${placesLabel}
-          </span>
-          ${bouton}
-        </div>
-      </div>`;
+    <div class="group bg-white p-8 rounded-[40px] border-2 ${isPasse ? "opacity-60 border-gray-200" : "border-transparent hover:border-[#7CABD3] hover:shadow-xl"} transition-all duration-500">
+      <div class="flex justify-between items-start mb-4">
+        <span class="bg-[#7CABD3]/10 text-[#7CABD3] text-sm font-fira px-3 py-1 rounded-full">${esc(e.nom_categorie || "Evenement")}</span>
+        <span class="font-fira text-[#1A2B49] text-lg">${e.prix_ticket == 0 ? "Gratuit" : e.prix_ticket + " EUR"}</span>
+      </div>
+      <h4 class="font-fira text-[#1A2B49] text-2xl mb-3">${esc(e.titre)}</h4>
+      <p class="text-base text-gray-500 mb-2">${date} a ${heure}</p>
+      <p class="text-base text-gray-500 mb-2">${esc(e.lieu || "—")}</p>
+      <p class="text-base text-gray-400 mb-6 leading-relaxed">${esc(e.description || "")}</p>
+      <div class="flex items-center justify-between mt-auto">
+        <span class="text-sm font-fira ${placesColor}">
+          <iconify-icon icon="mdi:account-group"></iconify-icon>
+          ${placesLabel}
+        </span>
+        ${bouton}
+      </div>
+    </div>`;
     })
     .join("");
 }
@@ -251,6 +298,11 @@ function ouvrirModal(id) {
   selectedEventId = id;
   const e = tousEvenements.find((ev) => ev.id_evenement === id);
   if (!e) return;
+  const conflit = verifierConflitHoraire(e.date_heure);
+  if (conflit) {
+    showToast(conflit, "error");
+    return;
+  }
   const date = e.date_heure
     ? new Date(e.date_heure).toLocaleDateString("fr-FR", {
         weekday: "long",
@@ -262,7 +314,7 @@ function ouvrirModal(id) {
   document.getElementById("modalDetails").textContent =
     `${date} — ${e.lieu || "—"}`;
   document.getElementById("modalPrix").textContent =
-    e.prix_ticket == 0 ? "Gratuit" : `${e.prix_ticket} €`;
+    e.prix_ticket == 0 ? "Gratuit" : `${e.prix_ticket} EUR`;
   const modal = document.getElementById("modalInscription");
   modal.classList.remove("hidden");
   modal.classList.add("flex");
@@ -297,6 +349,15 @@ function fermerModalAnnulation() {
 
 async function inscrire() {
   try {
+    const e = tousEvenements.find((ev) => ev.id_evenement === selectedEventId);
+    if (e) {
+      const conflit = verifierConflitHoraire(e.date_heure);
+      if (conflit) {
+        showToast(conflit, "error");
+        fermerModal();
+        return;
+      }
+    }
     const res = await fetch(`${API_BASE}/admin/inscription_evenement/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -304,17 +365,21 @@ async function inscrire() {
     });
     const data = await res.json();
     if (res.status === 409 && data.erreur === "complet") {
-      showToast("Désolé, cet événement est complet !", "error");
+      showToast("Desole, cet evenement est complet !", "error");
       fermerModal();
       return;
     }
     if (!res.ok) throw new Error();
-    showToast("Réservation confirmée !", "success");
+    showToast("Reservation confirmee !", "success");
     fermerModal();
-    await Promise.all([loadEvenements(), loadInscriptions()]);
+    await Promise.all([
+      loadEvenements(),
+      loadInscriptions(),
+      loadInterventions(),
+    ]);
     appliquerFiltres();
   } catch {
-    showToast("Erreur lors de la réservation.", "error");
+    showToast("Erreur lors de la reservation.", "error");
   }
 }
 
@@ -326,8 +391,12 @@ async function confirmerAnnulation() {
       { method: "DELETE" },
     );
     if (!res.ok) throw new Error();
-    showToast("Réservation annulée.", "success");
-    await Promise.all([loadEvenements(), loadInscriptions()]);
+    showToast("Reservation annulee.", "success");
+    await Promise.all([
+      loadEvenements(),
+      loadInscriptions(),
+      loadInterventions(),
+    ]);
     appliquerFiltres();
   } catch {
     showToast("Erreur lors de l'annulation.", "error");
