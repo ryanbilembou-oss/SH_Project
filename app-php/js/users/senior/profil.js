@@ -39,6 +39,24 @@ async function sauvegarder() {
   const btn = document.getElementById("btnSave");
   btn.disabled = true;
   btn.textContent = "Enregistrement...";
+
+  const tel = document.getElementById("telephone").value.trim();
+  if (tel && !/^\d+$/.test(tel)) {
+    showToast(
+      "Le numero de telephone ne doit contenir que des chiffres.",
+      "error",
+    );
+    btn.disabled = false;
+    btn.textContent = "Enregistrer les modifications";
+    return;
+  }
+  if (tel && tel.length !== 10) {
+    showToast("Le numero de telephone doit contenir 10 chiffres.", "error");
+    btn.disabled = false;
+    btn.textContent = "Enregistrer les modifications";
+    return;
+  }
+
   try {
     const res = await fetch(`${API_BASE}/admin/profile_senior/update`, {
       method: "PUT",
@@ -47,29 +65,41 @@ async function sauvegarder() {
         id_user: userId,
         nom: document.getElementById("nom").value.trim(),
         prenom: document.getElementById("prenom").value.trim(),
-        telephone: document.getElementById("telephone").value.trim(),
+        telephone: tel,
         genre: document.getElementById("genre").value,
         date_naissance: document.getElementById("date_naissance").value,
         adresse: document.getElementById("adresse").value.trim(),
       }),
     });
     if (!res.ok) throw new Error();
-    showToast("Profil mis à jour !", "success");
+    showToast("Profil mis a jour !", "success");
     await loadProfil();
   } catch {
     showToast("Erreur lors de la sauvegarde.", "error");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Enregistrer";
+    btn.textContent = "Enregistrer les modifications";
+  }
+}
+
+function toggleAccordion(id) {
+  const content = document.getElementById(`content-${id}`);
+  const icon = document.getElementById(`icon-${id}`);
+  const isOpen = !content.classList.contains("hidden");
+  if (isOpen) {
+    content.classList.add("hidden");
+    icon.style.transform = "rotate(0deg)";
+  } else {
+    content.classList.remove("hidden");
+    icon.style.transform = "rotate(180deg)";
   }
 }
 
 function showToast(message, type = "info") {
   const toast = document.getElementById("toast");
-  const msg = document.getElementById("toastMsg");
-  const icon = document.getElementById("toastIcon");
-  msg.textContent = message;
-  icon.textContent = type === "success" ? "V" : type === "error" ? "X" : "i";
+  document.getElementById("toastMsg").textContent = message;
+  document.getElementById("toastIcon").textContent =
+    type === "success" ? "V" : type === "error" ? "X" : "i";
   toast.classList.remove("-translate-y-20", "opacity-0");
   toast.classList.add("translate-y-0", "opacity-100");
   clearTimeout(showToast._t);
