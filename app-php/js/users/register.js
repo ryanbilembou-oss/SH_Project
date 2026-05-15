@@ -12,6 +12,11 @@ const fiftyYearsAgo = new Date(
   today.getMonth(),
   today.getDate(),
 );
+const eighteenYearsAgo = new Date(
+  today.getFullYear() - 18,
+  today.getMonth(),
+  today.getDate(),
+);
 const hundredYearsAgo = new Date(
   today.getFullYear() - 100,
   today.getMonth(),
@@ -74,16 +79,36 @@ function validatePassword() {
   return isLongEnough && hasNumber && hasSpecial;
 }
 
+function setDateLimits() {
+  const isPro = roleSelect.value === "pro";
+  dateInput.max = isPro
+    ? eighteenYearsAgo.toISOString().split("T")[0]
+    : fiftyYearsAgo.toISOString().split("T")[0];
+  dateInput.min = hundredYearsAgo.toISOString().split("T")[0];
+}
+
+setDateLimits();
+roleSelect.addEventListener("change", () => {
+  const isPro = roleSelect.value === "pro";
+  seniorFields.classList.toggle("hidden", isPro);
+  proFields.classList.toggle("hidden", !isPro);
+  setDateLimits();
+});
+
 function validateAge() {
   if (!dateInput.value) return false;
   const birthDate = new Date(dateInput.value);
-  const isOldEnough = birthDate <= fiftyYearsAgo;
+  const isPro = roleSelect.value === "pro";
+  const limit = isPro ? eighteenYearsAgo : fiftyYearsAgo;
+  const isOldEnough = birthDate <= limit;
   const isNotTooOld = birthDate >= hundredYearsAgo;
   const valid = isOldEnough && isNotTooOld;
+  document.getElementById("ageError").textContent = isPro
+    ? "Vous devez avoir au moins 18 ans."
+    : "Vous devez avoir au moins 50 ans.";
   document.getElementById("ageError").classList.toggle("hidden", valid);
   return valid;
 }
-
 function updateCritere(id, valid, text) {
   const el = document.getElementById(id);
   el.innerHTML = (valid ? "V " : "X ") + text;
@@ -125,6 +150,13 @@ document
     if (tel && !/^\d+$/.test(tel)) {
       showToast(
         "Le numero de telephone ne doit contenir que des chiffres.",
+        "error",
+      );
+      return;
+    }
+    if (tel && tel.length !== 10) {
+      showToast(
+        "Le numero de telephone doit contenir exactement 10 chiffres.",
         "error",
       );
       return;
@@ -174,6 +206,15 @@ document
       if (telPro && !/^\d+$/.test(telPro)) {
         showToast(
           "Le telephone professionnel ne doit contenir que des chiffres.",
+          "error",
+        );
+        submitBtn.disabled = false;
+        submitBtn.textContent = "S'inscrire";
+        return;
+      }
+      if (telPro && telPro.length !== 10) {
+        showToast(
+          "Le telephone professionnel doit contenir exactement 10 chiffres.",
           "error",
         );
         submitBtn.disabled = false;
